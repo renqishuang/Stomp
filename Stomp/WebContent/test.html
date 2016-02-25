@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Stomp测试</title>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/bootstrap.min.responsive.css" rel="stylesheet">
+</head>
+<body>
+<form class="form-horizontal" id="connect_form">
+	<div class="control-group">
+		<label>WebSocket URL</label>
+		<div class="controls">
+			<input name=url id='connect_url'
+			value="ws://localhost:61614" type="text">
+		</div>
+	</div>
+	<div class="control-group">
+		<label>User</label>
+		<div class="controls">
+			<input id="connect_login" placeholder="User Login" 
+			value="admin" type="text">
+		</div>
+	</div>
+	<div class="control-group">
+		<label>Password</label>		
+		<div class="controls">
+			<input id="connect_psssword" placeholder="User Password"
+			value="password" type="password">
+		</div>
+	</div>
+	<div class="control-group">
+		<label>Destination</label>
+		<div class="controls">
+			<input id="destination" placeholder="Destination" 
+			value="/topic/chat.general" type="text">
+		</div>
+	</div>
+	<div class="form-actions">
+		<button id="connect_submit" type="submit" class="btn btn-large btn-primary">建立连接</button>
+	</div>
+	<div class="page-header">
+		<div id="messages"></div>
+	</div>
+	<!-- 显示日志 -->
+	<div class="span4">
+		<div class="page-header">
+			<h2>Debug Log</h2>
+		</div>
+		<pre id="debug"></pre>
+	</div>
+</form>
+<script src="js/jquery-1.7.2.min.js"></script>
+<script src="js/stomp.js"></script>
+<script>
+/*
+ Stomp使用总结	
+  创建client:
+	var client = Stomp.client(url); //url为WebSocket的地址   端口为61614
+ 连接WebSocket
+ 	//用户名,密码,回调
+ 	client.connect(username,password,function(frame){
+ 		//订阅消息
+ 		var sub = client.subscribe(destination,function(message){
+ 			//处理
+ 			var mess = JSON.parse(message.body);//将接收到的消息转换为JSON对象
+ 		});
+ 		//取消订阅
+ 		sub.unsubscribe();
+ 	});
+  取消连接WebSocket
+  	client.disconnect(function(){
+  		//回调
+  	});
+  发送消息
+  	var text={a:123,b:345}; //将JSON对象转换为string发送给服务器
+  	client.send(destination,{},JSON.stringify(text));
+
+ */	$(document).ready(function(){
+		if(window.WebSocket){//判断浏览器是否支持websocket
+			var client,destination;
+			$('#connect_form').submit(function(){
+				console.log("123");
+				var url=$('#connect_url').val();
+				var login=$('#connect_login').val();
+				var passcode=$('#connect_psssword').val();
+				destination = $('#destination').val();
+				console.log(url+"-"+login+"-"+passcode+"-"+destination);
+				//使用Stomp建立客户端
+				client = Stomp.client(url);
+				//给client添加debug方法
+				client.debug = function(str){
+					$('#debug').append(document.createTextNode(str+'\n'));
+				}
+				//客户端连接服务器
+				client.connect(login,passcode,function(message){
+					client.subscribe(destination,function(){
+						var p = document.createElement('p');
+						p.appendChild(document.createTextNode(message.body));//查 
+						$('#messages').append(p);
+					}); 
+				})
+			});
+		}else{
+			console.log("Your browser not support WebSocket");
+		}
+	});
+</script>
+</body>
+</html>

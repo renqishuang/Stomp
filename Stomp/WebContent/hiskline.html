@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src='js/jquery-1.7.2.min.js'></script>
+<script>
+	$(document).ready(function(){
+		console.log("ready");
+		var date = new Date();
+		var time = date.getTime();
+		/* var param = "loadtype=-1&instrumentid='IF1602'&startdate="+
+				time+"&amount=100&type=2&action=1&interval=600&uid=348517&rid=17384&appid=1&aid=18349&rmc=87717&lc='039e9a9bf432a1325663fdfd74ed540f'"; */
+		/* var paramData = {
+				   "loadtype":-1,
+				   "instrumentid":"IF1602",
+				   "startdate":time,
+				   "amount":100,
+				   "type":2,
+				   "action":1,
+				   "interval":600,
+				    "uid":348517,
+				    "rid":17384,
+				    "appid":1, 
+				    "aid":18349,
+				    "rmc":87717,
+				    "lc":"039e9a9bf432a1325663fdfd74ed540f"
+		};
+		var param = JSON.stringify(paramData); */
+		var data = {
+			   "loadtype":-1,
+			   "instrumentid":"IF1602",
+			   "startdate":time,
+			   "amount":100,
+			   "type":2,
+			   "action":1,
+			   "interval":600,
+			    "uid":348517,
+			    "rid":17384,
+			    "appid":1, 
+			    "aid":18349,
+			    "rmc":87717,
+			    "lc":"039e9a9bf432a1325663fdfd74ed540f"
+		   };
+		var url = "http://192.168.1.231:8080/axis2/services/StrategyEngine?wsdl/getHisKlines";
+		/* $.post(
+			url,
+			data,
+			function(data,status){
+				console.log("callback jquery post");
+				console.log(data);
+				console.log(status);
+			},
+			"json"
+		); */
+		 $.ajax({
+		   url: url,
+		   type:"post",
+		   data:data,
+		   success:function(data,status){
+			   console.log("success");
+			   console.log(data);
+			   console.log(status);
+		   },
+		   complete:function(response, status){
+			   console.log("complete");
+			   console.log(response);
+			   console.log(status);
+		   },
+		   error:function(msg){
+			   console.log("error");
+			   console.log(msg); 
+		   },
+		   callback:function(){
+			   console.log("callback");
+		   }
+		 }); 
+	});
+</script>
+</head>
+<body>
+<div>获取数据</div>
+</body>
+</html>
