@@ -60,7 +60,7 @@ crossLinesAndTipMgr.prototype._onMouseOrTouchMove = function (ev) {
         me._removeTipAndCrossLines();
         return;
     }
-    //console.log("为什么没有返回值");
+    //console.log("为什么没有返回值");  //交叉线本身也有鼠标事件, 交叉线的鼠标事件没有冒泡 , 导致Canvas的鼠标事件没有触发;
     var crossPoint = options.getCrossPoint(ev);
     //console.log("交叉点坐标: "+crossPoint.x+"->"+crossPoint.y);
     var crossLinesOptions = {
@@ -73,6 +73,7 @@ crossLinesAndTipMgr.prototype._onMouseOrTouchMove = function (ev) {
     if (!me.clsMgr) {
         var clsMgr = new crossLines(crossLinesOptions);
         clsMgr.setMouseEvents(function (evHLine) {
+        	//console.log("触发水平线移动事件");
             evHLine = evHLine || event;
             evHLine = getOffset(evHLine);
             var translatedEv = { offsetX: evHLine.offsetX + range.x, offsetY: parseInt(me.clsMgr.getHLine().style.top) - canvasPosition.y };
@@ -82,6 +83,7 @@ crossLinesAndTipMgr.prototype._onMouseOrTouchMove = function (ev) {
                 me.tip.update(point, options.tipOptions.getTipHtml(translatedEv));
             }
         }, function (evl) {
+        	//console.log("触发垂直线移动事件");
             evl = evl || event;
             evl = getOffset(evl);
             var translatedEv = { offsetX: parseInt(me.clsMgr.getVLine().style.left) - canvasPosition.x, offsetY: evl.offsetY + range.y };
@@ -114,7 +116,7 @@ crossLinesAndTipMgr.prototype._onMouseOrTouchMove = function (ev) {
             me.tip = tip;
         }
 
-        me.tip.show(crossPoint, tipOp.getTipHtml(ev));
+        //me.tip.show(crossPoint, tipOp.getTipHtml(ev));
     }
 };
 

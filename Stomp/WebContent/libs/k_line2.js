@@ -30,7 +30,14 @@ function convertDate(val, withWeek) {
         return year + '-' + month + '-' + day;
     }
 }
-//计算移动平均价格
+
+/**
+ * 计算日均线价格
+ * ks:所有的数据
+ * startIndex 屏幕显示数据的开始索引
+ * count 屏幕显示数据的个数
+ * daysCn  日均线天数
+ */
 function calcMAPrices(ks, startIndex, count, daysCn) {
     var result = new Array();
     for (var i = startIndex; i < startIndex + count; i++) {
@@ -64,9 +71,11 @@ function kLine(options) {
 
 kLine.prototype = {
     initialize: function (painter) {
+    	this.candleMinHeight = 3;//蜡烛的默认最小高度
         painter.klOptions = this.options;
         painter.implement = this;
     },
+    
     //计算价格小数位数
     setPriceDecimalNum:function(type){
     	var decimalNum;
@@ -78,11 +87,18 @@ kLine.prototype = {
     		decimalNum = 2;
     	}
     },
+    
     //添加一跟K线图
     addCandleToKL:function(item){
     	console.log("添加新数据");
 		GlobalKLData.ks.push(item);
     },
+    
+    //修改全局KL数据的最后一条数据
+    updateGlobalKLLastDt:function(item){
+    	GlobalKLData.ks[GlobalKLData.ks.length-1] = item;
+    },
+    
     //获取同时显示的KL数据的个数
     getShowKLDataCount:function(){
     	var options = this.options;
@@ -92,11 +108,12 @@ kLine.prototype = {
     },
     //根据X坐标获取蜡烛的索引,并获取数据, 显示到Tip里面
     getTipHtml: function(x){
-    	var me = this.painter;
-    	var index = me.startIndex + this.getIndex(x);
-        if (index >= me.data.ks.length) index = me.data.ks.length - 1;
+    	var data = this.getKLStore();
+    	var maxLength = this.getMaxDataLength();
+    	var index = this.dataRanges.start + this.getIndex(x);
+        if (index >= maxLength) index = maxLength - 1;
         if (index < 0) index = 0;
-        var ki = me.data.ks[index];
+        var ki = data.ks[index];
         //console.log("更新Tip时的数据如下:");
         //console.log("open:"+ki.open+",high:"+ki.high+",low:"+ki.low+",close"+ki.close);
         var tipHtml = '<div><b>' + convertDate(ki.quoteTime) + '</b></div>' +
@@ -129,46 +146,70 @@ kLine.prototype = {
     //获取当前显示最后一跟K线的索引
     getIndexForLastCandle: function(){
     	var dataCount = this.getShowKLDataCount();
-		var maxLength = GlobalKLData.ks.length-1;
+    	console.log("数据总个数: "+dataCount);
+		var maxLength = this.getKLStore().ks.length;
 		var candleIndex;
 		if(dataCount < maxLength){
 			candleIndex = dataCount-1;
 		}else{
-			candleIndex = maxLength;
+			candleIndex = maxLength-1;
 		}
 		//console.log("最后一个蜡烛的索引为: "+candleIndex);
 		return candleIndex;
     },
-    //根据蜡烛的索引获取蜡烛的X坐标
+    //根据蜡烛的索引获取蜡烛的X坐标  相对于Region.X坐标   这个方法用于整体画图
     getCandleXByIndex:function(i){
+    	var options = this.options;
+    	var result = i * (options.spaceWidth + options.barWidth) + (options.spaceWidth + options.barWidth) * .5; 
+    	if (result * 10 % 10 == 0) result += .5; 
+    	//console.log("蜡烛的X坐标: "+result);
+    	return result; 
+    },
+    
+    //根据蜡烛的索引获取蜡烛的X坐标  相对于Body坐标   这个方法用于更新单个蜡烛
+    getCandleXByIndexForUpdate:function(i){
     	var options = this.options;
     	var left = options.chartMargin.left;
     	var result = i * (options.spaceWidth + options.barWidth) + (options.spaceWidth + options.barWidth) * .5; 
-    	if (result * 10 % 10 == 0) result += .5; 
+    	if (result * 10 % 10 == 0) result += .5;
     	result += left;
+    	//console.log("蜡烛的X坐标: "+result);
     	return result; 
     },
-    //根据价格获取Y坐标
+    
+    //根据价格获取Y坐标 用于整体画图
     getYCoordByPrice:function(price){
     	var options = this.options;
         var region = options.region;//绘制K线图的矩形区域(起点x,y坐标,宽度,高度)
-        var painter = this.painter;
-        //console.log("KL的画家");
-        console.log(painter.high+"-painter.high-low:-"+painter.low);
-        painter.high=TempKLHigh;
-        painter.low=TempKLLow;
-    	var y = (painter.high - price) * region.height / (painter.high - painter.low);
+        //console.log(this.high+"-painter.high-low:-"+this.low);
+    	var y = (this.high - price) * region.height / (this.high - this.low);
+    	//y += this.verticalSpaceHeight;//最上边第二个点才是最大值
     	return y; 
     },
+    
+    //根据价格获取Y坐标 用于单个K线更新
+    getYCoordByPriceForUp:function(price){
+    	var options = this.options;
+        var region = options.region;//绘制K线图的矩形区域(起点x,y坐标,宽度,高度)
+        //console.log(this.high+"-painter.high-low:-"+this.low);
+    	var y = (this.high - price) * region.height / (this.high - this.low);
+    	y += region.y;
+    	//y += this.verticalSpaceHeight;//最上边第二个点才是最大值
+    	return y; 
+    },
+    
     //根据X坐标获取蜡烛的索引
     getIndex:function(x){
-    	var me = this.painter;
+    	var dataRange = this.dataRanges;
+    	var startIndex = dataRange.start;
+    	var toIndex = dataRange.to;
     	var options = this.options;
         var region = options.region;
     	x -= region.x;
         var index = Math.ceil(x / (options.spaceWidth + options.barWidth)) - 1;
-        var count = me.toIndex - me.startIndex + 1;
+        var count = toIndex - startIndex + 1;
         if (index >= count) index = count - 1;
+        //console.log("初始化时蜡烛的索引"+index);
         return index;
     },
     //根据鼠标事件的X偏移量,算出K线偏移量 , 鼠标事件的X偏移量是实时变化的, 但K线的偏移量,在两跟K线之间保持一样  
@@ -185,11 +226,19 @@ kLine.prototype = {
         return offsetX; 
     },
     //更新一跟K线图
-    updateKLOnCandle:function(item){
+    updateKLOnCandle:function(item,updateType){
+    	//如果更新的数据的最大值和最小值 与 当前Y轴最大值和最小值不匹配, 那么重新画图
+    	this.updateGlobalKLLastDt(item);
+    	if(item.high+this.priceGap > this.high || item.low-this.priceGap < this.low){
+    		this.high = Math.max(this.high,item.high+this.priceGap);
+    		this.low = Math.min(this.low,item.low-this.priceGap);
+    		drawKL();
+    	}
     	var options = this.options;
     	var region = options.region;
 		var candleIndex = this.getIndexForLastCandle();
-		this.drawCandleHandler(item,candleIndex);
+		console.log("最后的索引"+candleIndex);
+		this.drawCandleHandler(item,candleIndex,updateType);
 		//如果Tip正在当前蜡烛上面显示,更新Tip显示内容
 		var tip = document.getElementById("canvasKL_tip");
 		if(tip) {
@@ -207,20 +256,28 @@ kLine.prototype = {
 				tip.innerHTML = this.getTipHtml(candleX);
 		}
     },
+    //判断是否高开低收的值一样
+    whetherSameValue:function(item){
+    	if(item.open == item.close && item.high == item.low) return true;
+    	else return false;
+    },
+    
     //更新K线处理
-    drawCandleHandler:function(ki,i){
+    drawCandleHandler:function(ki,i,updateType){
     	var options = this.options;
+    	var region = options.region;
     	var painter = this.painter;
     	var ctx = painter.ctx;
     	 var isRise = ki.close > ki.open;
          var color = isRise ? riseColor : fallColor;
 		 var priceRangeColor = options.priceRangeColor;
-         var lineX = this.getCandleXByIndex(i);
+         var lineX = this.getCandleXByIndexForUpdate(i);
+         console.log("最后一根K线的X坐标: "+lineX);
          //console.log("获取蜡烛的X坐标");
          //console.log(lineX);
-         var topY = this.getYCoordByPrice(ki.high);
-         var bottomY = this.getYCoordByPrice(ki.low);
-         console.log("根据价格获取Y轴坐标"+topY+"--"+bottomY);
+         var topY = this.getYCoordByPriceForUp(ki.high);
+         var bottomY = this.getYCoordByPriceForUp(ki.low);
+         //console.log("根据价格获取Y轴坐标"+topY+"--"+bottomY);
          var needCandleRect = options.barWidth > 1.5;
          if (needCandleRect) {//当蜡烛的宽度都小于1.5时不需要画蜡烛
          	//console.log("需要画蜡烛矩形");
@@ -228,20 +285,20 @@ kLine.prototype = {
              ctx.strokeStyle = priceRangeColor;
              var candleY, candleHeight;//蜡烛的起点Y坐标和高度
              if (isRise) {
-                 candleY = this.getYCoordByPrice(ki.close);
-                 candleHeight = this.getYCoordByPrice(ki.open) - candleY;
+                 candleY = this.getYCoordByPriceForUp(ki.close);
+                 candleHeight = this.getYCoordByPriceForUp(ki.open) - candleY;
              } else {
-                 candleY = this.getYCoordByPrice(ki.open);
-                 candleHeight = this.getYCoordByPrice(ki.close) - candleY;
+                 candleY = this.getYCoordByPriceForUp(ki.open);
+                 candleHeight = this.getYCoordByPriceForUp(ki.close) - candleY;
              }
              
              //清除已画的价格线和蜡烛
              ctx.clearRect(lineX-options.barWidth/2,
-            		 options.region.y+1,options.barWidth,options.region.height-1);
+            		 options.region.y+1,options.barWidth+0.5,options.region.height-1);
              ctx.beginPath();
              ctx.fillStyle = options.klbackgroundColor;
              ctx.fillRect(lineX-options.barWidth/2,
-            		 options.region.y+1,options.barWidth,options.region.height-1);
+            		 options.region.y+1,options.barWidth+0.5,options.region.height-1);
              //重画蜡烛所在矩形的水平线
              var spaceHeight = options.region.height / (options.horizontalLineCount + 1);
              //console.log(spaceHeight);
@@ -252,10 +309,6 @@ kLine.prototype = {
                  painter.drawHLine(options.splitLineColor, lineX-options.barWidth/2, y, options.barWidth, 1, options.lineStyle);
              }
              ctx.stroke();
-             
-             //重画日均线  暂时有5,10,15等3条日均线
-             
-             
              //画最高价和最低价的线
              ctx.fillStyle = color;
              ctx.strokeStyle = priceRangeColor;
@@ -265,8 +318,15 @@ kLine.prototype = {
              ctx.lineTo(lineX, bottomY);
              ctx.stroke();
 			 //画蜡烛的矩形
-             var candleX = lineX - options.barWidth / 2;
+              var candleX = lineX - options.barWidth / 2;
              ctx.beginPath();
+             if(this.whetherSameValue(ki)) {
+            	 candleHeight = options.priceSameHeight;//当高开低收都一样时, 使用1像素, 灰色的样式
+             	 ctx.fillStyle = options.priceSameColor;
+             }else{
+            	 if(candleHeight < this.candleMinHeight)
+                	 candleHeight = this.candleMinHeight;
+             }
              ctx.fillRect(candleX, candleY, options.barWidth, candleHeight);
          } else {
          	//console.log("不需要画蜡烛");
@@ -277,6 +337,13 @@ kLine.prototype = {
              ctx.lineTo(lineX, bottomY);
              ctx.stroke();
          }
+         
+         //重画日均线  暂时有5,10,15等3条日均线
+         var tempData = [];
+         var tempTwoData = this.getKLStore().ks[this.getMaxDataLength()-2];
+         tempData.push(tempTwoData);
+         tempData.push(ki);
+         this.paintMAs(tempData,"update");
     },
     
     start: function () {
@@ -447,93 +514,163 @@ kLine.prototype = {
     },
     //设置屏幕显示的K线的数据范围
     setDataRange: function(){
+    	//绘制K线图的矩形区域(起点x,y坐标,宽度,高度)
     	var options = this.options;
-        var region = options.region;//绘制K线图的矩形区域(起点x,y坐标,宽度,高度)
+        var region = options.region;
         var maxDataLength = this.getMaxDataLength();//所有数据的个数
         var dataCount = this.getShowKLDataCount();//同时显示的数据个数
         if (dataCount > maxDataLength) dataCount = maxDataLength;
 		var startData = 100 * (maxDataLength - dataCount) / maxDataLength;
 		console.log("数据的开始索引:"+startData);
+		var startIndex = Math.ceil(startData / 100 * maxDataLength);
+		console.log("计算后的数据开始索引:"+startIndex);
+		var toIndex = Math.ceil(100 / 100 * maxDataLength) + 1;
+        if (toIndex >= maxDataLength) toIndex = maxDataLength - 1;
+        console.log("计算后的数据结束索引:"+toIndex);
         this.dataRanges = {
-            start: startData,
-            to: 100
+            start: startIndex,
+            to: toIndex
         };
     },
     
+    //获取KL数据
+    getKLStore:function(){
+    	return GlobalKLData;
+    },
     
     //获取所有数据的个数
     getMaxDataLength: function(){
-    	var maxLength = GlobalKLData.ks.length;
+    	var maxLength = this.getKLStore().ks.length;
     	return maxLength;
+    },
+    //当数据范围变化时,需要重新计算蜡烛的宽度
+    needCalcSpaceAndBarWidth:function(){
+    	var options = this.options;
+        var region = options.region;
+        console.log("当数据范围变化时,需要重新计算蜡烛的宽度");
+        //重新计算spaceWidth和barWidth属性
+        function isOptionsOK() { return (options.spaceWidth + options.barWidth) * itemsCount <= region.width; }
+        var spaceWidth, barWidth;
+        if (isOptionsOK()) {
+            //柱足够细了
+            spaceWidth = 1;
+            barWidth = (region.width - spaceWidth * itemsCount) / itemsCount;
+            if (barWidth > 4) {
+                spaceWidth = 2;
+                barWidth = ((region.width - spaceWidth * itemsCount) / itemsCount);
+            }
+        } else {
+            spaceWidth = 1;
+            barWidth = (region.width - spaceWidth * itemsCount) / itemsCount;
+            if (barWidth <= 2) {
+                spaceWidth = 0;
+                barWidth = (region.width - spaceWidth * itemsCount) / itemsCount;
+            } else if (barWidth > 4) {
+                spaceWidth = 2;
+                barWidth = ((region.width - spaceWidth * itemsCount) / itemsCount);
+            }
+        }
+		//重新赋值蜡烛宽度和空隙宽度
+        options.barWidth = barWidth;
+        options.spaceWidth = spaceWidth;
+    },
+    
+    //画一跟蜡烛
+    drawCandle: function(ki, i){
+    	var options = this.options;
+    	var painter = this.painter;
+    	var ctx = painter.ctx;
+        var region = options.region
+    	var isRise = ki.close > ki.open;
+        var color = isRise ? riseColor : fallColor;
+		var priceRangeColor = options.priceRangeColor;
+        var lineX = this.getCandleXByIndex(i);
+        var currentX = this.currentX;
+        //console.log("获取蜡烛的X轴坐标");
+        // console.log(lineX);
+        if (currentX == 0) currentX = lineX;
+        else {
+            if (lineX - currentX < 1) return;
+        }
+        if(lineX*10%10 == 0) lineX += 0.5;
+        currentX = lineX;
+        console.log("蜡烛中心线的X坐标");
+        var topY = this.getYCoordByPrice(ki.high);
+        var bottomY = this.getYCoordByPrice(ki.low);
+        //console.log("根据价格获取Y轴坐标"+topY+"--"+bottomY);
+        var needCandleRect = options.barWidth > 1.5;
+        if (needCandleRect) {//当蜡烛的昆都小于1.5时不需要画蜡烛
+        	//console.log("需要画蜡烛矩形");
+            ctx.fillStyle = color;
+            ctx.strokeStyle = priceRangeColor;
+            var candleY, candleHeight;//蜡烛的起点Y坐标和高度
+            if (isRise) {
+                candleY = this.getYCoordByPrice(ki.close);
+                candleHeight = this.getYCoordByPrice(ki.open) - candleY;
+            } else {
+                candleY = this.getYCoordByPrice(ki.open);
+                candleHeight = this.getYCoordByPrice(ki.close) - candleY;
+            }
+            //画最高价和最低价的线
+            ctx.beginPath();
+            ctx.lineWidth=1;
+            ctx.moveTo(lineX, topY);
+            ctx.lineTo(lineX, bottomY);
+            ctx.stroke();
+			//画蜡烛的矩形
+            var candleX = lineX - options.barWidth / 2;
+            ctx.beginPath();
+            if(this.whetherSameValue(ki)) {
+           	   candleHeight = options.priceSameHeight;//当高开低收都一样时, 使用1像素, 灰色的样式
+           	   ctx.fillStyle = options.priceSameColor;
+            }else{
+           	 if(candleHeight < this.candleMinHeight)
+               	 candleHeight = this.candleMinHeight;
+            }
+            ctx.fillRect(candleX, candleY, options.barWidth, candleHeight);
+        } else {
+        	//console.log("不需要画蜡烛");
+            ctx.strokeStyle = color;
+            //画线
+            ctx.beginPath();
+            ctx.moveTo(lineX, topY);
+            ctx.lineTo(lineX, bottomY);
+            ctx.stroke();
+        }
+    },
+    
+    //根据最高价,最低价,K线图区域高度  计算出K线图行高所占用的价格间隙
+    caclPriceIncrease:function(high,low){
+    	var options = this.options;
+    	var height = options.region.height;
+    	var horizontalLineCount = options.horizontalLineCount;
+    	var priceGap = Number(((high - low)/(horizontalLineCount -1)).toFixed(1));
+    	this.priceGap = priceGap;
+    	return priceGap;
     },
     
     //画K线及移动平均线
     paintItems: function () {
+    	var me = this;
+    	var painter = this.painter;
+        var ctx = painter.ctx;
         var options = this.options;
         var region = options.region;//绘制K线图的矩形区域(起点x,y坐标,宽度,高度)
         var maxDataLength = this.getMaxDataLength();//所有数据的个数
         console.log("数据总个数:"+maxDataLength);
-        var needCalcSpaceAndBarWidth = true;//是否需要计算蜡烛和空隙的宽度
-        if (this.dataRanges == null) {
-        	//console.log("paint items data ranges is null");
-            //计算dataRanges       计算水平时间轴的范围
-        	console.log(region.width);
-        	console.log(options.spaceWidth + options.barWidth);
-            var dataCount = Math.ceil(region.width / (options.spaceWidth + options.barWidth))-1;
-            console.log("同时显示数据的个数为:"+dataCount);
-            if (dataCount > maxDataLength) dataCount = maxDataLength;
-			var startData = 100 * (this.data.ks.length - dataCount) / this.data.ks.length;
-			console.log("数据的开始索引:"+startData);
-            this.dataRanges = {
-                start: startData,
-                to: 100
-            };
-
-            needCalcSpaceAndBarWidth = false;
-        }
-        var dataRanges = this.dataRanges;
-        var startIndex = Math.ceil(dataRanges.start / 100 * maxDataLength);
-        console.log("计算后的数据开始索引:"+startIndex);
-        var toIndex = Math.ceil(dataRanges.to / 100 * maxDataLength) + 1;
-        if (toIndex >= maxDataLength) toIndex = maxDataLength - 1;
-        this.startIndex = startIndex;
-        this.toIndex = toIndex;
-        console.log("计算后的数据结束索引:"+toIndex);
+        var needCalcSpaceAndBarWidth =  false;//是否需要计算蜡烛和空隙的宽度
+        this.setDataRange();
+        var startIndex = this.dataRanges.start;
+        var toIndex = this.dataRanges.to;
         var itemsCount = toIndex - startIndex + 1;
         console.log("结算后的数据项个数:"+itemsCount);
-        if (needCalcSpaceAndBarWidth) {
-        	console.log("当数据范围变化时,需要重新计算蜡烛的宽度");
-            //重新计算spaceWidth和barWidth属性
-            function isOptionsOK() { return (options.spaceWidth + options.barWidth) * itemsCount <= region.width; }
-            var spaceWidth, barWidth;
-            if (isOptionsOK()) {
-                //柱足够细了
-                spaceWidth = 1;
-                barWidth = (region.width - spaceWidth * itemsCount) / itemsCount;
-                if (barWidth > 4) {
-                    spaceWidth = 2;
-                    barWidth = ((region.width - spaceWidth * itemsCount) / itemsCount);
-                }
-            } else {
-                spaceWidth = 1;
-                barWidth = (region.width - spaceWidth * itemsCount) / itemsCount;
-                if (barWidth <= 2) {
-                    spaceWidth = 0;
-                    barWidth = (region.width - spaceWidth * itemsCount) / itemsCount;
-                } else if (barWidth > 4) {
-                    spaceWidth = 2;
-                    barWidth = ((region.width - spaceWidth * itemsCount) / itemsCount);
-                }
-            }
-			//重新赋值蜡烛宽度和空隙宽度
-            options.barWidth = barWidth;
-            options.spaceWidth = spaceWidth;
-        }
+        //this.needCalcSpaceAndBarWidth();//是否需要重新计算蜡烛和空隙的宽度
 		//过滤数据(获取显示到页面上的数据)
         var filteredData = [];
         for (var i = startIndex; i <= toIndex && i < maxDataLength; i++) {
-            filteredData.push(this.data.ks[i]);
+            filteredData.push(me.getKLStore().ks[i]);
         }
+        this.filteredData = filteredData;
         //console.log("显示到页面的数据如下:");
         //console.log(filteredData);
         var high, low;
@@ -542,100 +679,43 @@ kLine.prototype = {
             else { high = Math.max(val.high, high); low = Math.min(low, val.low); }
         });
 
-//        this.high = high;
-//        this.low = low;
-        this.high=TempKLHigh;
-        this.low=TempKLLow;
-        high = TempKLHigh;
-        //low = 2966.4;
-        low = TempKLLow;
-        //console.log("最高价:"+high+",最低价:"+low);
-        var ctx = this.ctx;
-        var me = this;
+//        this.high = Math.max(high,3000.1);
+//        this.low = Math.min(low,2960.3);
+        this.high = high;
+        this.low = low;
+        var priceIncrease = me.caclPriceIncrease(high,low);
+        this.high += priceIncrease;
+        this.low -= priceIncrease;
+        console.log("最高价:"+high+",最低价:"+low);
+        
+        //计算垂直空隙高度
+//        var spaceHeight = options.region.height / (options.horizontalLineCount + 1);
+//        this.verticalSpaceHeight = Number(spaceHeight.toFixed(1));
+        
         //timer.start('paintItems:移动均线');
         //画移动平均线
-        this.implement.paintMAs.call(this, filteredData, getY);
+        this.paintMAs(filteredData,"global");
         //timer.stop();
         //timer.start('paintItems:画柱');
-        //console.log("painter high:"+me.high);
-        //根据价格获取Y坐标
-        function getY(price) { 
-        	//console.log("get Y: "+me.high+"->"+me.low);
-        	me.high = TempKLHigh;
-        	me.low = TempKLLow;
-        	var y = (me.high - price) * region.height / (me.high - me.low);
-        	//console.log(y);
-        	return y; 
-        }
-        //根据蜡烛的索引获取蜡烛的x坐标
-        function getCandleLineX(i) { 
-        	var result = i * (options.spaceWidth + options.barWidth) + (options.spaceWidth + options.barWidth) * .5; 
-        	if (result * 10 % 10 == 0) result += .5; 
-        	return result; 
-        }
-
-        var currentX = 0;
-        var needCandleRect = options.barWidth > 1.5;
-        var drawCandle = function (ki, a, i) {
-            var isRise = ki.close > ki.open;
-            var color = isRise ? riseColor : fallColor;
-			var priceRangeColor = options.priceRangeColor;
-            var lineX = getCandleLineX(i);
-            //console.log("获取蜡烛的X轴坐标");
-           // console.log(lineX);
-            if (currentX == 0) currentX = lineX;
-            else {
-                if (lineX - currentX < 1) return;
-            }
-            currentX = lineX;
-            var topY = getY(ki.high);
-            var bottomY = getY(ki.low);
-            //console.log("根据价格获取Y轴坐标"+topY+"--"+bottomY);
-            if (needCandleRect) {//当蜡烛的昆都小于1.5时不需要画蜡烛
-            	//console.log("需要画蜡烛矩形");
-                ctx.fillStyle = color;
-                ctx.strokeStyle = priceRangeColor;
-                var candleY, candleHeight;//蜡烛的起点Y坐标和高度
-                if (isRise) {
-                    candleY = getY(ki.close);
-                    candleHeight = getY(ki.open) - candleY;
-                } else {
-                    candleY = getY(ki.open);
-                    candleHeight = getY(ki.close) - candleY;
-                }
-                //画最高价和最低价的线
-                ctx.beginPath();
-                ctx.lineWidth=1;
-                ctx.moveTo(lineX, topY);
-                ctx.lineTo(lineX, bottomY);
-                ctx.stroke();
-				//画蜡烛的矩形
-                var candleX = lineX - options.barWidth / 2;
-                ctx.beginPath();
-                ctx.fillRect(candleX, candleY, options.barWidth, candleHeight);
-            } else {
-            	//console.log("不需要画蜡烛");
-                ctx.strokeStyle = color;
-                //画线
-                ctx.beginPath();
-                ctx.moveTo(lineX, topY);
-                ctx.lineTo(lineX, bottomY);
-                ctx.stroke();
-            }
-        };
+        this.currentX = 0;  //做逻辑 
         //画蜡烛
-        filteredData.each(drawCandle);
+        for(var i=0;i<filteredData.length;i++){
+        	me.drawCandle(filteredData[i],i);
+        }
+        //filteredData.each(me.drawCandle);
         //timer.stop();
         //timer.start('paintItems:纵轴');
+        
         var yAxisOptions = options.yAxis;
         yAxisOptions.region = yAxisOptions.region || { x: 0 - region.x, y: 0 - 3, height: region.height, width: region.x - 3 };
         console.log(yAxisOptions.region);
         //画y轴
         var yAxisImp = new yAxis(yAxisOptions);
         var yPainter = new Painter(
-            this.canvas.id,
+        	painter.canvas.id,
             yAxisImp,
-            calcAxisValues(high, low, (options.horizontalLineCount + 2))
+            calcAxisValues(me.high, me.low, (options.horizontalLineCount + 2))
+            //calcAxisValues(priceGap.add, priceGap.reduce, (options.horizontalLineCount + 2))
         );
         yPainter.paint();
         //timer.stop();
@@ -662,7 +742,7 @@ kLine.prototype = {
             var quoteTime = convertDate(filteredData[index].quoteTime, false);
             xScalers.push(quoteTime);
         }
-        var xPainter = new Painter(this.canvas.id, xAxisImp, xScalers);
+        var xPainter = new Painter(painter.canvas.id, xAxisImp, xScalers);
         xPainter.paint();
         // timer.stop();
 
@@ -749,14 +829,29 @@ kLine.prototype = {
         yPainter.paint();
         ctx.restore();//返回之前保存过的环境
     },
-    //画移动平均线  move average 
-    paintMAs: function (filteredData, funcGetY) {
-        var ctx = this.ctx;
-        var options = this.klOptions;
+    /**
+     * 画日均线  move average
+     * filteredData要画日均线的数据
+     * paintType 画日均线的类型
+     * 	  global  整体画图时调用
+     * 	  update  更新一条K线时调用
+     */
+    paintMAs: function (filteredData,paintType) {
+    	var me = this;
+    	var dataRange = me.dataRanges;
+    	var startCalcIndex;
+    	var startIndex = dataRange.start;
+    	var toIndex = dataRange.to;
+    	var painter = this.painter;
+        var ctx = painter.ctx;
+        var options = this.options;
         var MAs = options.MAs;
-        var me = this;
+        if(paintType == "global") startCalcIndex = startIndex;
+        else startCalcIndex = toIndex-1;
         MAs.each(function (val, arr, index) {
-            var MA = calcMAPrices(me.data.ks, me.startIndex, filteredData.length, val.daysCount);
+            var MA = calcMAPrices(me.getKLStore().ks, startCalcIndex, filteredData.length, val.daysCount);
+            console.log("计算后的日均线价格数组");
+            console.log(MA);
             val.values = MA;
             MA.each(function (val, arr, i) {
                 if (val) {
@@ -771,14 +866,32 @@ kLine.prototype = {
             ctx.strokeStyle = val.color;
             ctx.beginPath();
             MA.each(function (val, arr, i) {
-                var x = i * (options.spaceWidth + options.barWidth) + (options.spaceWidth + options.barWidth) * .5;
-                
+            	//var x = i * (options.spaceWidth + options.barWidth) + (options.spaceWidth + options.barWidth) * .5;
+            	var x = 0;
+            	if(paintType == "global")
+            		x = i * (options.spaceWidth + options.barWidth) + (options.spaceWidth + options.barWidth) * .5;
+            	else {
+            		var lastKLIndex = me.getIndexForLastCandle();
+                	x = me.getCandleXByIndexForUpdate(lastKLIndex-1)+i*(options.barWidth+options.spaceWidth);
+            	}
                 if (!val) return;
-                var y = funcGetY(val);
+                //var y = y = me.getYCoordByPrice(val);
+                var y = 0;
+                if(paintType == "update"){
+                	y = me.getYCoordByPriceForUp(val);
+                }else {
+                	y = me.getYCoordByPrice(val);
+                }
                 if (y && i==0) {
                     ctx.moveTo(x, y);
+                    if(paintType == "update"){
+                    	//console.log("起点日均线的X坐标: "+x+"-Y坐标"+y);
+                    }
                 } else {
                     ctx.lineTo(x, y);
+                    if(paintType == "update"){
+                    	//console.log("终点日均线的X坐标: "+x+"-Y坐标"+y);
+                    }
                 }
             });
             ctx.stroke();
@@ -891,7 +1004,7 @@ window.GlobalKLData = {
 };
 //初始化数据
 function initAddData(){
-	for(var i=0;i<InitTestData.length-30;i++){
+	for(var i=0;i<InitTestData.length;i++){
 		var tempData=[];
 		var dt = InitTestData[i];
 		if(i == 0) {
@@ -924,11 +1037,7 @@ function initAddData(){
 
 var initialWidth = Math.min(screen.width,1024)-40;
 //画K线接口
-function drawKL(canvasId,ranges) {
-	window.TempKLHigh= 3031.3;
-	window.TempKLLow = 3003.4;
-	//加载历史数据
-	initAddData();
+function drawKL(ranges) {
 	if(!KLPainter){
 	    var kOptions = {
 	        backgroundColor:'#fff',
@@ -939,6 +1048,8 @@ function drawKL(canvasId,ranges) {
 	        tipFallColor:'#00EA62',
 	        normalColor: 'black',
 	        priceRangeColor:'white',
+	        priceSameColor:"gray",//高开低收价格一样时的颜色
+	        priceSameHeight:1,//高开低收价格一样时的高度
 	        //主图区域的边距
 	        chartMargin:{left:45.5,top:20.5,right:20.5},
 	        region: { x: 45.5, y: 20.5, width: initialWidth - 45.5 - 20.5, height: 210 },
@@ -993,19 +1104,22 @@ function drawKL(canvasId,ranges) {
 	            bar: { width: 20, height: 35, borderColor: 'black', fillColor: 'lightgray' },
 	            minBarDistance: 20
 	        }
+	       
 	    };            
-        var canvas = $id(canvasId);
+        var canvas = $id('canvasKL');
         if(!canvas) return;
         if(canvas.width != initialWidth) canvas.width = initialWidth;
         CurrentKLObj = new kLine(kOptions);
         //var kl = new kLine(kOptions);
         //var data = getKLData();
-        KLPainter = new Painter(canvasId, CurrentKLObj, GlobalKLData);
+        //加载历史数据
+    	initAddData();
+        KLPainter = new Painter('canvasKL', CurrentKLObj, GlobalKLData);
         CurrentKLObj.painter=KLPainter;
     }
     //KLPainter.data = GlobalKLData;
     //KLPainter.dataRanges = ranges;
-    //KLPainter.dataRanges = null;
+   // KLPainter.dataRanges = null;
     //if(GlobalKLData.length == 0) return;
     KLPainter.paint();
 }

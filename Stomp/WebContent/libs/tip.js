@@ -25,12 +25,22 @@ Tip.prototype = {
         //console.log(otip);
         //console.log("offset->"+offset);
         var currentOffsetDirect = "left";
+        //console.log("position.x-->"+position.x)
         if (position.x) tipX = position.x;
         else {
             if (otip) {
             	//console.log("otip.style.left->"+otip.style.left);
-                var currentX = parseInt(otip.style.left) - canvasPosition.x;
+                var currentX = 0;
                 //console.log("currentX->"+currentX+"--x:"+x);
+                var rightTopPointX = x + offset + canvasPosition.x;
+                if(rightTopPointX > this._getRightLimit()){
+                	currentX = x - offset - size.width;
+                    currentOffsetDirect = "right";
+                }else{
+                	currentX = x + offset;
+                }
+                tipX = currentX
+               /* var currentX = parseInt(otip.style.left) + offset - canvasPosition.x;
                 if (currentX > x) {//如果Tip在交叉线的右侧   x是交叉点的X坐标
                 	//offset是Tip与交叉竖线的水平距离
                 	//Tip的右上角的X坐标 
@@ -49,7 +59,7 @@ Tip.prototype = {
                         currentOffsetDirect = "right";
                     }
                 }
-                tipX = currentX;
+                tipX = currentX;*/
             } else {
             	//交叉点的X坐标 + Tip与交叉点的距离
                 tipX = x + offset;
@@ -94,7 +104,7 @@ Tip.prototype = {
             var opacity = this.opacity || 100;
             //cssText是直接设置属性值 如: style.cssText = 'color:red;';
             otip.style.cssText = '-moz-opacity:.' + opacity + '; filter:alpha(opacity='
-                + opacity + '); opacity:' + (opacity / 100) + ';line-height:18px;font-family:Arial,"����";font-size:9pt;padding:4px;';
+                + opacity + '); opacity:' + (opacity / 100) + ';pointer-events:none;line-height:18px;font-family:Arial,"����";font-size:9pt;padding:4px;';
             otip.style.position = 'absolute';
             otip.style.zIndex = 4 + (this.canvas.style.zIndex || 1);
             otip.style.color="white";
@@ -102,6 +112,7 @@ Tip.prototype = {
             otip.style.border = '1px solid white';
             otip.style.width = this.size.width + 'px';
             otip.style.height = this.size.height + 'px';
+            //otip.prevent
             if (this.cssClass) otip.className = this.cssClass;
             document.body.appendChild(otip);
         }
@@ -121,9 +132,14 @@ Tip.prototype = {
     hide: function () {
         var o = $id(this.getElementId());
         if (o) o.style.display = 'none';
-        o.isShow = false;
+        if(o.isShow) o.isShow = false;
     },
     update: function (relativePoint, html) {
+    	//如果交叉点的坐标不变, 不需要移动Tip
+    	if(relativePoint.x == this.relativePoint.x && 
+    			relativePoint.y == this.relativePoint.y){
+    		return;
+    	}
         this.relativePoint = relativePoint;
         this.innerHTML = html;
         this.show();

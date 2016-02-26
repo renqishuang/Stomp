@@ -73,6 +73,7 @@ crossLines.prototype = {
         hLine.style.position = 'absolute';
         hLine.style.width = Math.round(horizontalRange.x2 - horizontalRange.x1) + 'px';
         hLine.style.height = '1px';
+        //console.log("水平线距离顶部的长度:"+this.crossPoint.y);
         hLine.style.left = Math.round(canvasPosition.x + horizontalRange.x1) + 'px';
         hLine.style.top = Math.round(this.crossPoint.y + canvasPosition.y) + 'px';
         hLine.style.backgroundColor = this.color;
