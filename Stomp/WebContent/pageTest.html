@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>测试各种页面组件</title>
+<style>
+body{
+	background-color:#191F26;
+}
+ul{
+	list-style:none;
+}
+li{
+	background-color:transparent;
+	color:#8494A4;
+	width:25px;
+	height:25px;
+	line-height:25px;
+	border-top:1px solid #8494A4;
+	border-left:1px solid #8494A4;
+	border-bottom:1px solid #8494A4;
+	border-right:1px solid #8494A4;
+	float:left;
+	font-weight:bold;
+	font-size:smaller;
+	text-align:center;
+	cursor:pointer;
+}
+li:last-child{
+	border:1px solid #8494A4;
+}
+</style>
+<script src="libs/util.js"></script>
+<script type="text/javascript">
+	//设置其他分段按钮的样式
+	function setKLTimeSharingInterStyle(list){
+		for(var i in list){
+			var li = list[i];
+			if(li.isMouseDown){
+				li.isMouseDown = false;
+				li.style.backgroundColor="transparent";
+				li.style.color = "#8494A4";
+			}
+		}
+	}
+	
+	function init(){
+		//设置li点击事件
+		var div = document.querySelector('div.KL_TimeShareChart_Interval');
+		var list = div.querySelectorAll("li");
+		for(var i in list){
+			var li = list[i];
+			addEvent(li,"mousedown",function(e){
+				if(!this.isMouseDown){
+					setKLTimeSharingInterStyle(list);//设置其他分时样式
+					this.isMouseDown = true;
+					this.style.backgroundColor="#8494A4";
+					this.style.color = "black";
+				}
+			});
+		}
+		//console.log(list);
+	}
+	function testClick(btn){
+		console.log(btn.style.backgroundColor="blue");
+	}
+</script>
+</head>
+<body onload="init();">
+<button type="button" onclick="testClick(this)">1分钟</button>
+<div class="KL_TimeShareChart_Interval">
+	<ul>
+		<li>1</li>
+		<li>3</li>
+		<li>5</li>
+		<li>10</li>
+		<li>15</li>
+		<li>30</li>
+	</ul>
+</div>
+</body>
+</html>

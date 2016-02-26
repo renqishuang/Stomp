@@ -983,22 +983,23 @@ window.KLPainter=null;
 window.CurrentKLObj = null;
 window.CurrentDataTime = null;
 window.GlobalKLData = {
-	ks:[],
-	high:0,
-	low:0
+		ks:[]
+//	ks:[],
+//	high:0,
+//	low:0
 };
 //初始化数据
 function initAddData(){
 	for(var i=0;i<InitTestData.length;i++){
 		var tempData=[];
 		var dt = InitTestData[i];
-		if(i == 0) {
+		/*if(i == 0) {
 			GlobalKLData.high = parseFloat(dt.high);
 			GlobalKLData.low = parseFloat(dt.low);
 		}else{
 			GlobalKLData.high = Math.max(GlobalKLData.high,parseFloat(dt.high));
 			GlobalKLData.low = Math.min(GlobalKLData.low,parseFloat(dt.low));
-		}
+		}*/
 		var time=dt.datetime;
 		var date = new Date(time);
 		var dateNumber =converDateStrByDate(date);
@@ -1036,8 +1037,8 @@ function drawKL(ranges) {
 	        priceSameColor:"gray",//高开低收价格一样时的颜色
 	        priceSameHeight:1,//高开低收价格一样时的高度
 	        //主图区域的边距
-	        chartMargin:{left:45,top:20.5,right:20.5},
-	        region: { x: 45, y: 20.5, width: initialWidth - 45.5 - 20.5, height: 210 },
+	        chartMargin:{left:45,top:5,right:20.5},
+	        region: { x: 45, y: 5, width: initialWidth - 45.5 - 20.5, height: 210 },
 	        barWidth: 10, spaceWidth: 4, horizontalLineCount: 10, verticalLineCount: 7, lineStyle: 'solid', borderColor: 'gray', splitLineColor: '#252A31', lineWidth: 1,
 	        MAs: [
 	            { color: '#0063CD', daysCount: 5 },
@@ -1098,7 +1099,7 @@ function drawKL(ranges) {
         //var kl = new kLine(kOptions);
         //var data = getKLData();
         //加载历史数据
-    	initAddData();
+    	//initAddData();
         KLPainter = new Painter('canvasKL', CurrentKLObj, GlobalKLData);
         CurrentKLObj.painter=KLPainter;
     }

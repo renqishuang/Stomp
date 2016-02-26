@@ -131,6 +131,7 @@ Tip.prototype = {
     },
     hide: function () {
         var o = $id(this.getElementId());
+        if(!o) return;
         if (o) o.style.display = 'none';
         if(o.isShow) o.isShow = false;
     },

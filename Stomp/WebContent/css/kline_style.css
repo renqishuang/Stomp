@@ -1,0 +1,27 @@
+.KL_TimeShareChart_Interval{
+	height:40px;
+	background-color:#191F26;
+	padding-top: 15px;
+}
+.KL_TimeShareChart_Interval ul{
+	list-style:none;
+}
+.KL_TimeShareChart_Interval ul li{
+	background-color:transparent;
+	color:#8494A4;
+	width:25px;
+	height:25px;
+	line-height:25px;
+	border-top:1px solid #8494A4;
+	border-left:1px solid #8494A4;
+	border-bottom:1px solid #8494A4;
+	border-right:1px solid #8494A4;
+	float:left;
+	font-weight:bold;
+	font-size:smaller;
+	text-align:center;
+	cursor:pointer;
+}
+.KL_TimeShareChart_Interval ul li:last-child{
+	border:1px solid #8494A4;
+}
