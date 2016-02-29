@@ -1,6 +1,7 @@
 window.GlobalKLData = {
 		ks:[]
 };
+//还需要当前合约的名字
 function loadHisKLineData(interval){
 	GlobalKLData.ks.length = 0;
 	var data = null;
