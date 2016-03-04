@@ -1,36 +1,3 @@
-//根据日期转换成日期字符整数 
-function converDateStrByDate(date){
-	var year = date.getFullYear();
-	var month = date.getMonth()+1;
-	var day = date.getDate();
-	if(month < 10) month ="0"+month;
-	if(day < 10) day = "0"+day;
-	return parseInt(year+""+month+""+day);
-}
-
-//日期转换  根据时间串,分离出年月日 如(20160215)
-function convertDate(val, withWeek) {
-    var year = Math.ceil(val / 10000) - 1;//ceil向上取整數天花板数
-    var day = val % 100;
-    var month = (Math.ceil(val / 100) - 1) % 100;
-    var d = new Date();
-    d.setYear(year);
-    d.setMonth(month - 1);
-    d.setDate(day);//设置一个月的某一天
-    if (month < 10) month = '0' + month;
-    if (day < 10) day = '0' + day;
-    if (withWeek) {
-        var weekNames = ['日', '一', '二', '三', '四', '五', '六'];
-        //Date.getDay()返回星期中的某一天, 返回0~6之间的数, 0表示星期日
-        var time = year + '-' + month + '-' + day + '(星期' + weekNames[d.getDay()] + ')';
-        return time;
-    }
-    else {
-    	//console.log("年->"+year+"月->"+month+"日->"+day);
-        return year + '-' + month + '-' + day;
-    }
-}
-
 /**
  * 计算日均线价格
  * ks:所有的数据
@@ -171,8 +138,8 @@ kLine.prototype = {
     	var options = this.options;
     	var left = options.chartMargin.left;
     	var result = i * (options.spaceWidth + options.barWidth) + (options.spaceWidth + options.barWidth) * .5; 
-    	if (result * 10 % 10 == 0) result += .5;
     	result += left;
+    	if (result * 10 % 10 == 0) result += .5;
     	//console.log("蜡烛的X坐标: "+result);
     	return result; 
     },
@@ -206,6 +173,7 @@ kLine.prototype = {
     	var options = this.options;
         var region = options.region;
     	x -= region.x;
+    	if(x == 0) return 0;
         var index = Math.ceil(x / (options.spaceWidth + options.barWidth)) - 1;
         var count = toIndex - startIndex + 1;
         if (index >= count) index = count - 1;
@@ -294,11 +262,11 @@ kLine.prototype = {
              
              //清除已画的价格线和蜡烛
              ctx.clearRect(lineX-options.barWidth/2,
-            		 options.region.y+1,options.barWidth+0.5,options.region.height-1);
+            		 options.region.y+1,options.barWidth,options.region.height-1);
              ctx.beginPath();
              ctx.fillStyle = options.klbackgroundColor;
-             ctx.fillRect(lineX-options.barWidth/2,
-            		 options.region.y+1,options.barWidth+0.5,options.region.height-1);
+             ctx.fillRect(lineX-options.barWidth/2-1,
+            		 options.region.y+1,options.barWidth+2.,options.region.height-1);
              //重画蜡烛所在矩形的水平线
              var spaceHeight = options.region.height / (options.horizontalLineCount + 1);
              //console.log(spaceHeight);
@@ -309,6 +277,13 @@ kLine.prototype = {
                  painter.drawHLine(options.splitLineColor, lineX-options.barWidth/2, y, options.barWidth, 1, options.lineStyle);
              }
              ctx.stroke();
+             
+             //重画日均线  暂时有5,10,15等3条日均线
+             var tempData = [];
+             var tempTwoData = this.getKLStore().ks[this.getMaxDataLength()-2];
+             tempData.push(tempTwoData);
+             tempData.push(ki);
+             //this.paintMAs(tempData,"update");
              //画最高价和最低价的线
              ctx.fillStyle = color;
              ctx.strokeStyle = priceRangeColor;
@@ -337,13 +312,6 @@ kLine.prototype = {
              ctx.lineTo(lineX, bottomY);
              ctx.stroke();
          }
-         
-         //重画日均线  暂时有5,10,15等3条日均线
-         var tempData = [];
-         var tempTwoData = this.getKLStore().ks[this.getMaxDataLength()-2];
-         tempData.push(tempTwoData);
-         tempData.push(ki);
-         this.paintMAs(tempData,"update");
     },
     
     start: function () {
@@ -402,54 +370,38 @@ kLine.prototype = {
         var volumeRegion = options.volume.region;
         var painter = me.painter;
         console.log("是否存在交叉线对象实例:"+me.crossLineAndTipMgrInstance);
+        var crossLineAndTipConfig = {
+    		//获取交叉点坐标
+            getCrossPoint: function (ev) { 
+            	//console.log("新创建对象的方法");
+            	//console.log(me.getX(ev.offsetX));
+            	return { x: me.getX(ev.offsetX), y: ev.offsetY };
+            },
+            //触发事件的范围
+            triggerEventRanges: { x: region.x, y: region.y + 1, width: region.width, 
+            	//height: volumeRegion.y + volumeRegion.height - region.y 
+            	height: region.y + region.height -20
+            },
+            //Tip属性
+            tipOptions: {
+                getTipHtml: function (ev) { return me.getTipHtml(ev.offsetX); },
+                size:{width:120,height:150},
+                position:{x:false,y:region.y+(region.height-150)/3}, //position中的值是相对于canvas的左上角的
+                opacity:80,
+                cssClass:'',
+                offsetToPoint:10
+            },
+            crossLineOptions: {
+                color: 'white'
+            }
+        };
         if(!me.crossLineAndTipMgrInstance){//创建交叉线及Tip实例对象
         	//crossLinesAndTipMgr在 chartEventHelper.js中
-            me.crossLineAndTipMgrInstance = new crossLinesAndTipMgr(painter.canvas, {
-            	//获取交叉点坐标
-                getCrossPoint: function (ev) { 
-                	//console.log("新创建对象的方法");
-                	//console.log({ x: getX(ev.offsetX), y: ev.offsetY });
-                	return { x: me.getX(ev.offsetX), y: ev.offsetY };
-                },
-                //触发事件的范围
-                triggerEventRanges: { x: region.x, y: region.y + 1, width: region.width, 
-                	//height: volumeRegion.y + volumeRegion.height - region.y 
-                	height: region.y + region.height -20
-                },
-                //Tip属性
-                tipOptions: {
-                    getTipHtml: function (ev) { return me.getTipHtml(ev.offsetX); },
-                    size:{width:120,height:150},
-                    position:{x:false,y:region.y+(region.height-150)/3}, //position中的值是相对于canvas的左上角的
-                    opacity:80,
-                    cssClass:'',
-                    offsetToPoint:10
-                },
-                crossLineOptions: {
-                    color: 'white'
-                }
-            });
+            me.crossLineAndTipMgrInstance = new crossLinesAndTipMgr(painter.canvas, crossLineAndTipConfig);
             me.crossLineAndTipMgrInstance.addCrossLinesAndTipEvents();
         }
         else {
-            me.crossLineAndTipMgrInstance.updateOptions({
-                getCrossPoint: function (ev) {
-                	//console.log("已存在对象的方法");
-                	return { x: me.getX(ev.offsetX), y: ev.offsetY }; 
-                },
-                triggerEventRanges: { x: region.x, y: region.y + 1, width: region.width, height: volumeRegion.y + volumeRegion.height - region.y },
-                tipOptions: {
-                    getTipHtml: function (ev) { return me.getTipHtml(ev.offsetX); },
-                    size:{width:120,height:150},
-                    position:{x:false,y:region.y+(region.height-150)/3}, //position中的值是相对于canvas的左上角的
-                    opacity:80,
-                    cssClass:'',
-                    offsetToPoint:10
-                },
-                crossLineOptions: {
-                    color: 'white'
-                }
-                });
+            me.crossLineAndTipMgrInstance.updateOptions(crossLineAndTipConfig);
         }
 		//控制器部分
         /*if (me.controller == null) {
@@ -850,8 +802,8 @@ kLine.prototype = {
         else startCalcIndex = toIndex-1;
         MAs.each(function (val, arr, index) {
             var MA = calcMAPrices(me.getKLStore().ks, startCalcIndex, filteredData.length, val.daysCount);
-            console.log("计算后的日均线价格数组");
-            console.log(MA);
+            //console.log("计算后的日均线价格数组");
+            //console.log(MA);
             val.values = MA;
             MA.each(function (val, arr, i) {
                 if (val) {
@@ -998,22 +950,23 @@ window.KLPainter=null;
 window.CurrentKLObj = null;
 window.CurrentDataTime = null;
 window.GlobalKLData = {
-	ks:[],
-	high:0,
-	low:0
+		ks:[]
+//	ks:[],
+//	high:0,
+//	low:0
 };
 //初始化数据
 function initAddData(){
 	for(var i=0;i<InitTestData.length;i++){
 		var tempData=[];
 		var dt = InitTestData[i];
-		if(i == 0) {
+		/*if(i == 0) {
 			GlobalKLData.high = parseFloat(dt.high);
 			GlobalKLData.low = parseFloat(dt.low);
 		}else{
 			GlobalKLData.high = Math.max(GlobalKLData.high,parseFloat(dt.high));
 			GlobalKLData.low = Math.min(GlobalKLData.low,parseFloat(dt.low));
-		}
+		}*/
 		var time=dt.datetime;
 		var date = new Date(time);
 		var dateNumber =converDateStrByDate(date);
@@ -1051,9 +1004,9 @@ function drawKL(ranges) {
 	        priceSameColor:"gray",//高开低收价格一样时的颜色
 	        priceSameHeight:1,//高开低收价格一样时的高度
 	        //主图区域的边距
-	        chartMargin:{left:45.5,top:20.5,right:20.5},
-	        region: { x: 45.5, y: 20.5, width: initialWidth - 45.5 - 20.5, height: 210 },
-	        barWidth: 10, spaceWidth: 2, horizontalLineCount: 10, verticalLineCount: 7, lineStyle: 'solid', borderColor: 'gray', splitLineColor: '#252A31', lineWidth: 1,
+	        chartMargin:{left:45,top:5,right:0},
+	        region: { x: 45, y: 5, width: initialWidth - 45, height: 210 },
+	        barWidth: 10, spaceWidth: 4, horizontalLineCount: 10, verticalLineCount: 7, lineStyle: 'solid', borderColor: 'gray', splitLineColor: '#252A31', lineWidth: 1,
 	        MAs: [
 	            { color: '#0063CD', daysCount: 5 },
 	            { color: '#FFCB34', daysCount: 10 },
@@ -1113,7 +1066,7 @@ function drawKL(ranges) {
         //var kl = new kLine(kOptions);
         //var data = getKLData();
         //加载历史数据
-    	initAddData();
+    	//initAddData();
         KLPainter = new Painter('canvasKL', CurrentKLObj, GlobalKLData);
         CurrentKLObj.painter=KLPainter;
     }

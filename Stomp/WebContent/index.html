@@ -10,83 +10,11 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap.min.responsive.css" rel="stylesheet">
     <link href="css/kline_style.css" rel="stylesheet">
-    <script>
-    	//根据不同时段加载数据
-    	function loadDataByTimeInterval(interval){
-    		
-    	}
-    	
-	    //设置其他分段按钮的样式
-		function setKLTimeSharingInterStyle(list){
-	    	var i=0,length=list.length;
-			for(;i<length;i++){
-				var li = list[i];
-				if(li.isMouseDown){
-					li.isMouseDown = false;
-					li.style.backgroundColor="transparent";
-					li.style.color = "#8494A4";
-				}
-			}
-		}
-	    //body初始化事件
-    	function bodyInitHandler(){
-    		//设置li点击事件
-    		var div = document.querySelector('div.KL_TimeShareChart_Interval');
-    		var list = div.querySelectorAll("li");
-    		var i=0,length=list.length;
-    		//console.log(list);
-    		for(;i<length;i++){
-    			var li = list[i];
-    			console.log(li);
-    			addEvent(li,"mousedown",function(e){
-    				if(!this.isMouseDown){
-    					setKLTimeSharingInterStyle(list);//设置其他分时样式
-    					this.isMouseDown = true;
-    					this.style.backgroundColor="#8494A4";
-    					this.style.color = "black";
-    					var value = this.getAttribute('value');
-    					loadHisKLineData(value);//加载数据    				    					
-    					//drawKL();//画图
-    					//如果合约没变, 不用取消订阅
-    					//取消原来的订阅 ,开始新的订阅
-    					if(MQStompSub) MQStompSub.unsubscribe();
-    					var destination = "/topic/IF1603"; 
-    					if(!MQStompClient) return;
-    					MQStompSub = MQStompClient.subscribe(destination,function(message){
-    						var tempData = message.body;
-    						//console.log("新订阅");
-    						//console.log(message);
-    						KLSubscribeHandler(JSON.parse(tempData));
-    					});
-    				}
-    			});
-    			//console.log(li.getAttribute('value'));
-    			if(li.getAttribute('value') == "600"){
-    				li.isMouseDown = true;
-					li.style.backgroundColor="#8494A4";
-					li.style.color = "black";
-    				//默认触发10分钟K线图
-    	    		loadHisKLineData("600");
-    	    		//drawKL();//画图
-    			}
-    		}
-    	}
-    </script>
     <style type="text/css">
       body { padding-top: 40px; }
     </style>
   </head>
-
-  <body onload="bodyInitHandler()">
-    
-    <!-- <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" href="#">K线图</a>
-        </div>
-      </div>
-    </div> -->
-
+  <body>
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span6">
@@ -121,7 +49,7 @@
                   <label>Destination</label>
                   <div class="controls">
                   <!-- /topic/IF1603_60 -->
-                    <input id='destination' placeholder="Destination" value="/topic/IF1603_600" type="text">
+                    <input id='destination' placeholder="Destination" value="/topic/IF1603_60" type="text">
                   </div>
                 </div>
                 <div class="form-actions">
@@ -157,16 +85,12 @@
             </form>
           </div>
         </div>
-        <!-- <div class="span4">
-          <div class="page-header">
-            <h2>Debug Log</h2>
-          </div>
-          <pre id="debug"></pre>
-        </div> -->
       </div>
     </div>
-    <script src='js/jquery-1.7.2.min.js'></script>
+    <script src='js/jquery.1.11.3.min.js'></script>
     <script src="js/stomp.js"></script>
+    <script src='js/constants.js'></script>
+    <script src='js/commonTool.js'></script>
     <script src="k-data.js"></script>
     <script src="libs/loading.js" ></script>
     <script src="libs/util.js" ></script>
@@ -179,122 +103,53 @@
     <script src="libs/volumePainter.js"  ></script>
     <script src="libs/axis-y.js"  ></script>
     <script src="libs/chartEventHelper.js?abc"  ></script>
-    <script  src="libs/controller.js" ></script>
-    <script  src="libs/testInitData.js"></script>
-    <script src="libs/klineStore.js"></script>
-    <script  src="libs/k_line.js"></script>
+    <script src="libs/controller.js" ></script>
+    <script src="js/testInitData.js"></script>
+    <script src="js/klineStore.js"></script>
+    <script  src="js/k_line.js"></script>
     <!-- Scripts placed at the end of the document so the pages load faster -->
-    
-    <script>
-    	//根据类型转换数据格式
-    	function KLDataDecimalHandler(dt,type){
-    		var time=dt.datetime;
-    		var date = new Date(time);
-    		var dateNumber = converDateStrByDate(date);
-    		var open,high,low,close,volume,amount=2939,preClose=2985.8;
-    		if(type == 0){//整数
-    			open  = parseInt(dt.open);
-        		high = parseInt(dt.high);
-        		low = parseInt(dt.low);
-        		close = parseInt(dt.close);
-        		volume = parseInt(dt.volume);
-    		}else if(type == 1){//小数点后一位
-    			open  = parseFloat(dt.open);
-        		high = parseFloat(dt.high);
-        		low = parseFloat(dt.low);
-        		close = parseFloat(dt.close);
-        		volume = parseFloat(dt.volume);
-    		}
-    		var item = {
-    			quoteTime:dateNumber,
-    			open:open,
-    			high:high,
-    			low:low,
-    			close:close,
-    			volume:volume,
-    			amount:amount,
-    			preClose:preClose,
-    			openchg:Number(dt.openchg),
-    			highchg:Number(dt.highchg),
-    			lowchg:Number(dt.lowchg),
-    			closechg:Number(dt.lowchg)
-    		};
-    		return item;
-    	}
-    	//收到订阅数据后调用     K线订阅处理器
-    	function KLSubscribeHandler(dt){
-   			/* GlobalKLData.high = Math.max(GlobalKLData.high,parseFloat(dt.high));
-   			GlobalKLData.low = Math.min(GlobalKLData.low,parseFloat(dt.low)); */
-   			//console.log(dt);
-   			if(!CurrentKLObj) return;
-   			//对订阅数据的小数位数进行判断
-   			var item = KLDataDecimalHandler(dt,1);
-   			//var item = dt;
-   			//console.log(item);
-   			//console.log("open:"+item.open+",high:"+item.high+",low:"+item.low+",close"+item.close);
-    		var time=dt.datetime;
-    		/* ////////////////
-    		//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;//临时修改最后一条数据
-    		if(!this.isInit) this.isInit = 'yes';
-    		if(this.isInit == 'yes') {
-    			CurrentKLObj.addCandleToKL(item); //添加最后更新的数据    
-    			drawKL();
-    		}
-    		//console.log("..................item");
-    		//console.log(item);
-    		this.lastUpdateItem = item;
-    		if(!this.count) this.count = 2;
-    		if(this.count == 2){
-    			CurrentKLObj.updateKLOnCandle(item,"first");
-    		}else{
-    			CurrentKLObj.updateKLOnCandle(item,"more");	
-    		}
-    		this.count +=1;
-    		if(this.count == 7){
-    			if(isInit == "yes"){
-    				drawKL();
-    			} 
-    			GlobalKLData.ks[GlobalKLData.ks.length-1] = lastUpdateItem;
-    			drawKL();
-    			CurrentKLObj.addCandleToKL(item); //添加最后更新的数据
-    			this.count = 2;
-    		}
-    		this.isInit = 'no'; 
-			//////////////// */
-   			if(!CurrentDataTime){
-   				CurrentDataTime = time;
-   				CurrentKLObj.addCandleToKL(item);//收到订阅数据后, 先添加第一条数据
-   				//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;//临时修改最后一条数据
-   				drawKL();//重新画图
-   				CurrentKLObj.updateKLOnCandle(item);
-   			}else{
-   				if(CurrentDataTime == time){
-   					//修改一条数据
-   					//console.log("修改一条数据");
-   					this.lastUpdateDt = dt;
-   					//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;//临时修改最后一条数据
-   					//CurrentKLObj.addCandleToKL(item);
-   					//drawKL();
-   					CurrentKLObj.updateKLOnCandle(item);
-   					
-   				}else{
-   					//添加一条数据
-   					var lastItem = KLDataDecimalHandler(this.lastUpdateDt,1);
-   					CurrentKLObj.updateGlobalKLLastDt(lastItem);//更新最后一条数据
-   					drawKL();
-   					//CurrentKLObj.addCandleToKL(lastItem); //添加最后更新的数据 
-   					CurrentKLObj.addCandleToKL(item);//添加新数据
-   					drawKL();
-   					CurrentDataTime = time;
-   				}
-   			}
-    	}
-    </script>
     <script>//<![CDATA[
     $(document).ready(function() {
+    	window.MQStompClient = null;
+		window.MQStompSub = null;
+    	//设置其他分段按钮的样式
+		function setKLTimeSharingInterStyle(list){
+	    	var i=0,length=list.length;
+			for(;i<length;i++){
+				var li = list[i];
+				if($(li).attr('isMouseDown') == 'true'){
+					$(li).attr('isMouseDown','false');
+					$(li).css('backgroundColor','transparent');
+					$(li).css('color','#8494A4');
+				}
+			}
+		}
+    	
+    	var KLTimeShareDiv = $('div.KL_TimeShareChart_Interval');
+		var KLTimeShareList = KLTimeShareDiv.find("li");
+		var i=0,length=KLTimeShareList.length;
+		//console.log(list);
+		for(;i<length;i++){
+			var li = KLTimeShareList[i];
+			var value = $(li).val();
+			$(li).attr('isMouseDown','false');
+			//console.log(li);
+			$('li').mousedown(function(e){
+				if($(this).attr('isMouseDown') == 'false'){
+					setKLTimeSharingInterStyle(KLTimeShareList);//设置其他分时样式
+					$(this).attr('isMouseDown','true');
+					$(this).css('backgroundColor','#8494A4');
+					$(this).css('color','black');
+					//取消原来的订阅 ,开始新的订阅
+					if(MQStompSub) MQStompSub.unsubscribe();
+					var val = $(this).val()
+					loadHisKLineData(val);//加载数据  
+					//drawKL();//画图
+				}
+			});
+		}
+		$(KLTimeShareList[0]).trigger('mousedown');
       if(window.WebSocket) {
-    		window.MQStompClient = null;
-    		window.MQStompSub = null;
         var destination;
         $('#connect_form').submit(function() {
           var url = $("#connect_url").val();
@@ -303,7 +158,6 @@
           destination = $("#destination").val();
 
           MQStompClient = Stomp.client(url);
-
           // this allows to display debug logs directly on the web page
           MQStompClient.debug = function(str) {
             //$("#debug").append(document.createTextNode(str + "\n"));
@@ -314,13 +168,13 @@
         	  MQStompClient.debug("connected to Stomp");
             $('#connect').fadeOut({ duration: 'fast' });
             $('#connected').fadeIn();
-            MQStompSub = MQStompClient.subscribe(destination, function(message) {
+            //MQStompSub = MQStompClient.subscribe(destination, function(message) {
               //var p = document.createElement("p");
               //p.appendChild(document.createTextNode(message.body));
               //$("#messages").append(p);
-              console.log("pong");
+              //console.log("pong");
               //添加数据
-              var tempData = message.body;
+              ///var tempData = message.body;
               /*  var tempData = {"close":"2990.8","closechg":"0.4","open":"2985.8","openchg":"0.4",
             		   "high":"2992.8","highchg":1,"low":"2980.0","lowchg":-1,
             		   "datetime":1455845460000,"volume":47,"volumechg":14132,
@@ -336,12 +190,15 @@
 		          console.log(tempData);
             	  KLSubscribeHandler(tempData);
               },1000); */
-              //KLSubscribeHandler(JSON.parse(tempData));
+             // KLSubscribeHandler(JSON.parse(tempData));
               //addKLSubscribeData(tempData);
             	//刷新K线图
               //drawKL();
-            },{id:"my-first-subscribe"});
+            //},{id:"my-first-subscribe"});
           });
+          ////var li = $('div.KL_TimeShareChart_Interval li[value=60]');
+          //console.log();
+          //$(li).trigger('mousedown');
           return false;
         });
   
