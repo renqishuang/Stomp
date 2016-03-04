@@ -1037,8 +1037,8 @@ function drawKL(ranges) {
 	        priceSameColor:"gray",//高开低收价格一样时的颜色
 	        priceSameHeight:1,//高开低收价格一样时的高度
 	        //主图区域的边距
-	        chartMargin:{left:45,top:5,right:20.5},
-	        region: { x: 45, y: 5, width: initialWidth - 45.5 - 20.5, height: 210 },
+	        chartMargin:{left:45,top:5,right:0},
+	        region: { x: 45, y: 5, width: initialWidth - 45, height: 210 },
 	        barWidth: 10, spaceWidth: 4, horizontalLineCount: 10, verticalLineCount: 7, lineStyle: 'solid', borderColor: 'gray', splitLineColor: '#252A31', lineWidth: 1,
 	        MAs: [
 	            { color: '#0063CD', daysCount: 5 },

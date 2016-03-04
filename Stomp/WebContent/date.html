@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>日期和毫秒数之间的转化</title>
+<script src="js/jquery.1.11.3.min.js"></script>
+<script>
+	$(function(){
+		var bt1 = $('#bt1');
+		bt1.click(function(){
+			var ms = $('input').val();
+			if(!ms){
+				alert("请输入毫秒数");
+				return;
+			}
+			var date = new Date(parseInt(ms));
+			var str = date.getFullYear()+"年"+date.getMonth()+"月"+date.getDate()+'日';
+			var p = $('<p>');
+			p.html(str);
+			bt1.after(p);
+			console.log(str);	
+			//console.log(date.getMonth());
+			//console.log(date.getDate());
+		});
+		var bt2 = $('#bt2');
+		bt2.click(function(){
+			var p = $('<p>');
+			var date = new Date();
+			var time = date.getTime();
+			p.html("毫秒数为: "+time);
+			bt2.after(p);
+		});
+		var bt3 = $('#bt3');
+		bt3.click(function(){
+			var p = $('p');
+			var inputDate = $('input[type=date]').val();
+			var dateArr = inputDate.split('-'); 
+			var year = parseInt(dateArr[0]);
+			var month = parseInt(dateArr[1]);
+			var day = parseInt(dateArr[2]);
+			var date = new Date(year,month,day);
+			var time = date.getTime();
+			p.html("毫秒数为: "+time);
+			bt3.after(p);
+		});
+	});
+</script>
+</head>
+<body>
+<input type="text" placeholder="请输入毫秒数">
+<button id="bt1">转换为日期</button><br/>
+<button id="bt2">当前日期转化为毫秒数为</button><br/>
+<input type='date'>
+<button id="bt3">获取指定日期的毫秒数</button>
+<p></p>
+</body>
+</html>

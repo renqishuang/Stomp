@@ -21,10 +21,10 @@ Tip.prototype = {
         var x = position.x || relativePoint.x;
         var tipX = 0;
         var tipY = 0;
+        //console.log(this.canvasRange);
         //console.log("otip is exist");
         //console.log(otip);
         //console.log("offset->"+offset);
-        var currentOffsetDirect = "left";
         //console.log("position.x-->"+position.x)
         if (position.x) tipX = position.x;
         else {
@@ -32,13 +32,25 @@ Tip.prototype = {
             	//console.log("otip.style.left->"+otip.style.left);
                 var currentX = 0;
                 //console.log("currentX->"+currentX+"--x:"+x);
-                var rightTopPointX = x + offset + canvasPosition.x;
-                if(rightTopPointX > this._getRightLimit()){
-                	currentX = x - offset - size.width;
-                    currentOffsetDirect = "right";
+                if(otip.currentOffsetDirect === 'right'){
+                	var leftTopPointX = x + offset;
+                	if(leftTopPointX > this._getRightLimit()-size.width){
+                    	currentX = x - offset - size.width - offset;
+                    	otip.currentOffsetDirect = "left";
+                    }else{
+                    	currentX = leftTopPointX;
+                    }
                 }else{
-                	currentX = x + offset;
+                	var leftTopPointX= x-offset-size.width;
+                	//console.log(leftTopPointX);
+                	if(leftTopPointX < this._getLeftLimit()){
+                		currentX = x + offset;
+                		otip.currentOffsetDirect = "right";
+                	}else{
+                		currentX = leftTopPointX-offset;
+                	}
                 }
+                
                 tipX = currentX
                /* var currentX = parseInt(otip.style.left) + offset - canvasPosition.x;
                 if (currentX > x) {//如果Tip在交叉线的右侧   x是交叉点的X坐标
@@ -101,6 +113,8 @@ Tip.prototype = {
         if (!otip) {
             otip = document.createElement('DIV');
             otip.id = this.getElementId();
+            otip.currentOffsetDirect= 'right';
+            //otip.setAttribute('currentOffsetDirect', "right");
             var opacity = this.opacity || 100;
             //cssText是直接设置属性值 如: style.cssText = 'color:red;';
             otip.style.cssText = '-moz-opacity:.' + opacity + '; filter:alpha(opacity='
@@ -127,7 +141,7 @@ Tip.prototype = {
         otip.currentTipY = tipY;
         otip.innerHTML = this.innerHTML;
         otip.isShow = true;
-        otip.currentOffsetDirect= currentOffsetDirect;
+        //otip.currentOffsetDirect= currentOffsetDirect;
     },
     hide: function () {
         var o = $id(this.getElementId());

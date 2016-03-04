@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="js/jquery.1.11.3.min.js"></script>
+<script>
+$(function(){
+	//var url = 'http://192.168.1.227:8888/axis2/services/SimTrade?wsdl/getHisKlines()';//接口地址
+	var url = "http://192.168.1.231:8080/axis2/services/StrategyEngine?wsdl"; 
+	var method = 'getHisKlines';//方法
+	//var param = '{\"oper\":\"roomStat\",\"rid\":1303}';//参数，json形式
+	var date = new Date();
+	var time = date.getTime();
+	var data = {
+		instrumentid:"IF1603",
+		startdate:1454256000000,  //2016年1月1日的数据
+		enddate:1456988775044,     
+		interval:600
+	};
+	/* var data = {
+		   "loadtype":-1,
+		   "instrumentid":"IF1602",
+		   "startdate":time,
+		   "amount":100,
+		   "type":2,
+		   "action":1,
+		   "interval":600,
+		    "uid":348517,
+		    "rid":17384,
+		    "appid":1, 
+		    "aid":18349,
+		    "rmc":87717,
+		    "lc":"039e9a9bf432a1325663fdfd74ed540f"
+	   }; */
+	var param = JSON.stringify(data);
+	//var wsUrl = 'http://192.168.1.189';
+	var wsUrl = 'http://jyw.zlw.com';
+	$.post(
+		wsUrl+'/call_ws/output',
+		{
+			ws_url:url,
+			ws_func:method,
+			ws_param:param
+		},
+		function(data){
+			var state = data.rc;
+			console.log(data);
+			if(state === 0){
+				var obj = data.res;
+				console.log(obj);
+			}else{
+				alert("请求服务器出错");	
+			}
+		},
+	'json');
+});
+</script>
+</head>
+<body>
+
+</body>
+</html>

@@ -46,25 +46,11 @@
     					this.style.color = "black";
     					var value = this.getAttribute('value');
     					loadHisKLineData(value);//加载数据    				    					
-    					drawKL();//画图
+    					//drawKL();//画图
+    					//如果合约没变, 不用取消订阅
     					//取消原来的订阅 ,开始新的订阅
     					if(MQStompSub) MQStompSub.unsubscribe();
-    					var destination = "/topic/";
-    					if(value == "interval_1"){
-    						destination += "IF1603_60";
-    					}else if(value == "interval_3"){
-    						destination += "IF1603_180";
-    					}else if(value == "interval_5"){
-    						destination += "IF1603_300";
-    					}else if(value == "interval_10"){
-    						destination += "IF1603_600";
-    					}else if(value == "interval_15"){
-    						destination += "IF1603_900";
-    					}else if(value == "interval_30"){
-    						destination += "IF1603_1800";
-    					}else if(value == "interval_daily"){
-    						destination += "IF1603_86400";
-    					}
+    					var destination = "/topic/IF1603"; 
     					if(!MQStompClient) return;
     					MQStompSub = MQStompClient.subscribe(destination,function(message){
     						var tempData = message.body;
@@ -75,13 +61,13 @@
     				}
     			});
     			//console.log(li.getAttribute('value'));
-    			if(li.getAttribute('value') == "interval_5"){
+    			if(li.getAttribute('value') == "600"){
     				li.isMouseDown = true;
 					li.style.backgroundColor="#8494A4";
 					li.style.color = "black";
     				//默认触发10分钟K线图
-    	    		loadHisKLineData("interval_5");
-    	    		drawKL();//画图
+    	    		loadHisKLineData("600");
+    	    		//drawKL();//画图
     			}
     		}
     	}
@@ -147,13 +133,13 @@
         <div id="connected" style="display:none">
 	        <div class="KL_TimeShareChart_Interval">
 				<ul>
-					<li value="interval_1">1</li>
-					<li value="interval_3">3</li>
-					<li value="interval_5">5</li>
-					<li value="interval_10">10</li>
-					<li value="interval_15">15</li>
-					<li value="interval_30">30</li>
-					<li value="interval_daily">日</li>
+					<li value="60">1</li>
+					<li value="180">3</li>
+					<li value="300">5</li>
+					<li value="600">10</li>
+					<li value="900">15</li>
+					<li value="1800">30</li>
+					<li value="86400">日</li>
 				</ul>
 			</div>
           <canvas id="canvasKL" width="1002" height="250" style="z-index: 2; border: 1px solid #69c">
@@ -179,6 +165,8 @@
         </div> -->
       </div>
     </div>
+    <script src='js/jquery-1.7.2.min.js'></script>
+    <script src="js/stomp.js"></script>
     <script src="k-data.js"></script>
     <script src="libs/loading.js" ></script>
     <script src="libs/util.js" ></script>
@@ -196,8 +184,7 @@
     <script src="libs/klineStore.js"></script>
     <script  src="libs/k_line.js"></script>
     <!-- Scripts placed at the end of the document so the pages load faster -->
-    <script src='js/jquery-1.7.2.min.js'></script>
-    <script src="js/stomp.js"></script>
+    
     <script>
     	//根据类型转换数据格式
     	function KLDataDecimalHandler(dt,type){
@@ -349,7 +336,7 @@
 		          console.log(tempData);
             	  KLSubscribeHandler(tempData);
               },1000); */
-              KLSubscribeHandler(JSON.parse(tempData));
+              //KLSubscribeHandler(JSON.parse(tempData));
               //addKLSubscribeData(tempData);
             	//刷新K线图
               //drawKL();
