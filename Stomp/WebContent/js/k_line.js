@@ -992,7 +992,7 @@ function initAddData(){
 	}
 }
 
-var initialWidth = Math.min(screen.width,1024)-40;
+var initialWidth = Math.min(screen.width,1002);
 //画K线接口
 function drawKL(ranges) {
 	if(!MQMessageMonitor && !LoadHisKLData) return;

@@ -87,6 +87,7 @@ function KLSubscribeHandler(dt){
 			drawKL();//重新画图
 			CurrentKLObj.updateKLOnCandle(item);
 		}else{
+			//return;
 			if(CurrentDataTime == time){
 				//修改一条数据
 				//console.log("修改一条数据");
@@ -181,6 +182,7 @@ function getHisKLines(interval){
 		},
 		error:function(xhr,state){
 			console.log("get data error");
+			alert("请求服务器出错");
 		},
 		complete:function(xhr,state){
 			console.log('get data complete');

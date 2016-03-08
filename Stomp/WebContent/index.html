@@ -11,87 +11,28 @@
     <link href="css/bootstrap.min.responsive.css" rel="stylesheet">
     <link href="css/kline_style.css" rel="stylesheet">
     <style type="text/css">
-      body { padding-top: 40px; }
+      body { padding-top:1px; }
     </style>
   </head>
   <body>
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span6">
-          <div id="connect">
-            <div class="page-header">
-              <h2>Server Login</h2>
-            </div>
-            <form class="form-horizontal" id='connect_form'>
-              <fieldset>
-                <div class="control-group">
-                  <label>WebSocket URL</label>
-                  <div class="controls">
-                  <!--  ws://192.168.1.188:61610
-                  		ws://localhost:61614
-                   -->
-                    <input name=url id='connect_url' value='ws://192.168.1.188:61610' type="text">
-                  </div>
-                </div>
-                <div class="control-group">
-                  <label>User</label>
-                  <div class="controls">
-                    <input id='connect_login' placeholder="User Login" value="admin" type="text">
-                  </div>
-                </div>
-                <div class="control-group">
-                  <label>Password</label>
-                  <div class="controls">
-                    <input id='connect_passcode' placeholder="User Password" value="password" type="password">
-                  </div>
-                </div>
-                <div class="control-group">
-                  <label>Destination</label>
-                  <div class="controls">
-                  <!-- /topic/IF1603_60 -->
-                    <input id='destination' placeholder="Destination" value="/topic/IF1603_60" type="text">
-                  </div>
-                </div>
-                <div class="form-actions">
-                  <button id='connect_submit' type="submit" class="btn btn-large btn-primary">Connect</button>
-                </div>
-              </fieldset>
-            </form>
-          </div>
-        <div id="connected" style="display:none">
-	        <div class="KL_TimeShareChart_Interval">
-				<ul>
-					<li value="60">1</li>
-					<li value="180">3</li>
-					<li value="300">5</li>
-					<li value="600">10</li>
-					<li value="900">15</li>
-					<li value="1800">30</li>
-					<li value="86400">日</li>
-				</ul>
-			</div>
-          <canvas id="canvasKL" width="1002" height="250" style="z-index: 2; border: 1px solid #69c">
-        		<p>hey,您的浏览器不支持html5，换个浏览器吧，比如google chrome，firefox</p>
-    		</canvas>
-            <div class="page-header">
-              <h2>MQ返回数据</h2>
-            </div>
-            <div id="messages">
-            </div>
-            <form class="well form-search" id='send_form'>
-              <button class="btn" type="button" id='disconnect' style="float:right">Disconnect</button>
-              <input class="input-medium" id='send_form_input' placeholder="Type your message here" class="span6"/>
-              <button class="btn" type="submit">Send</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div style="width: 1002px;border: 1px solid #69c;" class="KL_TimeShareChart_Interval">
+		<ul>
+			<li value="60">1</li>
+			<li value="180">3</li>
+			<li value="300">5</li>
+			<li value="600">10</li>
+			<li value="900">15</li>
+			<li value="1800">30</li>
+			<li value="86400">日</li>
+		</ul>
+	</div>
+    <canvas id="canvasKL" width="1002" height="250" style="z-index: 2; border: 1px solid #69c">
+   		<p>hey,您的浏览器不支持html5，换个浏览器吧，比如google chrome，firefox</p>
+	</canvas>
     <script src='js/jquery.1.11.3.min.js'></script>
     <script src="js/stomp.js"></script>
     <script src='js/constants.js'></script>
     <script src='js/commonTool.js'></script>
-    <script src="k-data.js"></script>
     <script src="libs/loading.js" ></script>
     <script src="libs/util.js" ></script>
     <script src="libs/absPainter.js" ></script>
@@ -114,6 +55,7 @@
 		window.MQStompSub = null;
 		window.MQMessageMonitor = false;
 		window.LoadHisKLData = false;
+		window.CurrentDataTime = null;
     	//设置其他分段按钮的样式
 		function setKLTimeSharingInterStyle(list){
 	    	var i=0,length=list.length;
@@ -130,14 +72,14 @@
     	var KLTimeShareDiv = $('div.KL_TimeShareChart_Interval');
 		var KLTimeShareList = KLTimeShareDiv.find("li");
 		var i=0,length=KLTimeShareList.length;
-		//console.log(list);
+		//设置分时段按钮的点击事件
 		for(;i<length;i++){
 			var li = KLTimeShareList[i];
 			var value = $(li).val();
 			$(li).attr('isMouseDown','false');
-			//console.log(li);
 			$('li').mousedown(function(e){
 				if($(this).attr('isMouseDown') == 'false'){
+					CurrentDataTime = null;
 					LoadHisKLData = false;
 					MQMessageMonitor = false;
 					setKLTimeSharingInterStyle(KLTimeShareList);//设置其他分时样式
@@ -152,77 +94,18 @@
 				}
 			});
 		}
-		//$(KLTimeShareList[0]).trigger('mousedown');
       if(window.WebSocket) {
-        var destination;
-        $('#connect_form').submit(function() {
-          var url = $("#connect_url").val();
-          var login = $("#connect_login").val();
-          var passcode = $("#connect_passcode").val();
-          destination = $("#destination").val();
-
+          var destination;
+          //订阅数据WS接口地址
+          var url = 'ws://192.168.1.188:61610';
+          var login = '';
+          var passcode = '';
+          destination = '/topic/IF1603_60';
           MQStompClient = Stomp.client(url);
-          // this allows to display debug logs directly on the web page
-          MQStompClient.debug = function(str) {
-            //$("#debug").append(document.createTextNode(str + "\n"));
-          };
-          
-          // the client is notified when it is connected to the server.
-          MQStompClient.connect("","", function(frame) {
-        	  MQStompClient.debug("connected to Stomp");
-            $('#connect').fadeOut({ duration: 'fast' });
-            $('#connected').fadeIn();
-            //MQStompSub = MQStompClient.subscribe(destination, function(message) {
-              //var p = document.createElement("p");
-              //p.appendChild(document.createTextNode(message.body));
-              //$("#messages").append(p);
-              //console.log("pong");
-              //添加数据
-              ///var tempData = message.body;
-              /*  var tempData = {"close":"2990.8","closechg":"0.4","open":"2985.8","openchg":"0.4",
-            		   "high":"2992.8","highchg":1,"low":"2980.0","lowchg":-1,
-            		   "datetime":1455845460000,"volume":47,"volumechg":14132,
-            		   "openinterest":29128,"openinterestchg":-15,"pricechg":"0.4",
-            		   "pricechgrate":"0.01%","datatype":"1","timeremain":51000,
-            		   "tradingday":1455811200000,"iid":"IF1603","interval":60}; */
-              
-              //KLSubscribeHandler(JSON.parse(tempData));
-              /* setInterval(function(){
-            	  var rd = parseInt(Math.random()*20);
-		       	  console.log(rd);
-		          var tempData = GlobalKLData.ks[rd];
-		          console.log(tempData);
-            	  KLSubscribeHandler(tempData);
-              },1000); */
-             // KLSubscribeHandler(JSON.parse(tempData));
-              //addKLSubscribeData(tempData);
-            	//刷新K线图
-              //drawKL();
-            //},{id:"my-first-subscribe"});
-          });
-          ////var li = $('div.KL_TimeShareChart_Interval li[value=60]');
-          //console.log();
-          //$(li).trigger('mousedown');
-          return false;
-        });
-  
-        $('#disconnect').click(function() {
-        	MQStompClient.disconnect(function() {
-            $('#connected').fadeOut({ duration: 'fast' });
-            $('#connect').fadeIn();
-            $("#messages").html("")
-          });
-          return false;
-        });
-   
-        $('#send_form').submit(function() {
-          var text = $('#send_form_input').val();
-          if (text) {
-        	  MQStompClient.send(destination, {}, text);
-            $('#send_form_input').val("");
-          }
-          return false;
-        });
+		  MQStompClient.connect("","", function(frame) {
+			  //默认触发1分钟K线图
+			  $(KLTimeShareList[0]).trigger('mousedown');
+          }); 
       } else {
         $("#connect").html("\
             <h1>Get a new Web Browser!</h1>\
