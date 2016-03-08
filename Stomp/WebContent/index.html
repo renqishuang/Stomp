@@ -112,6 +112,8 @@
     $(document).ready(function() {
     	window.MQStompClient = null;
 		window.MQStompSub = null;
+		window.MQMessageMonitor = false;
+		window.LoadHisKLData = false;
     	//设置其他分段按钮的样式
 		function setKLTimeSharingInterStyle(list){
 	    	var i=0,length=list.length;
@@ -136,6 +138,8 @@
 			//console.log(li);
 			$('li').mousedown(function(e){
 				if($(this).attr('isMouseDown') == 'false'){
+					LoadHisKLData = false;
+					MQMessageMonitor = false;
 					setKLTimeSharingInterStyle(KLTimeShareList);//设置其他分时样式
 					$(this).attr('isMouseDown','true');
 					$(this).css('backgroundColor','#8494A4');
@@ -148,7 +152,7 @@
 				}
 			});
 		}
-		$(KLTimeShareList[0]).trigger('mousedown');
+		//$(KLTimeShareList[0]).trigger('mousedown');
       if(window.WebSocket) {
         var destination;
         $('#connect_form').submit(function() {

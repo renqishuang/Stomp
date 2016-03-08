@@ -57,6 +57,7 @@ kLine.prototype = {
     
     //添加一跟K线图
     addCandleToKL:function(item){
+    	if(!MQMessageMonitor && !LoadHisKLData) return;
     	console.log("添加新数据");
 		GlobalKLData.ks.push(item);
     },
@@ -195,6 +196,7 @@ kLine.prototype = {
     },
     //更新一跟K线图
     updateKLOnCandle:function(item,updateType){
+    	if(!MQMessageMonitor && !LoadHisKLData) return;
     	//如果更新的数据的最大值和最小值 与 当前Y轴最大值和最小值不匹配, 那么重新画图
     	this.updateGlobalKLLastDt(item);
     	if(item.high+this.priceGap > this.high || item.low-this.priceGap < this.low){
@@ -615,6 +617,8 @@ kLine.prototype = {
         var startIndex = this.dataRanges.start;
         var toIndex = this.dataRanges.to;
         var itemsCount = toIndex - startIndex + 1;
+        console.log("数据开始索引: "+startIndex);
+        console.log("数据借宿索引: "+toIndex);
         console.log("结算后的数据项个数:"+itemsCount);
         //this.needCalcSpaceAndBarWidth();//是否需要重新计算蜡烛和空隙的宽度
 		//过滤数据(获取显示到页面上的数据)
@@ -991,6 +995,7 @@ function initAddData(){
 var initialWidth = Math.min(screen.width,1024)-40;
 //画K线接口
 function drawKL(ranges) {
+	if(!MQMessageMonitor && !LoadHisKLData) return;
 	if(!KLPainter){
 	    var kOptions = {
 	        backgroundColor:'#fff',

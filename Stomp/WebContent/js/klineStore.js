@@ -136,6 +136,7 @@ function originalDataHandle(data){
 }
 //ajax请求获取历史数据
 function getHisKLines(interval){
+	GlobalKLData.ks.length = 0;
 	var method = 'getHisKlines';//方法
 	var instrumentId = "IF1603";
 	var data = {
@@ -162,12 +163,15 @@ function getHisKLines(interval){
 			console.log(data);
 			if(state === 0){
 				var obj = data.res.data;
+				LoadHisKLData = true;
 				originalDataHandle(obj);
 				drawKL();//画图
 				var destination = "/topic/IF1603_"+interval; 
 				if(!MQStompClient) return;
+				console.log("添加监听");
 				MQStompSub = MQStompClient.subscribe(destination,function(message){
 					var tempData = message.body;
+					MQMessageMonitor = true;
 					console.log("新pong");
 					KLSubscribeHandler(JSON.parse(tempData));
 				});
@@ -176,10 +180,10 @@ function getHisKLines(interval){
 			}
 		},
 		error:function(xhr,state){
-			
+			console.log("get data error");
 		},
 		complete:function(xhr,state){
-			
+			console.log('get data complete');
 		}
 	});
 }
