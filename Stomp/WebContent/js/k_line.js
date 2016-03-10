@@ -322,23 +322,28 @@ kLine.prototype = {
         var ctx = this.ctx;
         this.painting = true;
         var options = this.klOptions;
-        var clearPart = { width: canvas.width, height: options.priceLine.region.y - 3 };
-      	//在canvas内部清空出一个矩形, 用于K线(清空出的矩形背景颜色和canvas的一样)
-        ctx.clearRect(0, 0, clearPart.width, clearPart.height);
+        //var clearPart = { width: canvas.width, height: options.priceLine.region.y - 3 };
+        var region = options.region;
+        var clearPart = {width:region.width,height:region.height};
+      	//清空整个画布
+        ctx.clearRect(0, 0, clearPart.width+region.x, clearPart.height+40);
         ctx.save();//保存一次状态
         window.riseColor = options.riseColor;
         window.fallColor = options.fallColor;
         window.normalColor = options.normalColor;
+        console.log("K线区域宽高: "+clearPart.width+"--"+clearPart.height);
         if (options.backgroundColor && !this.drawnBackground) {
             ctx.beginPath();//开始一条路径或重置当前路径
             //填充颜色
             ctx.fillStyle = options.backgroundColor;
+            //ctx.fillStyle = 'red';
             //绘制矩形
-            ctx.rect(0, 0, clearPart.width, clearPart.height);
+            ctx.rect(0, 0, clearPart.width+region.x, clearPart.height+40);
             ctx.fill();//填充颜色
             //ctx.closePath();
             this.drawnBackground = true;//已经绘制过背景
         }
+        //return;
         //重置左上角的坐标
         ctx.translate(options.region.x, options.region.y);
         ctx.strokeStyle = options.borderColor;//边框样式
@@ -605,6 +610,7 @@ kLine.prototype = {
     
     //画K线及移动平均线
     paintItems: function () {
+    	//return;
     	var me = this;
     	var painter = this.painter;
         var ctx = painter.ctx;
@@ -992,13 +998,20 @@ function initAddData(){
 	}
 }
 
-var initialWidth = Math.min(screen.width,1002);
+//var initialWidth = screen.width;
 //画K线接口
-function drawKL(ranges) {
+function drawKL(height) {
+	//return;
 	if(!MQMessageMonitor && !LoadHisKLData) return;
+	var canvasObj = $('#canvasKL');
+	var ht = height ? height : canvasObj[0].clientHeight-40;
+	//console.log(ht);
 	if(!KLPainter){
+		//var initialWidth = Math.min(screen.width,500);
+		var initialWidth = canvasObj[0].clientWidth;
+		//console.log("初始化宽度-->"+initialWidth);
 	    var kOptions = {
-	        backgroundColor:'#fff',
+	        backgroundColor:'#191F26',
 	        klbackgroundColor:"#191F26",
 	        riseColor: '#D72F32',
 	        fallColor: '#00A76A',
@@ -1010,7 +1023,7 @@ function drawKL(ranges) {
 	        priceSameHeight:1,//高开低收价格一样时的高度
 	        //主图区域的边距
 	        chartMargin:{left:45,top:5,right:0},
-	        region: { x: 45, y: 5, width: initialWidth - 45, height: 210 },
+	        region: { x: 45, y: 5, width: initialWidth - 45, height: ht},
 	        barWidth: 10, spaceWidth: 4, horizontalLineCount: 10, verticalLineCount: 7, lineStyle: 'solid', borderColor: 'gray', splitLineColor: '#252A31', lineWidth: 1,
 	        MAs: [
 	            { color: '#0063CD', daysCount: 5 },
@@ -1020,14 +1033,14 @@ function drawKL(ranges) {
 	            ],
 	        yAxis: {
 	            font: '11px Arial', // region: { },
-	            color: 'black',
+	            color: '#55616E',
 	            align: 'right',
 	            fontHeight: 8,
 	            textBaseline: 'top'
 	        },
 	        xAxis: {
 	            font: '11px Arial', // region: { },
-	            color: 'black',
+	            color: '#55616E',
 	            align: 'right',
 	            fontHeight: 8,
 	            textBaseline: 'top',
@@ -1079,5 +1092,8 @@ function drawKL(ranges) {
     //KLPainter.dataRanges = ranges;
    // KLPainter.dataRanges = null;
     //if(GlobalKLData.length == 0) return;
+	
+	//如果高度变化, 重画Y轴
+	if(height && KLPainter.klOptions) KLPainter.klOptions.region.height = height;
     KLPainter.paint();
 }

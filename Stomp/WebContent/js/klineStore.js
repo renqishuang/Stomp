@@ -153,7 +153,7 @@ function getHisKLines(interval){
 		dataType:"json",
 		//async:false,//同步请求
 		data:{
-			ws_url:HisKLineUrl,
+			ws_url:WSServerUrl,
 			ws_func:method,
 			ws_param:param
 		},
@@ -170,11 +170,18 @@ function getHisKLines(interval){
 				var destination = "/topic/IF1603_"+interval; 
 				if(!MQStompClient) return;
 				console.log("添加监听");
+				LoadHisLineFinish = true;  //标识历史数据加载完成
 				MQStompSub = MQStompClient.subscribe(destination,function(message){
+					//return;
+					//判断历史数据是否加载完成
+					if(!LoadTapeFinish || !LoadHisLineFinish)return;
 					var tempData = message.body;
 					MQMessageMonitor = true;
 					console.log("新pong");
-					KLSubscribeHandler(JSON.parse(tempData));
+					console.log(JSON.parse(tempData));
+					//return;
+					KLSubscribeHandler(JSON.parse(tempData));//实时K线变化
+					TapeViewerHandler(JSON.parse(tempData));//实时盘口变化
 				});
 			}else{
 				alert("请求服务器出错");	
@@ -185,7 +192,7 @@ function getHisKLines(interval){
 			alert("请求服务器出错");
 		},
 		complete:function(xhr,state){
-			console.log('get data complete');
+			//console.log('get data complete');
 		}
 	});
 }

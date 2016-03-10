@@ -6,6 +6,14 @@
 <script src="js/jquery.1.11.3.min.js"></script>
 <script>
 	$(function(){
+		var str='-0.2%';
+		
+		console.log(str.indexOf('-'));
+		console.log(parseInt('0.2%'));
+		var tempArray = [5,4,3,2,1];
+		for(var i=tempArray.length-1;i>=0;i--){
+			console.log(tempArray[i]);
+		}
 		var bt1 = $('#bt1');
 		bt1.click(function(){
 			var ms = $('input').val();
@@ -36,8 +44,8 @@
 			var inputDate = $('input[type=date]').val();
 			var dateArr = inputDate.split('-'); 
 			var year = parseInt(dateArr[0]);
-			var month = parseInt(dateArr[1]);
-			var day = parseInt(dateArr[2]);
+			var month = parseInt(dateArr[1])+1;
+			var day = parseInt(dateArr[2])+1;
 			var date = new Date(year,month,day);
 			var time = date.getTime();
 			p.html("毫秒数为: "+time);

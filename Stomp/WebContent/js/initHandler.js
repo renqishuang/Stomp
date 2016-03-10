@@ -4,6 +4,8 @@ $(document).ready(function() {
 	window.MQMessageMonitor = false;
 	window.LoadHisKLData = false;
 	window.CurrentDataTime = null;
+	window.LoadHisLineFinish = false;
+	window.LoadTapeFinish = false;
 	//设置其他分段按钮的样式
 	function setKLTimeSharingInterStyle(list){
     	var i=0,length=list.length;
@@ -16,7 +18,6 @@ $(document).ready(function() {
 			}
 		}
 	}
-	
 	var KLTimeShareDiv = $('div.KL_TimeShareChart_Interval');
 	var KLTimeShareList = KLTimeShareDiv.find("li");
 	var i=0,length=KLTimeShareList.length;
@@ -59,4 +60,6 @@ $(document).ready(function() {
         </p>\
     ");
   }
+  //获取盘口数据
+  getTapeData();
 });

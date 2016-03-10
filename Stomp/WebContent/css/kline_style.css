@@ -1,10 +1,13 @@
+body { 
+	padding-top:1px;
+	margin:0px;
+}
 .KL_TimeShareChart_Interval{
 	height:40px;
-	background-color:#191F26;
-	padding-top: 15px;
 }
 .KL_TimeShareChart_Interval ul{
 	list-style:none;
+	margin-top: 7px
 }
 .KL_TimeShareChart_Interval ul li{
 	background-color:transparent;
@@ -24,4 +27,203 @@
 }
 .KL_TimeShareChart_Interval ul li:last-child{
 	border:1px solid #8494A4;
+}
+.KL_Canvas{
+	z-index: 2;
+	/* border: 1px solid #69c; */
+}
+.KL_TapeViewer div[class^='Tape_Sub_Viewer']{
+	width:100%;
+}
+.Tape_Sub_Viewer_One{
+	height:75px;
+	border-bottom:1px solid #76797B;
+	background-color:#000000;
+	font-weight:bold;
+}
+.Tape_Sub_Viewer_Two, .Tape_Sub_Viewer_Three{
+	height:176px;
+	border-bottom:1px solid #76797B;
+	background-color:#222A33;
+}
+.Tape_Sub_Viewer_Two ul{
+	list-style: none;
+    margin-top: -12px;
+    margin-left: 10px;
+    font-weight: 500;
+    font-size: 12px;
+    padding-left:0px;
+}
+.Tape_Sub_Viewer_Two li{
+	color: #A6A7A9;
+	float: left;
+	width:50%;
+	height: 25px;
+    line-height: 25px;
+    position: relative;
+}
+.Tape_Sub_Viewer_Two span{
+	position: absolute;
+    right: 8px;
+    font-size: 13px;
+    font-weight:bold;
+}
+.Tape_Sub_Viewer_Two li[value=presettlement] span,
+.Tape_Sub_Viewer_Two li[value=preclose] span{
+	color:white;
+}
+.Tape_Sub_Viewer_Two li[value=upperlimit] span{
+	color:#E60302;
+}
+.Tape_Sub_Viewer_Two li[value=lowerlimit] span{
+	color:#06E65A;
+}
+.Tape_Sub_Viewer_Two li[value=volume] span,
+.Tape_Sub_Viewer_Two li[value=openinterest] span,
+.Tape_Sub_Viewer_Two li[value=openinterestchg] span{
+	color:#FFFF99;
+}
+
+.Tape_Sub_Viewer_Three ul{
+	list-style:none;
+	margin-left:10px;
+	margin-top:-16px;
+	padding-left:0px;
+	position:relative;
+	top:1px;
+}
+.Tape_Sub_Viewer_Three li{
+	height:170px;
+	float:left;
+	width:32px;
+	text-align:center;
+	font-size:12px;
+	color:white;
+}
+.Tape_Sub_Viewer_Three li div{
+	height:25px;
+	line-height:25px;
+}
+.Tape_Sub_Viewer_Three li:first-child{
+	height:170px;
+	float:left;
+	width:52px;
+	text-align:left;
+}
+.Tape_Sub_Viewer_Three li:nth-child(2){
+	height:170px;
+	float:left;
+	width:40px;
+}
+.Tape_Sub_Viewer_Three li div:first-child{
+	color: #A6A7A9;
+}
+.Tape_Sub_Viewer_Three li:first-child div{
+	color: #A6A7A9;
+}
+.Tape_Sub_Viewer_Three li:nth-child(3) div:not(:first-child){
+	color:#FFFF99;
+	font-weight:bold;
+}
+.Tape_Sub_Viewer_Four{
+	height:45px;
+	border-bottom:1px solid #76797B;
+	background-color:#222A33;
+}
+.Tape_Sub_Viewer_Four ul{
+	list-style:none;
+	margin-left:4px;
+	margin-top:-16px;
+	padding-left:0px;
+	position:relative;
+	top:6px;
+}
+.Tape_Sub_Viewer_Four li{
+	height:40px;
+	float:left;
+	width:36px;
+	font-size:12px;
+	color:white;
+	text-align:center;
+}
+
+.Tape_Sub_Viewer_Four li div{
+	height:24px;
+	line-height:24px;
+	text-align:center;
+}
+
+.Tape_Sub_Viewer_Four li:last-child{
+	width:48px;
+}
+.Tape_Sub_Viewer_Five{
+	height:59px;
+	background-color:#000000;
+}
+.Tape_Sub_Viewer_Five ul{
+	list-style:none;
+	margin-top:-16px;
+	padding-left:0px;
+	position:relative;
+	top:6px;
+}
+.Tape_Sub_Viewer_Five li{
+	float:left;
+	width:50%;
+	color:white;
+	text-align:center;
+}
+.Tape_Sub_Viewer_Five div{
+	line-height:22px;
+	height:28px;
+}
+.Sell_Tape_Sub_Viewer_One, .Buy_Tape_Sub_Viewer_One{
+	color:white;
+	position:relative;
+	top:15px;
+	left:10px;
+}
+.Sell_Tape_Sub_Viewer_One span,.Buy_Tape_Sub_Viewer_One span{
+	font-weight:bold;
+}
+.Sell_Tape_Sub_Viewer_One span:first-child{
+	color:#06E65A;
+	margin-left: 20px;
+}
+.Buy_Tape_Sub_Viewer_One span:first-child{
+	color:#E60302;
+	margin-left: 20px;
+}
+
+.Sell_Tape_Sub_Viewer_One span:last-child,.Buy_Tape_Sub_Viewer_One span:last-child{
+	position:absolute;
+	right:36px;
+	color:#FFFF99;
+}
+.Buy_Tape_Sub_Viewer_One{
+	top:25px;
+}
+.KL_FootDataDisplay{
+	clear:both;
+	height:60px;
+	background-color:#22282F;
+}
+.KL_FootDataDisplay ul{
+	list-style:none;
+	margin-top:-10px;
+	padding-left:0px;
+}
+.KL_FootDataDisplay li{
+	float:left;
+	width:131px;
+	color:#A6A7A9;
+	font-weight: bold;
+    text-align: center;
+    padding-top:10px;
+    border:1px solid #636D7E;
+    height:49px;
+}
+.KL_FootDataDisplay div:first-child{
+	height:25px;
+	line-height:25px;
 }

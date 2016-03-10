@@ -4,31 +4,234 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
     <title>K线图控制</title>
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap.min.responsive.css" rel="stylesheet">
     <link href="css/kline_style.css" rel="stylesheet">
-    <style type="text/css">
-      body { padding-top:1px; }
-    </style>
+    <script>
+	    function getKLDt(){
+			var type = 1;
+			var rd = parseInt(Math.random()*10);
+			var dt = [{"close":"2981.6","closechg":"-5.2","open":"2981.6","openchg":"-5.2","high":"2981.6","highchg":-1,"low":"2981.6","lowchg":-1,"datetime":1455845400000,"volume":-14278,"volumechg":-14393,"openinterest":29234,"openinterestchg":-41,"pricechg":"-5.2","pricechgrate":"-0.17%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
+			          {"close":"2975.2","closechg":"-6.6","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14273,"volumechg":-14388,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.6","pricechgrate":"-0.22%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
+			          {"close":"2975.4","closechg":"-6.4","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14271,"volumechg":-14386,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.4","pricechgrate":"-0.21%","datatype":"1","timeremain":58000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
+			          {"close":"2981.6","closechg":"-5.2","open":"2976.6","openchg":"-5.2","high":"2982.6","highchg":-1,"low":"2972.6","lowchg":-1,"datetime":1455845400000,"volume":-14278,"volumechg":-14393,"openinterest":29234,"openinterestchg":-41,"pricechg":"-5.2","pricechgrate":"-0.17%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
+			          {"close":"2975.2","closechg":"-6.6","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14273,"volumechg":-14388,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.6","pricechgrate":"-0.22%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
+			          {"close":"2975.4","closechg":"-6.4","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14271,"volumechg":-14386,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.4","pricechgrate":"-0.21%","datatype":"1","timeremain":58000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
+			          {"close":"2981.6","closechg":"-5.2","open":"2976.6","openchg":"-5.2","high":"2982.6","highchg":-1,"low":"2972.6","lowchg":-1,"datetime":1455845400000,"volume":-14278,"volumechg":-14393,"openinterest":29234,"openinterestchg":-41,"pricechg":"-5.2","pricechgrate":"-0.17%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
+			          {"close":"2975.2","closechg":"-6.6","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14273,"volumechg":-14388,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.6","pricechgrate":"-0.22%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
+			          {"close":"2975.4","closechg":"-6.4","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14271,"volumechg":-14386,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.4","pricechgrate":"-0.21%","datatype":"1","timeremain":58000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
+			          {"close":"2981.6","closechg":"-5.2","open":"2976.6","openchg":"-5.2","high":"2982.6","highchg":-1,"low":"2972.6","lowchg":-1,"datetime":1455845400000,"volume":-14278,"volumechg":-14393,"openinterest":29234,"openinterestchg":-41,"pricechg":"-5.2","pricechgrate":"-0.17%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
+			          {"close":"2975.2","closechg":"-6.6","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14273,"volumechg":-14388,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.6","pricechgrate":"-0.22%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
+			          {"close":"2975.4","closechg":"-6.4","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14271,"volumechg":-14386,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.4","pricechgrate":"-0.21%","datatype":"1","timeremain":58000,"tradingday":1455811200000,"iid":"IF1603","interval":60}];
+			var dt = dt[rd];
+			var time=dt.datetime;
+			var date = new Date(time);
+			var dateNumber = converDateStrByDate(date);
+			var open,high,low,close,volume,amount=2939,preClose=2985.8;
+			if(type == 0){//整数
+				open  = parseInt(dt.open);
+	    		high = parseInt(dt.high);
+	    		low = parseInt(dt.low);
+	    		close = parseInt(dt.close);
+	    		volume = parseInt(dt.volume);
+			}else if(type == 1){//小数点后一位
+				open  = parseFloat(dt.open);
+	    		high = parseFloat(dt.high);
+	    		low = parseFloat(dt.low);
+	    		close = parseFloat(dt.close);
+	    		volume = parseFloat(dt.volume);
+			}
+			var item = {
+				quoteTime:dateNumber,
+				open:open,
+				high:high,
+				low:low,
+				close:close,
+				volume:volume,
+				amount:amount,
+				preClose:preClose
+			};
+			return item;
+		}
+    	function testAnimate(){
+    		console.log("dd");
+    		$('#KL_OrderManager').hide();
+    		$('#canvasKL').attr('height',480);
+    		drawKL(480);
+    	}
+    	//增加一条K线
+    	function addKL(){
+    		CurrentKLObj.addCandleToKL(getKLDt());//添加一个K线
+    		drawKL();
+    	}
+    </script>
   </head>
   <body>
-    <div style="width: 1002px;border: 1px solid #69c;" class="KL_TimeShareChart_Interval">
-		<ul>
-			<li value="60">1</li>
-			<li value="180">3</li>
-			<li value="300">5</li>
-			<li value="600">10</li>
-			<li value="900">15</li>
-			<li value="1800">30</li>
-			<li value="86400">日</li>
-		</ul>
+     <div style='width:1200px;margin:0 auto;'>
+     	<button type='button' onclick="addKL();">添加一条K线</button>
+     	<!--合约选择区域  height:90px;--> 
+     	<div style='height:0px;background-color:#D0D0D0;'></div>
+     	<!--K线主区域   #191F26-->
+		<section style='float:left;width:1000px;height:535px;background-color:#191F26;'>
+			<div class="KL_TimeShareChart_Interval">
+				<ul>
+					<li value="60">1</li>
+					<li value="180">3</li>
+					<li value="300">5</li>
+					<li value="600">10</li>
+					<li value="900">15</li>
+					<li value="1800">30</li>
+					<li value="86400">日</li>
+				</ul>
+			</div>
+			<canvas class='KL_Canvas' width='1000' height="305" id="canvasKL">
+	   			<p>hey,您的浏览器不支持html5，换个浏览器吧，比如google chrome，firefox</p>
+			</canvas>
+			<div id='KL_OrderManager' style='height:170px;background-color:gray;'>
+				<button type='button' onclick="testAnimate()">下单器</button>
+			</div>
+		</section>
+		<!--K线侧区域  -->
+		<aside class='KL_TapeViewer' style='float:left;width:200px;height:535px;background-color:#76797B;'>
+			<div class='Tape_Sub_Viewer_One'>
+				<div class='Sell_Tape_Sub_Viewer_One'>卖出<span>--</span><span>--</span></div>
+				<div class='Buy_Tape_Sub_Viewer_One'>买入<span>--</span><span>--</span></div>
+			</div>
+			<div class='Tape_Sub_Viewer_Two'>
+				<ul>
+					<li value='lastprice'>最新<span>--</span></li>
+					<li value='presettlement'>昨结<span>--</span></li>
+					<li value='daychange'>涨跌<span>--</span></li>
+					<li value='daychangerate'>幅度<span>--</span></li>
+					<li value='volume'>成交<span>--</span></li>
+					<li value='dayopen'>开盘<span>--</span></li>
+					<li value='openinterest'>持仓<span>--</span></li>
+					<li value='highest'>最高<span>--</span></li>
+					<li value='openinterestchg'>日增<span>--</span></li>
+					<li value='lowest'>最低<span>--</span></li>
+					<li value='upperlimit'>涨停<span>--</span></li>
+					<li value='averageprice'>均价<span>--</span></li>
+					<li value='lowerlimit'>跌停<span>--</span></li>
+					<li value='preclose'>昨收<span>--</span></li>
+				</ul>
+			</div>
+			<div class='Tape_Sub_Viewer_Three'>
+				<ul>
+					<li>
+						<div>时间</div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</li>
+					<li><div>价位</div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</li>
+					<li><div>现手</div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</li>
+					<li><div>增仓</div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</li>
+					<li><div>开平</div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</li>
+				</ul>
+			</div>
+			<div class='Tape_Sub_Viewer_Four'>
+				<ul>
+					<li>多开
+						<div>0次</div>
+					</li>
+					<li>空开
+						<div>0次</div>
+					</li>
+					<li>盈利
+						<div>0次</div>
+					</li>
+					<li>亏损
+						<div>0次</div>
+					</li>
+					<li>正确率
+						<div>0%</div>
+					</li>
+				</ul>
+			</div>
+			<div class='Tape_Sub_Viewer_Five'>
+				<ul>
+					<li>
+						<div>平仓盈亏</div>
+						<div>0<span>元</span></div>
+					</li>
+					<li>
+						<div>浮动盈亏</div>
+						<div>0<span>元</span></div>
+					</li>
+				</ul>
+			</div>
+		</aside>
+		<!--底部区域  -->
+		<div class='KL_FootDataDisplay'>
+			<ul>
+				<li>
+					<div>静态权益</div>
+					<div>763814.25</div>
+				</li>
+				<li>
+					<div>动态权益</div>
+					<div>763814.25</div>
+				</li>
+				<li>
+					<div>盯市持仓盈亏</div>
+					<div>0</div>
+				</li>
+				<li>
+					<div>盯市平仓盈亏</div>
+					<div>0</div>
+				</li>
+				<li>
+					<div>手续费</div>
+					<div>0.00</div>
+				</li>
+				<li>
+					<div>占用保证金</div>
+					<div>0.00</div>
+				</li>
+				<li>
+					<div>下单冻结</div>
+					<div>0</div>
+				</li>
+				<li>
+					<div>可用资金</div>
+					<div>763814.25</div>
+				</li>
+				<li>
+					<div>风险度</div>
+					<div>0%</div>
+				</li>
+			</ul>
+		</div>
 	</div>
-    <canvas id="canvasKL" width="1002" height="250" style="z-index: 2; border: 1px solid #69c">
-   		<p>hey,您的浏览器不支持html5，换个浏览器吧，比如google chrome，firefox</p>
-	</canvas>
     <script src='js/jquery.1.11.3.min.js'></script>
     <script src="js/stomp.js"></script>
     <script src='js/constants.js'></script>
@@ -45,7 +248,7 @@
     <script src="libs/axis-y.js"  ></script>
     <script src="libs/chartEventHelper.js?abc"  ></script>
     <script src="libs/controller.js" ></script>
-    <script src="js/testInitData.js"></script>
+    <script src='js/tapeManage.js'></script>
     <script src="js/klineStore.js"></script>
     <script src="js/k_line.js"></script>
     <script src='js/initHandler.js'></script>
