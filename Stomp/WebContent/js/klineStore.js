@@ -177,11 +177,21 @@ function getHisKLines(interval){
 					if(!LoadTapeFinish || !LoadHisLineFinish)return;
 					var tempData = message.body;
 					MQMessageMonitor = true;
-					console.log("新pong");
-					console.log(JSON.parse(tempData));
+					//console.log("新pong");
+					//console.log('涨跌: -->'+JSON.parse(tempData).pricechg);
+					//console.log('幅度:-->'+JSON.parse(tempData).pricechgrate);
+					//console.log(JSON.parse(tempData));
 					//return;
 					KLSubscribeHandler(JSON.parse(tempData));//实时K线变化
-					TapeViewerHandler(JSON.parse(tempData));//实时盘口变化
+				});
+				//监听盘口数据
+				var MQTapeSub = MQStompClient.subscribe('/topic/IF1603_TAPE',function(message){
+					//console.log("盘口数据");
+					var tempData = message.body;
+					//console.log(JSON.parse(tempData));
+					TapeOneViewerHandler(JSON.parse(tempData));
+					TapeTwoViewerHandler(JSON.parse(tempData));
+					TapeThreeViewerHandler(JSON.parse(tempData));
 				});
 			}else{
 				alert("请求服务器出错");	

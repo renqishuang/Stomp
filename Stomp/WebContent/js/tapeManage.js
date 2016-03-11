@@ -116,59 +116,110 @@ function setTwoViewerData(data){
 	}
 }
 //设置盘口界面第3个区域
-function setThreeViewerData(tapeData){
-	TapeThreeViewerStore.length = 0;
+function setThreeViewerData(tapeData,presettlement,isInit){
+	//TapeThreeViewerStore.length = 0;
 	var threeViewerDiv = $('.Tape_Sub_Viewer_Three');
 	if(threeViewerDiv.length == 0)return;
 	var list = threeViewerDiv.find('li');
-	console.log("--------------0-0-0---------------");
-	console.log($(list[0]).find('div').eq(1));
-	var history = tapeData.history,length=tapeData.history.length;
+	//console.log("--------------0-0-0---------------");
+	//console.log($(list[0]).find('div').eq(1));
+	var length=tapeData.length;
 	var tempPrice;
 	var tempColor;
-	for(var i=length-1;i>=0;i--){
-		if(i >= 6) continue;
-		var data = history[i];
-		var time = data.updatetime;
-		var price = data.lastprice;
-		var tickvolume = data.tickvolume;
-		var tickopeninterestchg = data.tickopeninterestchg;
-		var chgreason = getChgReasonValue(data.chgreason);
-		TapeThreeViewerStore.push(data);
-		
-		var color;// = '#E60302';
-		if(i == 5){
-			tempPrice = price;
-			if(price < tapeData.presettlement) {
-				color='#06E65A';
-			}else if(price > tapeData.presettlement){
-				color='#E60302';
-			}else if(price == tapeData.presettlement){
-				color='#E60302';
+	
+	if(isInit){
+		for(var i=length-1;i>=0;i--){
+			if(i >= 6) continue;
+			var data = tapeData[i];
+			var time = data.updatetime;
+			var price = data.lastprice;
+			var tickvolume = data.tickvolume;
+			var tickopeninterestchg = data.tickopeninterestchg;
+			var chgreason = getChgReasonValue(data.chgreason);
+			var color;// = '#E60302';
+			TapeThreeViewerStore.push(data);
+			if(i == 5){
+				if(price < presettlement) {
+					color='#06E65A';
+				}else if(price > presettlement){
+					color='#E60302';
+				}else if(price == presettlement){
+					color='#E60302';
+				}
+				tempPrice = price;
+				tempColor = color;
+			}else{
+				if(i == 4){
+					//标识最后一条数据的颜色和价格
+					window.TapeLastColor=color;
+					window.TapeLastPrice = price;
+				}
+				if(price < tempPrice) {
+					color='#06E65A';
+				}else if(price > tempPrice){
+					color='#E60302';
+				}else if(price == tempPrice){
+					color = tempColor;
+				}
+				tempPrice = price;
+				tempColor = color;
 			}
-			tempColor = color;
-		}else{
-			if(price < tempPrice) {
-				color='#06E65A';
-			}else if(price > tempPrice){
-				color='#E60302';
-			}else if(price == tempPrice){
-				color = tempColor;
-			}
-			tempPrice = price;
-			tempColor = color;
+			
+			$(list[0]).find('div').eq(i+1).html(time);
+			$(list[1]).find('div').eq(i+1).html(price);
+			$(list[2]).find('div').eq(i+1).html(tickvolume);
+			$(list[3]).find('div').eq(i+1).html(tickopeninterestchg);
+			$(list[4]).find('div').eq(i+1).html(chgreason);
+			
+			$(list[1]).find('div').eq(i+1).css('color',color);
+			$(list[3]).find('div').eq(i+1).css('color',color);
+			$(list[4]).find('div').eq(i+1).css('color',color);
 		}
-		
-		$(list[0]).find('div').eq(i+1).html(time);
-		$(list[1]).find('div').eq(i+1).html(price);
-		$(list[2]).find('div').eq(i+1).html(tickvolume);
-		$(list[3]).find('div').eq(i+1).html(tickopeninterestchg);
-		$(list[4]).find('div').eq(i+1).html(chgreason);
-		
-		$(list[1]).find('div').eq(i+1).css('color',color);
-		$(list[3]).find('div').eq(i+1).css('color',color);
-		$(list[4]).find('div').eq(i+1).css('color',color);
-	}
+	}else{
+		for(var i=length-1;i>=0;i--){
+			if(i >= 6) continue;
+			var data = tapeData[i];
+			var time = data.updatetime;
+			var price = data.lastprice;
+			var tickvolume = data.tickvolume;
+			var tickopeninterestchg = data.tickopeninterestchg;
+			var chgreason = getChgReasonValue(data.chgreason);
+			var color;// = '#E60302';
+			if(i == 5){
+				if(price < TapeLastPrice) {
+					color='#06E65A';
+				}else if(price > TapeLastPrice){
+					color='#E60302';
+				}else if(price == TapeLastPrice){
+					color=TapeLastColor;
+				}
+				tempPrice = price;
+				tempColor = color;
+				//标识最后一条数据的颜色和价格
+				window.TapeLastColor=color;
+				window.TapeLastPrice = price;
+			}else{
+				if(price < tempPrice) {
+					color='#06E65A';
+				}else if(price > tempPrice){
+					color='#E60302';
+				}else if(price == tempPrice){
+					color = tempColor;
+				}
+				tempPrice = price;
+				tempColor = color;
+			}
+			$(list[0]).find('div').eq(i+1).html(time);
+			$(list[1]).find('div').eq(i+1).html(price);
+			$(list[2]).find('div').eq(i+1).html(tickvolume);
+			$(list[3]).find('div').eq(i+1).html(tickopeninterestchg);
+			$(list[4]).find('div').eq(i+1).html(chgreason);
+			
+			$(list[1]).find('div').eq(i+1).css('color',color);
+			$(list[3]).find('div').eq(i+1).css('color',color);
+			$(list[4]).find('div').eq(i+1).css('color',color);
+		}
+	} 
 }
 
 //设置盘口界面第一个区域
@@ -187,9 +238,11 @@ function setOneViewerData(data){
 function setTapePage(data){
 	setOneViewerData(data);
 	setTwoViewerData(data);
-	setThreeViewerData(data);
+	var history = data.history;
+	history.length = 6;
+	setThreeViewerData(history,data.presettlement,true);
 }
-window.TapeThreeViewerStore=[];
+window.TapeThreeViewerStore=[];//盘口数据缓存
 function getTapeData() {
 	//获取盘口数据
 	var method = 'getTape';
@@ -210,6 +263,10 @@ function getTapeData() {
 			console.log("get Tage data");
 			console.log(data.res);
 			var res = data.res;
+			//标识昨结价
+			window.CurrentPresettlement= res.presettlement;
+			console.log("当前昨结价位:-----------------");
+			console.log(CurrentPresettlement);
 			if(state === 0){
 				LoadTapeFinish = true;//标识历史数据加载完成
 				setTapePage(res);
@@ -224,50 +281,85 @@ function getTapeData() {
 		}
 	});
 }
-//监听MQ, 设置盘口界面数据
-function TapeViewerHandler(data){
+
+//监听MQ, 设置盘口第三部分界面数据
+function TapeOneViewerHandler(data){
+	var div = $('.Tape_Sub_Viewer_One');
+	if(div.length == 0) return;
+	div.find('.Sell_Tape_Sub_Viewer_One span').eq(0).html(data.ask1);
+	div.find('.Sell_Tape_Sub_Viewer_One span').eq(1).html(data.ask1volume);
+	
+	div.find('.Buy_Tape_Sub_Viewer_One span').eq(0).html(data.bid1);
+	div.find('.Buy_Tape_Sub_Viewer_One span').eq(1).html(data.bid1volume);
+}
+
+//监听MQ, 设置盘口第三部分界面数据
+function TapeThreeViewerHandler(data){
+	//console.log(data.lastprice);
+	var len = TapeThreeViewerStore.length;
+	TapeThreeViewerStore.splice(0,0,data);//将新来的数据插入到第一个位置
+	var tempData = [];
+	var tempLen = TapeThreeViewerStore.length; 
+	for(var i=0;i<tempLen;i++){
+		if(i === tempLen-1) continue;
+		tempData.push(TapeThreeViewerStore[i]);
+	}
+	TapeThreeViewerStore.length = 0 ;
+	TapeThreeViewerStore = tempData;
+	setThreeViewerData(tempData,CurrentPresettlement,false);
+}
+
+//监听MQ, 设置盘口第二部分界面数据
+function TapeTwoViewerHandler(data){
 	var div = $('.Tape_Sub_Viewer_Two');
 	if(div.length == 0) return;
 	var redColor = '#E60302';
 	var greenColor = '#06E65A';
-	if(data.closechg > 0){
+	if(data.lastprice > CurrentPresettlement){
 		div.find('li[value=lastprice] span').css('color',redColor);
 	}else{
 		div.find('li[value=lastprice] span').css('color',greenColor);
 	}
-	div.find('li[value=lastprice] span').html(data.close);//1
-	if(data.pricechg > 0){
+	div.find('li[value=lastprice] span').html(data.lastprice);//1
+	if(data.daychange > 0){
 		div.find('li[value=daychange] span').css('color',redColor);
 	}else{
 		div.find('li[value=daychange] span').css('color',greenColor);
 	}
-	div.find('li[value=daychange] span').html(data.pricechg);//2
-	if(data.pricechgrate.indexOf('-') >= 0){
+	div.find('li[value=daychange] span').html(data.daychange);//2
+	if(data.daychangerate.indexOf('-') >= 0){
 		div.find('li[value=daychangerate] span').css('color',greenColor);
 	}else{
 		div.find('li[value=daychangerate] span').css('color',redColor);
 	}
-	div.find('li[value=daychangerate] span').html(data.pricechgrate);//3
+	div.find('li[value=daychangerate] span').html(data.daychangerate);//3
 	div.find('li[value=volume] span').html(data.volume);//4
 	div.find('li[value=openinterest] span').html(data.openinterest);//5
 	div.find('li[value=openinterestchg] span').html(data.openinterestchg);//6
 	
-	if(data.openchg < 0){
+	if(data.dayopen < CurrentPresettlement){
 		div.find('li[value=dayopen] span').css('color',greenColor);
 	}else{
 		div.find('li[value=dayopen] span').css('color',redColor);
 	}
-	div.find('li[value=dayopen] span').html(data.open);//7
-	if(data.highchg < 0){
+	div.find('li[value=dayopen] span').html(data.dayopen);//7
+	if(data.highest < CurrentPresettlement){
 		div.find('li[value=highest] span').css('color',greenColor);
 	}else{
 		div.find('li[value=highest] span').css('color',redColor);
 	}
-	div.find('li[value=highest] span').html(data.high);//8
-	if(data.lowchg < 0 ){
+	div.find('li[value=highest] span').html(data.highest);//8
+	if(data.lowest < CurrentPresettlement ){
 		div.find('li[value=lowest] span').css('color',greenColor);
 	}else{
 		div.find('li[value=lowest] span').css('color',redColor);
 	}
-	div.find('li[value=lowest] span').html(data.low);//9
+	div.find('li[value=lowest] span').html(data.lowest);//9
+	
+	div.find('li[value=averageprice] span').html(data.averageprice);//10
+	
+	div.find('li[value=presettlement] span').html(data.presettlement);//11
+	div.find('li[value=upperlimit] span').html(data.upperlimit);//12
+	div.find('li[value=lowerlimit] span').html(data.lowerlimit);//13
+	div.find('li[value=preclose] span').html(data.preclose);//14
 }

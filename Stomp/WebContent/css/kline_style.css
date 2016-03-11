@@ -2,19 +2,231 @@ body {
 	padding-top:1px;
 	margin:0px;
 }
+.KL_Wrap_Div{
+	width:1200px;
+	margin:0 auto;
+}
+.KL_Instrument_Wrap{
+	height:0px;
+	background-color:#D0D0D0;
+}
+.KL_MainView_Wrap{
+	float:left;
+	width:980px;
+	height:535px;
+	background-color:#191F26;
+}
+.KL_OrderManger_Wrap{
+	height:198px;
+	background-color:#FFFFFF;
+}
+.KL_OrderManager_FirstWrap{
+	background-color:white;
+	float:left;
+	width:77%;
+	height:100%;
+}
+.KL_OrderManager_FirstWrap div:first-child{
+	color:#5F697A;
+	/* background-color:rgba(0, 108, 128, 0.07); */
+	height:40px;
+	line-height:46px;
+}
+.KL_OrderManager_FirstWrap > div:first-child{
+	color:#5F697A;
+	background-color:#FFFFFF;
+	height:40px;
+	padding-left: 10px;
+    position: relative;
+    font-size: 12px;
+}
+.KL_OrderManager_FirstWrap > div span{
+	display:inline-block;
+	text-align:center;
+	width:86px;
+	height:24px;
+	line-height: 24px;
+}
+.KL_OrderManager_SecondWrap{
+	/* background-color:blue; */
+	padding-top:10px;
+	float:left;
+	width:23%;
+	height:100%
+}
+.KL_OrderManager_SecondWrap input[type=radio]{
+	width:16px;
+	height:16px;
+	position: relative;
+    top: 5px;
+}
+.KL_OrderManager_SecondWrap > div{
+	margin-left:10px;
+	height:28px;
+}
+.KL_OrderManager_SecondWrap > div:nth-last-child(2){
+	margin-bottom:7px;
+}
+.KL_OrderManager_SecondWrap > div:nth-last-child(3){
+	margin-bottom:4px;
+}
+.KL_OM_Price_Number,.KL_OM_Volume_Number{
+	display: inline-block;
+    height: 26px;
+    position: relative;
+    width: 125px;
+    border: 1px solid #C2C9D2;
+    top: 7px;
+}
+.KL_OM_Price_Number input{
+	width: 92px;
+    position: relative;
+    top: 0px;
+    height: 18px;
+    left: 2px;
+    border:none;
+}
+.KL_OM_Volume_Number input{
+	width: 92px;
+    position: relative;
+    top: -4px;
+    height: 18px;
+    left: 2px;
+    border:none;
+}
+.KL_OM_Volume_Number input{
+	width:54px;
+}
+.KL_OM_Price_Number > div{
+	display: inline-block;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+}
+.KL_OM_Volume_Number > div {
+	display: inline-block;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+}
+.KL_OM_Volume_Number > button{
+	width: 30px;
+    height: 24px;
+    position: relative;
+    right: -6px;
+    top: 1px;
+}
+.KL_OM_Price_Number > div button,
+.KL_OM_Volume_Number > div button{
+	width: 25px;
+    height: 12px;
+    display: block;
+    cursor: pointer;
+}
+.KL_OrderManager_SecondWrap > div span:first-child{
+	display: inline-block;
+    width: 65px;
+    color:#5F697A;
+    font-size: 14px;
+    font-weight: bold;
+}
+.KL_OrderManager_SecondWrap > div:nth-child(4) > span{
+	position:relative;
+	top:10px;
+}
+.KL_OrderManager_SecondWrap > div:nth-child(5) > span{
+	position:relative;
+	top:3px;
+}
+.KL_OM_Set_Wrap {
+	width: 65px;
+    display: inline-block;
+    position: relative;
+    top: 6px;
+    left: 16px;
+}
+.KL_OM_Set_Wrap > button{
+	width:24px;
+	height:24px;
+}
+.KL_OM_Order_Wrap{
+    display: inline-block;
+}
+.KL_OM_Order_Wrap button:first-child{
+	width:50px;
+	height:26px;
+}
+.KL_OM_Order_Wrap button:last-child{
+	width:78px;
+	height:26px;
+}
+
+.Convenience_TB_One,.Convenience_TB_Two{
+	width:356px;
+	height:42px;
+	border:none;
+	border-color: #8393AA;
+    border-width: inherit;
+    float:left;
+    margin-left:10px;
+}
+.Convenience_TB_One tr:first-child th:first-child{
+	width:50px;
+}
+.Convenience_TB_One tr:first-child th:nth-child(2),
+.Convenience_TB_One tr:first-child th:nth-child(3){
+	width:34px;
+}
+.Convenience_TB_One tr:first-child th:nth-child(4){
+	width:72px;
+}
+.Convenience_TB_One td,.Convenience_TB_Two td{
+	border-bottom:none;
+	border-right:none;
+	border-color:rgba(41, 114, 220, 0.7);
+}
+.Convenience_TB_One tr:last-child td,
+.Convenience_TB_Two tr:last-child td{
+	border-bottom:1px solid rgba(23, 59, 111, 0.65);
+}
+.Convenience_TB_One tr td:last-child,
+.Convenience_TB_Two tr td:last-child{
+	border-right:1px solid rgba(23, 59, 111, 0.65);
+}
+.Convenience_TB_One tr:not(:first-child),
+.Convenience_TB_Two tr:not(:first-child){
+	height:26px;
+}
+.Convenience_TB_One tr:first-child,
+.Convenience_TB_Two tr:first-child{
+	background-color: #8393AA;
+    color: white;
+    font-size: 12px;
+    height:22px;
+}
+.KL_OrderManager_SecondWrap > div span:not(:first-child){
+	font-size:13px;
+}
+.KL_OrderManager_SecondWrap select{
+	width: 125px;
+    height: 26px;
+}
 .KL_TimeShareChart_Interval{
 	height:40px;
+	margin-top: -6px;
+    margin-left: 10px;
 }
 .KL_TimeShareChart_Interval ul{
 	list-style:none;
-	margin-top: 7px
+	margin-top: 7px;
+	padding:0px;
 }
 .KL_TimeShareChart_Interval ul li{
 	background-color:transparent;
 	color:#8494A4;
-	width:25px;
-	height:25px;
-	line-height:25px;
+	width:22px;
+	height:22px;
+	line-height:22px;
 	border-top:1px solid #8494A4;
 	border-left:1px solid #8494A4;
 	border-bottom:1px solid #8494A4;
@@ -32,7 +244,13 @@ body {
 	z-index: 2;
 	/* border: 1px solid #69c; */
 }
-.KL_TapeViewer div[class^='Tape_Sub_Viewer']{
+.KL_TapeViewer_Wrap{
+	float:left;
+	width:220px;
+	height:535px;
+	background-color:#76797B;
+}
+.KL_TapeViewer_Wrap div[class^='Tape_Sub_Viewer']{
 	width:100%;
 }
 .Tape_Sub_Viewer_One{
@@ -107,13 +325,13 @@ body {
 .Tape_Sub_Viewer_Three li:first-child{
 	height:170px;
 	float:left;
-	width:52px;
+	width:62px;
 	text-align:left;
 }
 .Tape_Sub_Viewer_Three li:nth-child(2){
 	height:170px;
 	float:left;
-	width:40px;
+	width:50px;
 }
 .Tape_Sub_Viewer_Three li div:first-child{
 	color: #A6A7A9;
@@ -141,7 +359,7 @@ body {
 .Tape_Sub_Viewer_Four li{
 	height:40px;
 	float:left;
-	width:36px;
+	width:40px;
 	font-size:12px;
 	color:white;
 	text-align:center;
@@ -154,7 +372,7 @@ body {
 }
 
 .Tape_Sub_Viewer_Four li:last-child{
-	width:48px;
+	width:52px;
 }
 .Tape_Sub_Viewer_Five{
 	height:59px;
@@ -195,7 +413,8 @@ body {
 	margin-left: 20px;
 }
 
-.Sell_Tape_Sub_Viewer_One span:last-child,.Buy_Tape_Sub_Viewer_One span:last-child{
+.Sell_Tape_Sub_Viewer_One span:last-child,
+.Buy_Tape_Sub_Viewer_One span:last-child{
 	position:absolute;
 	right:36px;
 	color:#FFFF99;
@@ -205,7 +424,7 @@ body {
 }
 .KL_FootDataDisplay{
 	clear:both;
-	height:60px;
+	height:44px;
 	background-color:#22282F;
 }
 .KL_FootDataDisplay ul{
@@ -221,9 +440,40 @@ body {
     text-align: center;
     padding-top:10px;
     border:1px solid #636D7E;
-    height:49px;
+    height:33px;
 }
 .KL_FootDataDisplay div:first-child{
-	height:25px;
-	line-height:25px;
+	height:15px;
+	line-height:15px;
 }
+.Order_Manager_Convenience{
+	position:relative;
+}
+.Order_Manager_Convenience > span:first-child,
+.Order_Manager_Convenience > span:nth-child(2){
+	position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: #8393AA;
+    top: -10px;
+    left: 0px;
+    color: white;
+    line-height: 16px;
+    font-size: 12px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+.Order_Manager_Convenience > span:nth-child(2){
+	left: 365px;
+}
+/* position: absolute;
+    width: 18px;
+    height: 18px;
+    background-color: #8393AA;
+    top: 31px;
+    left: 3px;
+    color: white;
+    line-height: 18px;
+    font-size: 12px;
+    border-radius: 60%;
+    border: 2px solid white; */

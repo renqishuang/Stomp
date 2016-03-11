@@ -5,72 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
     <title>K线图控制</title>
     <link href="css/kline_style.css" rel="stylesheet">
-    <script>
-	    function getKLDt(){
-			var type = 1;
-			var rd = parseInt(Math.random()*10);
-			var dt = [{"close":"2981.6","closechg":"-5.2","open":"2981.6","openchg":"-5.2","high":"2981.6","highchg":-1,"low":"2981.6","lowchg":-1,"datetime":1455845400000,"volume":-14278,"volumechg":-14393,"openinterest":29234,"openinterestchg":-41,"pricechg":"-5.2","pricechgrate":"-0.17%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
-			          {"close":"2975.2","closechg":"-6.6","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14273,"volumechg":-14388,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.6","pricechgrate":"-0.22%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
-			          {"close":"2975.4","closechg":"-6.4","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14271,"volumechg":-14386,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.4","pricechgrate":"-0.21%","datatype":"1","timeremain":58000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
-			          {"close":"2981.6","closechg":"-5.2","open":"2976.6","openchg":"-5.2","high":"2982.6","highchg":-1,"low":"2972.6","lowchg":-1,"datetime":1455845400000,"volume":-14278,"volumechg":-14393,"openinterest":29234,"openinterestchg":-41,"pricechg":"-5.2","pricechgrate":"-0.17%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
-			          {"close":"2975.2","closechg":"-6.6","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14273,"volumechg":-14388,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.6","pricechgrate":"-0.22%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
-			          {"close":"2975.4","closechg":"-6.4","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14271,"volumechg":-14386,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.4","pricechgrate":"-0.21%","datatype":"1","timeremain":58000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
-			          {"close":"2981.6","closechg":"-5.2","open":"2976.6","openchg":"-5.2","high":"2982.6","highchg":-1,"low":"2972.6","lowchg":-1,"datetime":1455845400000,"volume":-14278,"volumechg":-14393,"openinterest":29234,"openinterestchg":-41,"pricechg":"-5.2","pricechgrate":"-0.17%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
-			          {"close":"2975.2","closechg":"-6.6","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14273,"volumechg":-14388,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.6","pricechgrate":"-0.22%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
-			          {"close":"2975.4","closechg":"-6.4","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14271,"volumechg":-14386,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.4","pricechgrate":"-0.21%","datatype":"1","timeremain":58000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
-			          {"close":"2981.6","closechg":"-5.2","open":"2976.6","openchg":"-5.2","high":"2982.6","highchg":-1,"low":"2972.6","lowchg":-1,"datetime":1455845400000,"volume":-14278,"volumechg":-14393,"openinterest":29234,"openinterestchg":-41,"pricechg":"-5.2","pricechgrate":"-0.17%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
-			          {"close":"2975.2","closechg":"-6.6","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14273,"volumechg":-14388,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.6","pricechgrate":"-0.22%","datatype":"1","timeremain":59000,"tradingday":1455811200000,"iid":"IF1603","interval":60},
-			          {"close":"2975.4","closechg":"-6.4","open":"2976.6","openchg":"-5.2","high":"2976.6","highchg":-1,"low":"2975.2","lowchg":-1,"datetime":1455845400000,"volume":-14271,"volumechg":-14386,"openinterest":29233,"openinterestchg":-42,"pricechg":"-6.4","pricechgrate":"-0.21%","datatype":"1","timeremain":58000,"tradingday":1455811200000,"iid":"IF1603","interval":60}];
-			var dt = dt[rd];
-			var time=dt.datetime;
-			var date = new Date(time);
-			var dateNumber = converDateStrByDate(date);
-			var open,high,low,close,volume,amount=2939,preClose=2985.8;
-			if(type == 0){//整数
-				open  = parseInt(dt.open);
-	    		high = parseInt(dt.high);
-	    		low = parseInt(dt.low);
-	    		close = parseInt(dt.close);
-	    		volume = parseInt(dt.volume);
-			}else if(type == 1){//小数点后一位
-				open  = parseFloat(dt.open);
-	    		high = parseFloat(dt.high);
-	    		low = parseFloat(dt.low);
-	    		close = parseFloat(dt.close);
-	    		volume = parseFloat(dt.volume);
-			}
-			var item = {
-				quoteTime:dateNumber,
-				open:open,
-				high:high,
-				low:low,
-				close:close,
-				volume:volume,
-				amount:amount,
-				preClose:preClose
-			};
-			return item;
-		}
-    	function testAnimate(){
-    		console.log("dd");
-    		$('#KL_OrderManager').hide();
-    		$('#canvasKL').attr('height',480);
-    		drawKL(480);
-    	}
-    	//增加一条K线
-    	function addKL(){
-    		CurrentKLObj.addCandleToKL(getKLDt());//添加一个K线
-    		drawKL();
-    	}
-    </script>
   </head>
   <body>
-     <div style='width:1200px;margin:0 auto;'>
-     	<button type='button' onclick="addKL();">添加一条K线</button>
+     <div class='KL_Wrap_Div'>
      	<!--合约选择区域  height:90px;--> 
-     	<div style='height:0px;background-color:#D0D0D0;'></div>
+     	<div class='KL_Instrument_Wrap'></div>
      	<!--K线主区域   #191F26-->
-		<section style='float:left;width:1000px;height:535px;background-color:#191F26;'>
+		<section class='KL_MainView_Wrap'>
 			<div class="KL_TimeShareChart_Interval">
 				<ul>
 					<li value="60">1</li>
@@ -82,15 +23,167 @@
 					<li value="86400">日</li>
 				</ul>
 			</div>
-			<canvas class='KL_Canvas' width='1000' height="305" id="canvasKL">
+			<canvas class='KL_Canvas' width='980' height="284" id="canvasKL">
 	   			<p>hey,您的浏览器不支持html5，换个浏览器吧，比如google chrome，firefox</p>
 			</canvas>
-			<div id='KL_OrderManager' style='height:170px;background-color:gray;'>
-				<button type='button' onclick="testAnimate()">下单器</button>
+			<!--下单器区域-->
+			<div class='KL_OrderManger_Wrap' id='KL_OrderManager'>
+				<!--表格区域-->
+				<div class='KL_OrderManager_FirstWrap'>
+					<div>
+						<span>快捷</span>
+						<span>当日委托</span>
+						<span>当日成交</span>
+						<span>持仓信息</span>
+						<span>条件单</span>
+					</div>
+					<div class='Order_Manager_Convenience'>
+						<span>挂</span>
+						<span>持</span>
+						<table class='Convenience_TB_One' border="1" cellspacing='0' cellpadding='1'>
+							<tr>
+								<th>合约</th>
+								<th>买卖</th>
+								<th>开平</th>
+								<th>未成交手数</th>
+								<th>报单价格</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+						<table class='Convenience_TB_Two' border="1" cellspacing='0' cellpadding='1'>
+							<tr>
+								<th>合约</th>
+								<th>买卖</th>
+								<th>持仓</th>
+								<th>可平</th>
+								<th>持仓均价</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<!--下单器-->
+				<div class='KL_OrderManager_SecondWrap'>
+					<div>
+						<span>合约</span>
+						<select>
+						  <option value="volvo">IF1603</option>
+						  <option value="saab">IF1602</option>
+						</select>
+					</div>
+					<div>
+						<span>买卖</span>
+						<input type="radio" name='OrderManager_Buy_Sell'><span>买</span>
+						<input type="radio" name='OrderManager_Buy_Sell'><span>卖</span>
+					</div>
+					<div>
+						<span>开平</span>
+						<input type="radio" name='OrderManager_Open_Close'><span>开仓</span>
+						<input type="radio" name='OrderManager_Open_Close'><span>平仓</span>
+					</div>
+					<div>
+						<span>跟随价</span>
+						<div class='KL_OM_Price_Number'>
+							<input type="text">
+							<div>
+								<button type='button'></button>
+								<button type='button'></button>
+							</div>
+						</div>
+					</div>
+					<div>
+						<span>手数</span>
+						<div class='KL_OM_Volume_Number'>
+							<input type="text">
+							<button type='button'></button>
+							<div>
+								<button type='button'></button>
+								<button type='button'></button>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class='KL_OM_Set_Wrap'>
+							<button type='button'></button>
+						</div>
+						<div class='KL_OM_Order_Wrap'>
+							<button type='button'>条件</button>
+							<button type='button'>下单</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</section>
 		<!--K线侧区域  -->
-		<aside class='KL_TapeViewer' style='float:left;width:200px;height:535px;background-color:#76797B;'>
+		<aside class='KL_TapeViewer_Wrap'>
 			<div class='Tape_Sub_Viewer_One'>
 				<div class='Sell_Tape_Sub_Viewer_One'>卖出<span>--</span><span>--</span></div>
 				<div class='Buy_Tape_Sub_Viewer_One'>买入<span>--</span><span>--</span></div>
