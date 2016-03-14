@@ -181,13 +181,14 @@ function getHisKLines(interval){
 					//console.log('涨跌: -->'+JSON.parse(tempData).pricechg);
 					//console.log('幅度:-->'+JSON.parse(tempData).pricechgrate);
 					//console.log(JSON.parse(tempData));
-					//return;
+					return;
 					KLSubscribeHandler(JSON.parse(tempData));//实时K线变化
 				});
 				//监听盘口数据
 				var MQTapeSub = MQStompClient.subscribe('/topic/IF1603_TAPE',function(message){
 					//console.log("盘口数据");
 					var tempData = message.body;
+					return;
 					//console.log(JSON.parse(tempData));
 					TapeOneViewerHandler(JSON.parse(tempData));
 					TapeTwoViewerHandler(JSON.parse(tempData));

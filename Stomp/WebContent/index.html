@@ -31,13 +31,13 @@
 				<!--表格区域-->
 				<div class='KL_OrderManager_FirstWrap'>
 					<div>
-						<span>快捷</span>
-						<span>当日委托</span>
-						<span>当日成交</span>
-						<span>持仓信息</span>
-						<span>条件单</span>
+						<span name='convenience'>快捷</span>
+						<span name='delegation'>当日委托</span>
+						<span name='bargain'>当日成交</span>
+						<span name='position'>持仓信息</span>
+						<span name='condition'>条件单</span>
 					</div>
-					<div class='Order_Manager_Convenience'>
+					<div hidden="true" class='Order_Manager_TB_Convenience'>
 						<span>挂</span>
 						<span>持</span>
 						<table class='Convenience_TB_One' border="1" cellspacing='0' cellpadding='1'>
@@ -121,6 +121,324 @@
 								<td></td>
 							</tr>
 							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+					
+					<!--当日委托  -->
+					<div hidden='true' class='Order_Manager_TB_Delegation'>
+						<table border="1" cellspacing='0' cellpadding='1'>
+							<tr>
+								<th>合约</th>
+								<th>买卖</th>
+								<th>开平</th>
+								<th>挂单状态</th>
+								<th>报单价格</th>
+								<th>报单时间</th>
+								<th>撤单时间</th>
+								<th>报单手数</th>
+								<th>成交手数</th>
+								<th>成交时间</th>
+								<th>未成交手数</th>
+								<th>报单编号</th>
+								<th>详细状态</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+					
+					<!--当日成交  -->
+					<div hidden='true' class='Order_Manager_TB_Bargain'>
+						<table border="1" cellspacing='0' cellpadding='1'>
+							<tr>
+								<th>合约</th>
+								<th>买卖</th>
+								<th>开平</th>
+								<th>成交价格</th>
+								<th>成交手数</th>
+								<th>成交时间</th>
+								<th>成交编号</th>
+								<th>报单编号</th>
+								<th>报单时间</th>
+								<th>报单价格</th>
+								<th>手续费</th>
+								<th>备注</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+					
+					<!--持仓信息  -->
+					<div hidden='true' class='Order_Manager_TB_Position'>
+						<table border="1" cellspacing='0' cellpadding='1'>
+							<tr>
+								<th>合约</th>
+								<th>买卖</th>
+								<th>总持仓</th>
+								<th>可平量</th>
+								<th>持仓均价</th>
+								<th>持仓盈亏</th>
+								<th>占用保证金</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+					
+					<!--条件单-->
+					<div hidden='true' class='Order_Manager_TB_Condition'>
+						<table border='1' cellspacing='0' cellpadding='1'>
+							<tr>
+								<th>类型</th>
+								<th>状态</th>
+								<th>触发条件</th>
+								<th>合约</th>
+								<th>买卖</th>
+								<th>开平</th>
+								<th>报单价格</th>
+								<th>报单手数</th>
+								<th>预埋时间</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
 								<td></td>
 								<td></td>
 								<td></td>
