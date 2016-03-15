@@ -57,5 +57,4 @@ onmessage = function(evt){
 			//console.log('get data complete');
 		}
 	});
-    
 }

@@ -23,100 +23,8 @@ function getChgReasonValue(chgreson){
 	}
 }
 
-//设置盘口界面第2个区域
-function setTwoViewerData(data){
-	var twoViewerDiv = $('.Tape_Sub_Viewer_Two');
-	if(twoViewerDiv.length == 0) return;
-	var twoViewList = twoViewerDiv.find('li'),twoViewerLength = twoViewList.length;
-	var presettlement = data.presettlement;//昨结价
-	for(var i=0;i<twoViewerLength;i++){
-		var li = $(twoViewList[i]);
-		var value = li.attr('value');
-		switch (value) {
-		case 'lastprice':
-			if(data.lastprice < presettlement){
-				li.find('span').css('color','#06E65A');
-			}else{
-				li.find('span').css('color','#E60302');
-			}
-			li.find('span').html(data.lastprice);
-			break;
-		case 'presettlement':
-			li.find('span').html(data.presettlement);
-			break;
-		case 'daychange':
-			if(data.daychange < 0){
-				li.find('span').css('color','#06E65A');
-			}else{
-				li.find('span').css('color','#E60302');
-			}
-			li.find('span').html(data.daychange);
-			break;
-		case 'daychangerate':
-			if(data.daychangerate.indexOf('-') >= 0){
-				li.find('span').css('color','#06E65A');
-			}else{
-				li.find('span').css('color','#E60302');
-			}
-			li.find('span').html(data.daychangerate);
-			break;
-		case 'volume':
-			li.find('span').html(data.volume);
-			break;
-		case 'dayopen':
-			if(data.dayopen < presettlement){
-				li.find('span').css('color','#06E65A');
-			}else{
-				li.find('span').css('color','#E60302');
-			}
-			li.find('span').html(data.dayopen);
-			break;
-		case 'openinterest':
-			li.find('span').html(data.openinterest);
-			break;
-		case 'highest':
-			if(data.highest < presettlement){
-				li.find('span').css('color','#06E65A');
-			}else{
-				li.find('span').css('color','#E60302');
-			}
-			li.find('span').html(data.highest);
-			break;
-		case 'openinterestchg':
-			li.find('span').html(data.openinterestchg);
-			break;
-		case 'lowest':
-			if(data.lowest < presettlement){
-				li.find('span').css('color','#06E65A');
-			}else{
-				li.find('span').css('color','#E60302');
-			}
-			li.find('span').html(data.lowest);
-			break;
-		case 'upperlimit':
-			li.find('span').html(data.upperlimit);
-			break;
-		case 'averageprice':
-			if(data.averageprice < presettlement){
-				li.find('span').css('color','#06E65A');
-			}else{
-				li.find('span').css('color','#E60302');
-			}
-			li.find('span').html(data.averageprice);
-			break;
-		case 'lowerlimit':
-			li.find('span').html(data.lowerlimit);
-			break;
-		case 'preclose':
-			li.find('span').html(data.preclose);
-			break;
-		default:
-			break;
-		}
-	}
-}
 //设置盘口界面第3个区域
-function setThreeViewerData(tapeData,presettlement,isInit){
+function setTapeThreeViewerData(tapeData,presettlement,isInit){
 	//TapeThreeViewerStore.length = 0;
 	var threeViewerDiv = $('.Tape_Sub_Viewer_Three');
 	if(threeViewerDiv.length == 0)return;
@@ -222,38 +130,75 @@ function setThreeViewerData(tapeData,presettlement,isInit){
 	} 
 }
 
-//设置盘口界面第一个区域
-function setOneViewerData(data){
-	var sellDiv = $('.Sell_Tape_Sub_Viewer_One');
-	var buyDiv = $('.Buy_Tape_Sub_Viewer_One');
-	if(sellDiv.length == 0 || buyDiv.length == 0) return;
+
+function setTradeInfo(data){
 	
-	sellDiv.find('span').eq(0).html(data.ask1);
-	sellDiv.find('span').eq(1).html(data.ask1volume);
-	buyDiv.find('span').eq(0).html(data.bid1);
-	buyDiv.find('span').eq(1).html(data.bid1volume);
-}
+};
 
 //设置盘口界面数据
-function setTapePage(data){
-	setOneViewerData(data);
-	setTwoViewerData(data);
+function setTapeInfo(data){
+	TapeOneViewerHandler(data);
+	TapeTwoViewerHandler(data);
 	var history = data.history;
 	history.length = 6;
-	setThreeViewerData(history,data.presettlement,true);
+	setTapeThreeViewerData(history,data.presettlement,true);
 }
-window.TapeThreeViewerStore=[];//盘口数据缓存
-function getTapeData() {
-	//获取盘口数据
-	var method = 'getTape';
-	var param = 'IF1603_TAPE';
+
+function getTradeInfo(){
+	//获取交易数据
+	var method = 'tradeInfo';
+	var param = {
+		"rmc":99839,
+		"rid":1374,
+		"userid":11112,
+		"uid":11112,
+		"aid":2380,
+		"oper":"getInstStat",
+		"iid":"IF1510",
+		"lc":"5225b2a9400063cd991d84aa9c1af219",
+		"roomid":1374
+	};
+	var param = JSON.stringify(param);
 	$.ajax({
-		url : WSFullUrl+'/call_ws/output',
+		url : WebServiceTransferUrl+'/call_ws/output',
 		type : 'post',
 		dataType : "json",
 		// async:false,//同步请求
 		data : {
-			ws_url : WSServerUrl,
+			ws_url : WebServiceTradeUrl,
+			ws_func : method,
+			ws_param : param
+		},
+		timeout : 5000, // 设置超时5秒钟
+		success : function(data) {
+			var state = data.rc;
+			console.log("get trade data");
+			console.log(data);
+		},
+		error : function(xhr, state) {
+			console.log("get data error");
+			alert("请求服务器出错");
+		},
+		complete : function(xhr, state) {
+			//console.log('get data complete');
+		}
+	});
+	//设置交易信息
+	//setTradeInfo(data);
+}
+
+window.TapeThreeViewerStore=[];//盘口数据缓存
+function getTapeInfo() {
+	//获取盘口数据
+	var method = 'getTape';
+	var param = 'IF1603_TAPE';
+	$.ajax({
+		url : WebServiceTransferUrl+'/call_ws/output',
+		type : 'post',
+		dataType : "json",
+		// async:false,//同步请求
+		data : {
+			ws_url : WebServiceStrageUrl,
 			ws_func : method,
 			ws_param : param
 		},
@@ -269,7 +214,7 @@ function getTapeData() {
 			console.log(CurrentPresettlement);
 			if(state === 0){
 				LoadTapeFinish = true;//标识历史数据加载完成
-				setTapePage(res);
+				setTapeInfo(res);
 				//监听盘口数据
 				var MQTapeSub = MQStompClient.subscribe('/topic/IF1603_TAPE',function(message){
 					//console.log("盘口数据");
@@ -316,7 +261,7 @@ function TapeThreeViewerHandler(data){
 	}
 	TapeThreeViewerStore.length = 0 ;
 	TapeThreeViewerStore = tempData;
-	setThreeViewerData(tempData,CurrentPresettlement,false);
+	setTapeThreeViewerData(tempData,CurrentPresettlement,false);
 }
 
 //监听MQ, 设置盘口第二部分界面数据

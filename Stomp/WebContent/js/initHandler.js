@@ -13,12 +13,6 @@ $(document).ready(function() {
 		MQStompClient.connect("","", function(frame) {
 			//默认触发1分钟K线图
 			$(KLTimeShareList[0]).trigger('mousedown');
-			
-			if(!MQStompClient) return;
-			console.log("添加 资金数据监听--------->");
-			var MQAccountSub = MQStompClient.subscribe('/topic/2380',function(message){
-				console.log("资金数据");
-			});
 	    });
 	 }else {
 	    return;
@@ -30,7 +24,10 @@ $(document).ready(function() {
 	setKLIntervalEvent(KLTimeShareList);
 	
 	//获取盘口数据
-	getTapeData();
+	getTapeInfo();
+	
+	//获取交易数据
+	getTradeInfo();
 	
 	//下单器界面设置
 	var orderManagerFirstWrap = $('.KL_OrderManager_FirstWrap');

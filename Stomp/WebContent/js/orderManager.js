@@ -1,3 +1,39 @@
+function OMPriceNumberUpMouseOver(div){
+	$(div).css('background-image','url(images/NumericSteppersdown1.png)');
+}
+function OMPriceNumberUpMouseOut(div){
+	$(div).css('background-image','url(images/NumericSteppersup.png)');
+}
+function OMPriceNumberDownMouseOver(div){
+	$(div).css('background-image','url(images/NumericStepperxdown.png)');
+}
+function OMPriceNumberDownMouseOut(div){
+	$(div).css('background-image','url(images/NumericStepperxup.png)');
+}
+function OMSetMouseOver(div){
+	$(div).css('background-image','url(images/order_manager_set_down.png)');
+}
+function OMSetMouseOut(div){
+	$(div).css('background-image','url(images/order_manager_set_up.png)');
+}
+function OMConditionMouseOver(div){
+	$(div).css('background-image','url(images/matiaojian0.png)');
+}
+function OMConditionMouseOut(div){
+	$(div).css('background-image','url(images/matiaojian1.png)');
+}
+function OMConditionMouseDown(div){
+	$(div).css('background-image','url(images/matiaojian1.png)');
+}
+function OMOrderMouseOver(div){
+	$(div).css('background-image','url(images/maxiadan0.png)');
+}
+function OMOrderMouseOut(div){
+	$(div).css('background-image','url(images/maxiadan1.png)');
+}
+function OMOrderMouseDown(div){
+	$(div).css('background-image','url(images/maxiadan1.png)');
+}
 function orderManagerLeftRegionStyle(wrap){
 	var navs = $(wrap[0]).find('div:first-child span');
 	for(var i=0;i<navs.length;i++){

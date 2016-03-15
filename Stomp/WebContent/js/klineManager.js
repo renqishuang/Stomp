@@ -148,12 +148,12 @@ function getHisKLines(interval){
 	};
 	var param = JSON.stringify(data);
 	$.ajax({
-		url:WSFullUrl+'/call_ws/output',
+		url:WebServiceTransferUrl+'/call_ws/output',
 		type:'post',
 		dataType:"json",
 		//async:false,//同步请求
 		data:{
-			ws_url:WSServerUrl,
+			ws_url:WebServiceStrageUrl,
 			ws_func:method,
 			ws_param:param
 		},

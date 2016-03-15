@@ -38,8 +38,8 @@
 						<span name='condition'>条件单</span>
 					</div>
 					<div hidden="true" class='Order_Manager_TB_Convenience'>
-						<span>挂</span>
-						<span>持</span>
+						<span></span>
+						<span></span>
 						<table class='Convenience_TB_One' border="1" cellspacing='0' cellpadding='1'>
 							<tr>
 								<th>合约</th>
@@ -472,8 +472,9 @@
 						<div class='KL_OM_Price_Number'>
 							<input type="text">
 							<div>
-								<button type='button'></button>
-								<button type='button'></button>
+								<div onmouseover="OMPriceNumberUpMouseOver(this)" onmouseout="OMPriceNumberUpMouseOut(this)"></div>								
+								<div onmouseover="OMPriceNumberDownMouseOver(this)" onmouseout="OMPriceNumberDownMouseOut(this)"></div>
+								<span></span>
 							</div>
 						</div>
 					</div>
@@ -481,20 +482,23 @@
 						<span>手数</span>
 						<div class='KL_OM_Volume_Number'>
 							<input type="text">
-							<button type='button'></button>
+							<span></span>
 							<div>
-								<button type='button'></button>
-								<button type='button'></button>
+								<div onmouseover="OMPriceNumberUpMouseOver(this)" onmouseout="OMPriceNumberUpMouseOut(this)"></div>
+								<div onmouseover="OMPriceNumberDownMouseOver(this)" onmouseout="OMPriceNumberDownMouseOut(this)"></div>
+								<span></span>
 							</div>
 						</div>
 					</div>
 					<div>
 						<div class='KL_OM_Set_Wrap'>
-							<button type='button'></button>
+							<div onmouseover='OMSetMouseOver(this)' onmouseout='OMSetMouseOut(this)'></div>
 						</div>
 						<div class='KL_OM_Order_Wrap'>
-							<button type='button'>条件</button>
-							<button type='button'>下单</button>
+							<div onmouseover='OMConditionMouseOver(this)' onmouseout='OMConditionMouseOut(this)'
+							onmousedown='OMConditionMouseDown(this)'></div> 
+							<div onmouseover='OMOrderMouseOver(this)' onmouseout='OMOrderMouseOut(this)'
+							onmousedown='OMOrderMouseDown(this)'></div>
 						</div>
 					</div>
 				</div>

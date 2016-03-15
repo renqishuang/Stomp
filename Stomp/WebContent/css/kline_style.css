@@ -132,19 +132,41 @@ body {
     top: 1px;
     right: 1px;
 }
-.KL_OM_Volume_Number > button{
+.KL_OM_Volume_Number > span{
+	display:inline-block;
 	width: 30px;
     height: 24px;
     position: relative;
-    right: -6px;
+    right: -9px;
     top: 1px;
+    background-image: url('../images/handslider_showbtn.png');
 }
-.KL_OM_Price_Number > div button,
-.KL_OM_Volume_Number > div button{
+.KL_OM_Price_Number > div div,
+.KL_OM_Volume_Number > div div{
 	width: 25px;
     height: 12px;
     display: block;
     cursor: pointer;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.KL_OM_Price_Number > div div:nth-child(2),
+.KL_OM_Volume_Number > div div:nth-child(2){
+	background-image: url('../images/NumericStepperxup.png');
+}
+.KL_OM_Price_Number > div > span,
+.KL_OM_Volume_Number > div > span{
+	height: 1px;
+    width: 25px;
+    display: inline-block;
+    background-color: #F1F5FB;
+    position: relative;
+    top: -28px;
+}
+.KL_OM_Price_Number > div div:first-child,
+.KL_OM_Volume_Number > div div:first-child{
+	background-image: url('../images/NumericSteppersup.png');
 }
 .KL_OrderManager_SecondWrap > div span:first-child{
 	display: inline-block;
@@ -168,20 +190,37 @@ body {
     top: 6px;
     left: 16px;
 }
-.KL_OM_Set_Wrap > button{
+.KL_OM_Set_Wrap > div{
 	width:24px;
 	height:24px;
+	background-image: url('../images/order_manager_set_up.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    cursor: pointer;
 }
 .KL_OM_Order_Wrap{
     display: inline-block;
+    position: relative;
+    top: 6px;
 }
-.KL_OM_Order_Wrap button:first-child{
+.KL_OM_Order_Wrap div:first-child{
 	width:50px;
 	height:26px;
+	display: inline-block;
+	background-image: url('../images/matiaojian1.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
 }
-.KL_OM_Order_Wrap button:last-child{
+.KL_OM_Order_Wrap div:last-child{
 	width:78px;
 	height:26px;
+	display: inline-block;
+	background-image: url('../images/maxiadan1.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
 }
 .KL_OrderManager_FirstWrap table{
 	border:none;
@@ -253,7 +292,7 @@ body {
     font-size: 12px;
     height:22px;
 } */
-.KL_OrderManager_SecondWrap > div span:not(:first-child){
+.KL_OrderManager_SecondWrap > div > span:not(:first-child){
 	font-size:13px;
 	width: 30px;
     display: inline-block;
@@ -516,16 +555,19 @@ body {
 	position: absolute;
     width: 16px;
     height: 16px;
-    background-color: #8393AA;
     top: -10px;
     left: -10px;
-    color: white;
-    line-height: 16px;
-    font-size: 12px;
     border-radius: 50%;
     border: 2px solid white;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+.Order_Manager_TB_Convenience > span:first-child{
+	background-image: url('../images/icon_kuaijie_gua.png');
 }
 .Order_Manager_TB_Convenience > span:nth-child(2){
+	background-image: url('../images/icon_kuaijie_chi.png');
 	left: 365px;
 }
 .Order_Manager_TB_Delegation::-webkit-scrollbar{

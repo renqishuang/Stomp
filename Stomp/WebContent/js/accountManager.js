@@ -62,12 +62,12 @@ function setAccountInfo(){
 	};
 	var param = JSON.stringify(data);
 	$.ajax({
-		url:WSFullUrl+'/call_ws/output',
+		url:WebServiceTransferUrl+'/call_ws/output',
 		type:'post',
 		dataType:"json",
 		//async:false,//同步请求
 		data:{
-			ws_url:WSTradeUrl,
+			ws_url:WebServiceTradeUrl,
 			ws_func:method,
 			ws_param:param
 		},
@@ -79,11 +79,11 @@ function setAccountInfo(){
 			if(state === 0){
 				setInitAccountInfo(data.res);
 				//监听资金数据
-				/*if(!MQStompClient) return;
+				if(!MQStompClient) return;
 				console.log("添加 资金数据监听--------->");
 				var MQAccountSub = MQStompClient.subscribe('/topic/2380',function(message){
 					console.log("资金数据");
-				});*/
+				});
 			}
 		},
 		error:function(xhr,state){
