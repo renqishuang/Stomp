@@ -459,13 +459,13 @@
 					</div>
 					<div>
 						<span>买卖</span>
-						<input type="radio" name='OrderManager_Buy_Sell'><span>买</span>
-						<input type="radio" name='OrderManager_Buy_Sell'><span>卖</span>
+						<label><input type="radio" value='OrderManager_Buy' checked name='OrderManager_Buy_Sell'><span>买</span></label>
+						<label><input type="radio" value='OrderManager_Sell' name='OrderManager_Buy_Sell'><span>卖</span></label>
 					</div>
 					<div>
 						<span>开平</span>
-						<input type="radio" name='OrderManager_Open_Close'><span>开仓</span>
-						<input type="radio" name='OrderManager_Open_Close'><span>平仓</span>
+						<label><input type="radio" value='OrderManager_Open' checked name='OrderManager_Open_Close'><span>开仓</span></label>
+						<label><input type="radio" value='OrderManager_Close' name='OrderManager_Open_Close'><span>平仓</span></label>
 					</div>
 					<div>
 						<span>跟随价</span>
@@ -602,43 +602,43 @@
 			</div>
 		</aside>
 		<!--底部区域  -->
-		<div class='KL_FootDataDisplay'>
+		<div class='KL_FooterRegion'>
 			<ul>
-				<li>
+				<li value='balance'>
 					<div>静态权益</div>
-					<div>763814.25</div>
+					<div>--</div>
 				</li>
-				<li>
+				<li value='floatbalance'>
 					<div>动态权益</div>
-					<div>763814.25</div>
+					<div>--</div>
 				</li>
-				<li>
+				<li value='floatprofit'>
 					<div>盯市持仓盈亏</div>
-					<div>0</div>
+					<div>--</div>
 				</li>
-				<li>
+				<li value='closeprofit'>
 					<div>盯市平仓盈亏</div>
-					<div>0</div>
+					<div>--</div>
 				</li>
-				<li>
+				<li value='tfee'>
 					<div>手续费</div>
-					<div>0.00</div>
+					<div>--</div>
 				</li>
-				<li>
+				<li value='deposit'>
 					<div>占用保证金</div>
-					<div>0.00</div>
+					<div>--</div>
 				</li>
-				<li>
+				<li value='frozen'>
 					<div>下单冻结</div>
 					<div>0</div>
 				</li>
-				<li>
+				<li value='available'>
 					<div>可用资金</div>
-					<div>763814.25</div>
+					<div>--</div>
 				</li>
-				<li>
+				<li value='risk'>
 					<div>风险度</div>
-					<div>0%</div>
+					<div>--</div>
 				</li>
 			</ul>
 		</div>
@@ -660,8 +660,10 @@
     <script src="libs/chartEventHelper.js?abc"  ></script>
     <script src="libs/controller.js" ></script>
     <script src='js/tapeManage.js'></script>
-    <script src="js/klineStore.js"></script>
+    <script src="js/klineManager.js"></script>
     <script src="js/k_line.js"></script>
+    <script src='js/accountManager.js'></script>
+    <script src='js/orderManager.js'></script>
     <script src='js/initHandler.js'></script>
   </body>
 </html>

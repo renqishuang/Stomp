@@ -31,6 +31,7 @@ li:last-child{
 }
 </style>
 <script src="libs/util.js"></script>
+
 <script type="text/javascript">
 	//设置其他分段按钮的样式
 	function setKLTimeSharingInterStyle(list){
@@ -43,8 +44,9 @@ li:last-child{
 			}
 		}
 	}
-	
 	function init(){
+		
+		return;
 		//设置li点击事件
 		var div = document.querySelector('div.KL_TimeShareChart_Interval');
 		var list = div.querySelectorAll("li");
@@ -77,6 +79,19 @@ li:last-child{
 		<li>15</li>
 		<li>30</li>
 	</ul>
-</div>
+<script src='js/jquery.1.11.3.min.js'></script>
+<script src='js/constants.js'></script>
+<script>
+$(function(){
+	var worker = new Worker("js/my.js");
+	////
+	var bundle = {message:'Held', id:333};
+	worker.postMessage(bundle); //postMessage可以传一个可序列化的对象过去
+	worker.onmessage = function(evt){
+	    console.log(evt.data);    //比较worker中传回来的对象和主线程中的对象
+	    console.log(bundle);  //{message:'Hello world', id:1}
+	}
+});
+</script>
 </body>
 </html>

@@ -184,16 +184,6 @@ function getHisKLines(interval){
 					return;
 					KLSubscribeHandler(JSON.parse(tempData));//实时K线变化
 				});
-				//监听盘口数据
-				var MQTapeSub = MQStompClient.subscribe('/topic/IF1603_TAPE',function(message){
-					//console.log("盘口数据");
-					var tempData = message.body;
-					return;
-					//console.log(JSON.parse(tempData));
-					TapeOneViewerHandler(JSON.parse(tempData));
-					TapeTwoViewerHandler(JSON.parse(tempData));
-					TapeThreeViewerHandler(JSON.parse(tempData));
-				});
 			}else{
 				alert("请求服务器出错");	
 			}
@@ -253,4 +243,43 @@ function loadHisKLineData(interval){
 //		};
 //		GlobalKLData.ks.push(item);
 //	}
+}
+
+//设置其他分段按钮的样式
+function setKLIntervalStyle(list){
+	var i=0,length=list.length;
+	for(;i<length;i++){
+		var li = list[i];
+		if($(li).attr('isMouseDown') == 'true'){
+			$(li).attr('isMouseDown','false');
+			$(li).css('backgroundColor','transparent');
+			$(li).css('color','#8494A4');
+		}
+	}
+}
+//设置K线周期事件
+function setKLIntervalEvent(KLTimeShareList){
+	var i=0,length=KLTimeShareList.length;
+	//设置分时段按钮的点击事件
+	for(;i<length;i++){
+		var li = KLTimeShareList[i];
+		var value = $(li).val();
+		$(li).attr('isMouseDown','false');
+		$('li').mousedown(function(e){
+			if($(this).attr('isMouseDown') == 'false'){
+				CurrentDataTime = null;
+				LoadHisKLData = false;
+				MQMessageMonitor = false;
+				setKLIntervalStyle(KLTimeShareList);//设置其他分时样式
+				$(this).attr('isMouseDown','true');
+				$(this).css('backgroundColor','#8494A4');
+				$(this).css('color','black');
+				//取消原来的订阅 ,开始新的订阅
+				if(MQStompSub) MQStompSub.unsubscribe();
+				var val = $(this).val()
+				loadHisKLineData(val);//加载数据  
+				//drawKL();//画图
+			}
+		});
+	}
 }

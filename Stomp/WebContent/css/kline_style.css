@@ -1,6 +1,7 @@
 body { 
 	padding-top:1px;
 	margin:0px;
+	font-family:"Microsoft YaHei";
 }
 
 .KL_Wrap_Div{
@@ -254,6 +255,10 @@ body {
 } */
 .KL_OrderManager_SecondWrap > div span:not(:first-child){
 	font-size:13px;
+	width: 30px;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
 }
 .KL_OrderManager_SecondWrap select{
 	width: 125px;
@@ -420,6 +425,7 @@ body {
 	height:24px;
 	line-height:24px;
 	text-align:center;
+	color:#D6D781;
 }
 
 .Tape_Sub_Viewer_Four li:last-child{
@@ -473,29 +479,33 @@ body {
 .Buy_Tape_Sub_Viewer_One{
 	top:25px;
 }
-.KL_FootDataDisplay{
+.KL_FooterRegion{
 	clear:both;
 	height:44px;
 	background-color:#22282F;
 }
-.KL_FootDataDisplay ul{
+.KL_FooterRegion ul{
 	list-style:none;
 	margin-top:-10px;
 	padding-left:0px;
 }
-.KL_FootDataDisplay li{
+.KL_FooterRegion li{
 	float:left;
 	width:131px;
 	color:#A6A7A9;
 	font-weight: bold;
     text-align: center;
-    padding-top:10px;
+    padding-top:7px;
     border:1px solid #636D7E;
-    height:33px;
+    height:36px;
 }
-.KL_FootDataDisplay div:first-child{
+.KL_FooterRegion div:first-child{
 	height:15px;
 	line-height:15px;
+	font-size:14px;
+}
+.KL_FooterRegion div:nth-child(2){
+	font-size:13px;
 }
 .Order_Manager_TB_Convenience{
 	position:relative;
@@ -508,7 +518,7 @@ body {
     height: 16px;
     background-color: #8393AA;
     top: -10px;
-    left: 0px;
+    left: -10px;
     color: white;
     line-height: 16px;
     font-size: 12px;

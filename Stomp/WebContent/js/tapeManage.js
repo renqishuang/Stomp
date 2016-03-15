@@ -270,6 +270,16 @@ function getTapeData() {
 			if(state === 0){
 				LoadTapeFinish = true;//标识历史数据加载完成
 				setTapePage(res);
+				//监听盘口数据
+				var MQTapeSub = MQStompClient.subscribe('/topic/IF1603_TAPE',function(message){
+					//console.log("盘口数据");
+					var tempData = message.body;
+					return;
+					//console.log(JSON.parse(tempData));
+					TapeOneViewerHandler(JSON.parse(tempData));
+					TapeTwoViewerHandler(JSON.parse(tempData));
+					TapeThreeViewerHandler(JSON.parse(tempData));
+				});
 			}
 		},
 		error : function(xhr, state) {
