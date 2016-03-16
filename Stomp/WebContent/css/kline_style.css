@@ -1,8 +1,41 @@
-body { 
-	padding-top:1px;
-	margin:0px;
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, address, area {
 	font-family:"Microsoft YaHei";
+	background-repeat:no-repeat;
+	font-size:12px;
+	margin:0;
+	padding:0;
 }
+ul, li {
+	list-style-type:none;
+}
+input {
+	border:0px;
+	outline:none;
+}
+textarea {
+	border:0px;
+	outline:none;
+}
+a.tdtd:link {text-decoration: underline;}
+a.tdtd:visited {text-decoration: underline;}
+a.tdtd:hover {text-decoration:underline;}
+a.tdtd:active {text-decoration: underline;}
+a:link {
+	text-decoration: none;
+}
+a:visited {
+	text-decoration: none;
+}
+a:hover {
+	text-decoration:underline;
+}
+a:active {
+	text-decoration: none;
+}
+a{blr:expression(this.onFocus=this.close());} 
+a{blr:expression(this.onFocus=this.blur());} 
+a:focus { -moz-outline-style: none; }
+a:focus { outline: none; }
 
 .KL_Wrap_Div{
 	width:1200px;
@@ -19,7 +52,7 @@ body {
 	background-color:#191F26;
 }
 .KL_OrderManger_Wrap{
-	height:198px;
+	height:206px;
 	background-color:#FFFFFF;
 }
 .KL_OrderManager_FirstWrap{
@@ -52,9 +85,6 @@ body {
 	line-height: 31px;
 }
 .KL_OrderManager_FirstWrap > div:first-child span:nth-child(1){
-	/* background-color:white;
-	border: 1px solid #8393AA;
-    border-bottom:none; */
 	left:0px;
 }
 .KL_OrderManager_FirstWrap > div:first-child span:nth-child(2){
@@ -82,6 +112,7 @@ body {
 }
 .KL_OrderManager_SecondWrap > div:nth-last-child(1){
 	height:36px;
+	margin-top: 5px;
 }
 .KL_OrderManager_SecondWrap > div:nth-last-child(3){
 	margin-bottom:4px;
@@ -93,13 +124,15 @@ body {
     width: 125px;
     border: 1px solid #C2C9D2;
 }
+.KL_OM_Volume_Number{
+	top:4px;
+}
 .KL_OM_Price_Number input{
 	width: 92px;
     position: relative;
-    top: 0px;
+    top: 4px;
     height: 18px;
     left: 2px;
-    border:none;
 }
 .KL_OM_Volume_Number input{
 	width: 92px;
@@ -107,7 +140,6 @@ body {
     top: -6px;
     height: 18px;
     left: 2px;
-    border:none;
 }
 .KL_OM_Volume_Number input{
 	width:54px;
@@ -155,7 +187,7 @@ body {
     display: inline-block;
     background-color: #F1F5FB;
     position: relative;
-    top: -28px;
+    top: -24px;
 }
 .KL_OM_Price_Number > div div:first-child,
 .KL_OM_Volume_Number > div div:first-child{
@@ -179,7 +211,7 @@ body {
 }
 .KL_OrderManager_SecondWrap > div:nth-child(5) > span:first-child{
 	position:relative;
-	top:-4px;
+	top:-1px;
 	width:30px;
 }
 .KL_OrderManager_SecondWrap > div:nth-child(5) > span:nth-child(2){
@@ -187,14 +219,14 @@ body {
     font-size: 12px;
     width: 37px;
     display: inline-block;
-    top: -4px;
+    top: -1px;
     background-color: #B0B8C5;
     border-radius: 7px;
     height: 14px;
     color: white;
     text-align: center;
     line-height: 13px;
-    margin-right: 6px;
+    margin-right: 8px;
 }
 .KL_OM_Set_Wrap {
 	width: 65px;
@@ -228,7 +260,7 @@ body {
     background-size: 100% 100%;
 }
 .KL_OM_Order_Wrap div:last-child{
-	margin-left: -5px;
+	margin-left: -1px;
 	width:78px;
 	height:30px;
 	display: inline-block;
@@ -246,8 +278,6 @@ body {
 .Convenience_TB_One,.Convenience_TB_Two{
 	width:365px;
 	height:42px;
-	/* border-color: #8393AA;
-    border-width: inherit; */
     float:left;
 }
 .Convenience_TB_One tr:first-child th:first-child{
@@ -333,9 +363,7 @@ body {
     margin-left: 10px;
 }
 .KL_TimeShareChart_Interval ul{
-	list-style:none;
 	margin-top: 7px;
-	padding:0px;
 }
 .KL_TimeShareChart_Interval ul li{
 	background-color:transparent;
@@ -381,12 +409,9 @@ body {
 	background-color:#222A33;
 }
 .Tape_Sub_Viewer_Two ul{
-	list-style: none;
-    margin-top: -12px;
     margin-left: 10px;
     font-weight: 500;
     font-size: 12px;
-    padding-left:0px;
 }
 .Tape_Sub_Viewer_Two li{
 	color: #A6A7A9;
@@ -419,12 +444,8 @@ body {
 }
 
 .Tape_Sub_Viewer_Three ul{
-	list-style:none;
 	margin-left:10px;
-	margin-top:-16px;
-	padding-left:0px;
 	position:relative;
-	top:1px;
 }
 .Tape_Sub_Viewer_Three li{
 	height:170px;
@@ -465,12 +486,9 @@ body {
 	background-color:#222A33;
 }
 .Tape_Sub_Viewer_Trade ul{
-	list-style:none;
 	margin-left:4px;
-	margin-top:-16px;
-	padding-left:0px;
 	position:relative;
-	top:6px;
+	top:1px;
 }
 .Tape_Sub_Viewer_Trade li{
 	height:40px;
@@ -480,10 +498,6 @@ body {
 	color:white;
 	text-align:center;
 }
-
-/* .Tape_Sub_Viewer_Trade li span:first-child{
-	color:#D6D781;
-} */
 .Tape_Sub_Viewer_Trade li span:nth-last-child(2){
 	color:#D6D781;
 }
@@ -497,11 +511,9 @@ body {
 	position:relative;
 }
 .Tape_Sub_Viewer_Trade_Profit ul{
-	list-style:none;
-	margin-top:-16px;
 	padding-left:0px;
 	position:relative;
-	top:6px;
+	top:1px;
 }
 .Tape_Sub_Viewer_Trade_Profit li{
 	float:left;
@@ -533,12 +545,14 @@ body {
 }
 .Tape_Sub_Viewer_Trade_Profit ul div{
 	line-height:22px;
-	height:28px;
+	height:26px;
 	font-weight: bold;
     font-size: 14px;
+    margin-top: 5px;
 }
 .Tape_Sub_Viewer_Trade_Profit span:nth-last-child(2){
 	color:red;
+	font-size:18px;
 }
 .Tape_Sub_Viewer_Trade_Profit span:nth-last-child(1){
 	font-size:12px;
@@ -548,6 +562,7 @@ body {
 	position:relative;
 	top:15px;
 	left:10px;
+	font-size:15px;
 }
 .Sell_Tape_Sub_Viewer_One span,.Buy_Tape_Sub_Viewer_One span{
 	font-weight:bold;
@@ -576,9 +591,7 @@ body {
 	background-color:#22282F;
 }
 .KL_FooterRegion ul{
-	list-style:none;
-	margin-top:-10px;
-	padding-left:0px;
+	
 }
 .KL_FooterRegion li{
 	float:left;
@@ -640,10 +653,6 @@ body {
 	height:154px;
 	border-left:1px solid rgba(41, 114, 220, 0.7);
 	border-right:1px solid rgba(41, 114, 220, 0.7);
-	/* scrollbar-track-color:#E1E5EB;
-	scrollbar-face-color:#9299A5;
-	scrollbar-width:0px;
-	scrollbar-height:6px; */
 }
 .Order_Manager_TB_Delegation table{
 	width:1000px;
