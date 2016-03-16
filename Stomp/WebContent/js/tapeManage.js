@@ -132,7 +132,54 @@ function setTapeThreeViewerData(tapeData,presettlement,isInit){
 
 
 function setTradeInfo(data){
-	
+	var tradWrap = $('.Tape_Sub_Viewer_Trade');
+	if(tradWrap.length == 0 ) return;
+	var list = tradWrap.find('li'),len = list.length;
+	for(var i=0;i<len;i++){
+		var li = list[i];
+		var val = $(li).attr('value');
+		switch (val) {
+		case 'longtimes':
+			$(li).find('span:nth-last-child(2)').html(data.longtimes);
+			break;
+		case 'shorttimes':
+			$(li).find('span:nth-last-child(2)').html(data.shorttimes);		
+			break;
+		case 'wintimes':
+			$(li).find('span:nth-last-child(2)').html(data.wintimes);
+			break;
+		case 'losstimes':
+			$(li).find('span:nth-last-child(2)').html(data.losstimes);
+			break;
+		case 'winrate':
+			$(li).find('span:nth-last-child(2)').html(data.winrate);
+			break;
+		default:
+			break;
+		}
+	}
+	var profitWrap = $('.Tape_Sub_Viewer_Trade_Profit');
+	if(profitWrap.length == 0) return;
+	var profitList = profitWrap.find('li'),profitLen = profitList.length;
+	for(var j=0;j<profitLen;j++){
+		var li = profitList[j];
+		var value = $(li).attr('value');
+		if(value == 'offsetprofit'){
+			if(data.offsetprofit >= 0){
+				$(li).find('span:nth-last-child(2)').css('color','red');
+			}else{
+				$(li).find('span:nth-last-child(2)').css('color','green');
+			}
+			$(li).find('span:nth-last-child(2)').html(data.offsetprofit);
+		}else if(value == 'floatprofit'){
+			if(data.floatprofit >= 0){
+				$(li).find('span:nth-last-child(2)').css('color','red');
+			}else{
+				$(li).find('span:nth-last-child(2)').css('color','green');
+			}
+			$(li).find('span:nth-last-child(2)').html(data.floatprofit);
+		}
+	}
 };
 
 //设置盘口界面数据
@@ -151,11 +198,11 @@ function getTradeInfo(){
 		"rmc":99839,
 		"rid":1374,
 		"userid":11112,
-		"uid":11112,
+		"uid":3018,
 		"aid":2380,
 		"oper":"getInstStat",
-		"iid":"IF1510",
-		"lc":"5225b2a9400063cd991d84aa9c1af219",
+		"iid":"IF1603",
+		"lc":"lkajoasd8",
 		"roomid":1374
 	};
 	var param = JSON.stringify(param);
@@ -172,12 +219,15 @@ function getTradeInfo(){
 		timeout : 5000, // 设置超时5秒钟
 		success : function(data) {
 			var state = data.rc;
-			console.log("get trade data");
-			console.log(data);
+			//console.log("get trade data");
+			//console.log(data);
+			if(state === 0){
+				setTradeInfo(data.res);
+			}
 		},
 		error : function(xhr, state) {
 			console.log("get data error");
-			alert("请求服务器出错");
+			//alert("请求服务器出错");
 		},
 		complete : function(xhr, state) {
 			//console.log('get data complete');
@@ -191,7 +241,7 @@ window.TapeThreeViewerStore=[];//盘口数据缓存
 function getTapeInfo() {
 	//获取盘口数据
 	var method = 'getTape';
-	var param = 'IF1603_TAPE';
+	var param = InstrumentID+'_TAPE';
 	$.ajax({
 		url : WebServiceTransferUrl+'/call_ws/output',
 		type : 'post',
@@ -205,21 +255,21 @@ function getTapeInfo() {
 		timeout : 5000, // 设置超时5秒钟
 		success : function(data) {
 			var state = data.rc;
-			console.log("get Tage data");
-			console.log(data.res);
-			var res = data.res;
-			//标识昨结价
-			window.CurrentPresettlement= res.presettlement;
-			console.log("当前昨结价位:-----------------");
-			console.log(CurrentPresettlement);
 			if(state === 0){
+				//console.log("get Tage data");
+				//console.log(data.res);
+				var res = data.res;
+				//标识昨结价
+				window.CurrentPresettlement= res.presettlement;
+				//console.log("当前昨结价位:-----------------");
+				//console.log(CurrentPresettlement);
 				LoadTapeFinish = true;//标识历史数据加载完成
 				setTapeInfo(res);
 				//监听盘口数据
-				var MQTapeSub = MQStompClient.subscribe('/topic/IF1603_TAPE',function(message){
+				var MQTapeSub = KLWSClient.subscribe('/topic/'+InstrumentID+'_TAPE',function(message){
 					//console.log("盘口数据");
 					var tempData = message.body;
-					return;
+					//return;
 					//console.log(JSON.parse(tempData));
 					TapeOneViewerHandler(JSON.parse(tempData));
 					TapeTwoViewerHandler(JSON.parse(tempData));
@@ -229,7 +279,7 @@ function getTapeInfo() {
 		},
 		error : function(xhr, state) {
 			console.log("get data error");
-			alert("请求服务器出错");
+			//alert("请求服务器出错");
 		},
 		complete : function(xhr, state) {
 			//console.log('get data complete');

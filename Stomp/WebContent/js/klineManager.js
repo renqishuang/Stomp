@@ -6,7 +6,7 @@ window.GlobalKLData = {
 //根据类型转换数据格式
 function KLDataDecimalHandler(dt,type){
 	if(!dt) return;
-	console.log(dt);
+	//console.log(dt);
 	var time=dt.datetime;
 	var date = new Date(time);
 	var dateNumber = converDateStrByDate(date);
@@ -139,9 +139,8 @@ function originalDataHandle(data){
 function getHisKLines(interval){
 	GlobalKLData.ks.length = 0;
 	var method = 'getHisKlines';//方法
-	var instrumentId = "IF1603";
 	var data = {
-		instrumentid:instrumentId,
+		instrumentid:InstrumentID,
 		startdate:1454256000000,  //2016年1月1日的数据
 		enddate:1456988775044,     
 		interval:parseInt(interval)
@@ -160,37 +159,37 @@ function getHisKLines(interval){
 		timeout:5000, //设置超时5秒钟
 		success:function(data){
 			var state = data.rc;
-			console.log("jquery post data");
-			console.log(data);
+			//console.log("jquery post data");
+			//console.log(data);
 			if(state === 0){
 				var obj = data.res.data;
 				LoadHisKLData = true;
 				originalDataHandle(obj);
 				drawKL();//画图
-				var destination = "/topic/IF1603_"+interval; 
-				if(!MQStompClient) return;
-				console.log("添加监听");
+				var destination = "/topic/"+InstrumentID+"_"+interval; 
+				if(!KLWSClient) return;
+				//console.log("添加监听");
 				LoadHisLineFinish = true;  //标识历史数据加载完成
-				MQStompSub = MQStompClient.subscribe(destination,function(message){
+				KLWSSubscribe = KLWSClient.subscribe(destination,function(message){
 					//return;
 					//判断历史数据是否加载完成
 					if(!LoadTapeFinish || !LoadHisLineFinish)return;
 					var tempData = message.body;
-					MQMessageMonitor = true;
+					KLMQMessageMonitor = true;
 					//console.log("新pong");
 					//console.log('涨跌: -->'+JSON.parse(tempData).pricechg);
 					//console.log('幅度:-->'+JSON.parse(tempData).pricechgrate);
 					//console.log(JSON.parse(tempData));
-					return;
+					//return;
 					KLSubscribeHandler(JSON.parse(tempData));//实时K线变化
 				});
 			}else{
-				alert("请求服务器出错");	
+				//alert("请求服务器出错");	
 			}
 		},
 		error:function(xhr,state){
 			console.log("get data error");
-			alert("请求服务器出错");
+			//alert("请求服务器出错");
 		},
 		complete:function(xhr,state){
 			//console.log('get data complete');
@@ -269,13 +268,13 @@ function setKLIntervalEvent(KLTimeShareList){
 			if($(this).attr('isMouseDown') == 'false'){
 				CurrentDataTime = null;
 				LoadHisKLData = false;
-				MQMessageMonitor = false;
+				KLMQMessageMonitor = false;
 				setKLIntervalStyle(KLTimeShareList);//设置其他分时样式
 				$(this).attr('isMouseDown','true');
 				$(this).css('backgroundColor','#8494A4');
 				$(this).css('color','black');
 				//取消原来的订阅 ,开始新的订阅
-				if(MQStompSub) MQStompSub.unsubscribe();
+				if(KLWSSubscribe) KLWSSubscribe.unsubscribe();
 				var val = $(this).val()
 				loadHisKLineData(val);//加载数据  
 				//drawKL();//画图

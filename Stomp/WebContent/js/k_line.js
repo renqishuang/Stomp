@@ -57,8 +57,8 @@ kLine.prototype = {
     
     //添加一跟K线图
     addCandleToKL:function(item){
-    	if(!MQMessageMonitor && !LoadHisKLData) return;
-    	console.log("添加新数据");
+    	if(!KLMQMessageMonitor && !LoadHisKLData) return;
+    	//console.log("添加新数据");
 		GlobalKLData.ks.push(item);
     },
     
@@ -114,7 +114,7 @@ kLine.prototype = {
     //获取当前显示最后一跟K线的索引
     getIndexForLastCandle: function(){
     	var dataCount = this.getShowKLDataCount();
-    	console.log("数据总个数: "+dataCount);
+    	//console.log("数据总个数: "+dataCount);
 		var maxLength = this.getKLStore().ks.length;
 		var candleIndex;
 		if(dataCount < maxLength){
@@ -196,7 +196,7 @@ kLine.prototype = {
     },
     //更新一跟K线图
     updateKLOnCandle:function(item,updateType){
-    	if(!MQMessageMonitor && !LoadHisKLData) return;
+    	if(!KLMQMessageMonitor && !LoadHisKLData) return;
     	//如果更新的数据的最大值和最小值 与 当前Y轴最大值和最小值不匹配, 那么重新画图
     	this.updateGlobalKLLastDt(item);
     	if(item.high+this.priceGap > this.high || item.low-this.priceGap < this.low){
@@ -207,7 +207,7 @@ kLine.prototype = {
     	var options = this.options;
     	var region = options.region;
 		var candleIndex = this.getIndexForLastCandle();
-		console.log("最后的索引"+candleIndex);
+		//console.log("最后的索引"+candleIndex);
 		this.drawCandleHandler(item,candleIndex,updateType);
 		//如果Tip正在当前蜡烛上面显示,更新Tip显示内容
 		var tip = document.getElementById("canvasKL_tip");
@@ -242,7 +242,7 @@ kLine.prototype = {
          var color = isRise ? riseColor : fallColor;
 		 var priceRangeColor = options.priceRangeColor;
          var lineX = this.getCandleXByIndexForUpdate(i);
-         console.log("最后一根K线的X坐标: "+lineX);
+         //console.log("最后一根K线的X坐标: "+lineX);
          //console.log("获取蜡烛的X坐标");
          //console.log(lineX);
          var topY = this.getYCoordByPriceForUp(ki.high);
@@ -331,7 +331,7 @@ kLine.prototype = {
         window.riseColor = options.riseColor;
         window.fallColor = options.fallColor;
         window.normalColor = options.normalColor;
-        console.log("K线区域宽高: "+clearPart.width+"--"+clearPart.height);
+        //console.log("K线区域宽高: "+clearPart.width+"--"+clearPart.height);
         if (options.backgroundColor && !this.drawnBackground) {
             ctx.beginPath();//开始一条路径或重置当前路径
             //填充颜色
@@ -376,7 +376,7 @@ kLine.prototype = {
         var region = options.region;
         var volumeRegion = options.volume.region;
         var painter = me.painter;
-        console.log("是否存在交叉线对象实例:"+me.crossLineAndTipMgrInstance);
+        //console.log("是否存在交叉线对象实例:"+me.crossLineAndTipMgrInstance);
         var crossLineAndTipConfig = {
     		//获取交叉点坐标
             getCrossPoint: function (ev) { 
@@ -480,12 +480,12 @@ kLine.prototype = {
         var dataCount = this.getShowKLDataCount();//同时显示的数据个数
         if (dataCount > maxDataLength) dataCount = maxDataLength;
 		var startData = 100 * (maxDataLength - dataCount) / maxDataLength;
-		console.log("数据的开始索引:"+startData);
+		//console.log("数据的开始索引:"+startData);
 		var startIndex = Math.ceil(startData / 100 * maxDataLength);
-		console.log("计算后的数据开始索引:"+startIndex);
+		//console.log("计算后的数据开始索引:"+startIndex);
 		var toIndex = Math.ceil(100 / 100 * maxDataLength) + 1;
         if (toIndex >= maxDataLength) toIndex = maxDataLength - 1;
-        console.log("计算后的数据结束索引:"+toIndex);
+        //console.log("计算后的数据结束索引:"+toIndex);
         this.dataRanges = {
             start: startIndex,
             to: toIndex
@@ -506,7 +506,7 @@ kLine.prototype = {
     needCalcSpaceAndBarWidth:function(){
     	var options = this.options;
         var region = options.region;
-        console.log("当数据范围变化时,需要重新计算蜡烛的宽度");
+        //console.log("当数据范围变化时,需要重新计算蜡烛的宽度");
         //重新计算spaceWidth和barWidth属性
         function isOptionsOK() { return (options.spaceWidth + options.barWidth) * itemsCount <= region.width; }
         var spaceWidth, barWidth;
@@ -553,7 +553,7 @@ kLine.prototype = {
         }
         if(lineX*10%10 == 0) lineX += 0.5;
         currentX = lineX;
-        console.log("蜡烛中心线的X坐标");
+        //console.log("蜡烛中心线的X坐标");
         var topY = this.getYCoordByPrice(ki.high);
         var bottomY = this.getYCoordByPrice(ki.low);
         //console.log("根据价格获取Y轴坐标"+topY+"--"+bottomY);
@@ -617,15 +617,15 @@ kLine.prototype = {
         var options = this.options;
         var region = options.region;//绘制K线图的矩形区域(起点x,y坐标,宽度,高度)
         var maxDataLength = this.getMaxDataLength();//所有数据的个数
-        console.log("数据总个数:"+maxDataLength);
+        //console.log("数据总个数:"+maxDataLength);
         var needCalcSpaceAndBarWidth =  false;//是否需要计算蜡烛和空隙的宽度
         this.setDataRange();
         var startIndex = this.dataRanges.start;
         var toIndex = this.dataRanges.to;
         var itemsCount = toIndex - startIndex + 1;
-        console.log("数据开始索引: "+startIndex);
-        console.log("数据借宿索引: "+toIndex);
-        console.log("结算后的数据项个数:"+itemsCount);
+        //console.log("数据开始索引: "+startIndex);
+        //console.log("数据借宿索引: "+toIndex);
+        //console.log("结算后的数据项个数:"+itemsCount);
         //this.needCalcSpaceAndBarWidth();//是否需要重新计算蜡烛和空隙的宽度
 		//过滤数据(获取显示到页面上的数据)
         var filteredData = [];
@@ -648,7 +648,7 @@ kLine.prototype = {
         var priceIncrease = me.caclPriceIncrease(high,low);
         this.high += priceIncrease;
         this.low -= priceIncrease;
-        console.log("最高价:"+high+",最低价:"+low);
+        //console.log("最高价:"+high+",最低价:"+low);
         
         //计算垂直空隙高度
 //        var spaceHeight = options.region.height / (options.horizontalLineCount + 1);
@@ -670,7 +670,7 @@ kLine.prototype = {
         
         var yAxisOptions = options.yAxis;
         yAxisOptions.region = yAxisOptions.region || { x: 0 - region.x, y: 0 - 3, height: region.height, width: region.x - 3 };
-        console.log(yAxisOptions.region);
+        //console.log(yAxisOptions.region);
         //画y轴
         var yAxisImp = new yAxis(yAxisOptions);
         var yPainter = new Painter(
@@ -1002,7 +1002,7 @@ function initAddData(){
 //画K线接口
 function drawKL(height) {
 	//return;
-	if(!MQMessageMonitor && !LoadHisKLData) return;
+	if(!KLMQMessageMonitor && !LoadHisKLData) return;
 	var canvasObj = $('#canvasKL');
 	var ht = height ? height : canvasObj[0].clientHeight-40;
 	//console.log(ht);

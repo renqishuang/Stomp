@@ -3,6 +3,7 @@ function setInitAccountInfo(data){
 	var footer = $('.KL_FooterRegion');
 	if(footer.length === 0) return;
 	var list = footer.find('li'),len = list.length;
+	if(typeof data.balance == 'undefined') return;
 	for(var i=0;i<len;i++){
 		var li = $(list[i]);
 		var val = li.attr('value');
@@ -15,9 +16,19 @@ function setInitAccountInfo(data){
 			div.html(data.floatbalance);		
 			break;
 		case 'floatprofit':
+			if(data.floatprofit >= 0){
+				$(div).css('color','red');
+			}else{
+				$(div).css('color','green');
+			}
 			div.html(data.floatprofit);			
 			break;
 		case 'closeprofit':
+			if(data.closeprofit >= 0){
+				$(div).css('color','red');
+			}else{
+				$(div).css('color','green');
+			}
 			div.html(data.closeprofit);	
 			break;
 		case 'tfee':
@@ -44,13 +55,6 @@ function setInitAccountInfo(data){
 //资金信息
 function setAccountInfo(){
 	var method = 'accountInfo';//方法
-	var instrumentId = "IF1603";
-	/*var data = {
-		instrumentid:instrumentId,
-		startdate:1454256000000,  //2016年1月1日的数据
-		enddate:1456988775044,     
-		interval:parseInt(interval)
-	};*/
 	var data = {
 		"lc":"24a9ac1d9c8e2e3c6f355e78a4526428",
 		"roomid":1374,
@@ -74,21 +78,23 @@ function setAccountInfo(){
 		timeout:5000, //设置超时5秒钟
 		success:function(data){
 			var state = data.rc;
-			console.log("get account info data");
-			console.log(data);
+			//console.log("get account info data");
+			//console.log(data);
 			if(state === 0){
 				setInitAccountInfo(data.res);
 				//监听资金数据
-				if(!MQStompClient) return;
+				if(!TradeWSClient) return;
 				console.log("添加 资金数据监听--------->");
-				var MQAccountSub = MQStompClient.subscribe('/topic/2380',function(message){
-					console.log("资金数据");
+				var MQAccountSub = TradeWSClient.subscribe('/topic/'+AccountAID,function(message){
+					var tempData = message.body;
+					console.log(tempData);
+					setInitAccountInfo(JSON.parse(tempData));
 				});
 			}
 		},
 		error:function(xhr,state){
 			console.log("get data error");
-			alert("请求服务器出错");
+			//alert("请求服务器出错");
 		},
 		complete:function(xhr,state){
 			//console.log('get data complete');

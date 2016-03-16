@@ -11,10 +11,10 @@ function OMPriceNumberDownMouseOut(div){
 	$(div).css('background-image','url(images/NumericStepperxup.png)');
 }
 function OMSetMouseOver(div){
-	$(div).css('background-image','url(images/order_manager_set_down.png)');
+	$(div).css('background-image','url(images/order_manager_set_up.png)');
 }
 function OMSetMouseOut(div){
-	$(div).css('background-image','url(images/order_manager_set_up.png)');
+	$(div).css('background-image','url(images/order_manager_set_down.png)');
 }
 function OMConditionMouseOver(div){
 	$(div).css('background-image','url(images/matiaojian0.png)');
@@ -33,6 +33,87 @@ function OMOrderMouseOut(div){
 }
 function OMOrderMouseDown(div){
 	$(div).css('background-image','url(images/maxiadan1.png)');
+}
+function OMBuySellOpenCloseMouseDown(div,type){
+	var isClick = $(div).attr('isClick');
+	if(isClick == 'true') return;
+	switch (type) {
+	case 'buy':
+		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_red.png)');
+		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_red.png)');
+		var nextSibling = $(div).next();
+		nextSibling.find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_grey.png)');
+		nextSibling.find('span:last-child').css('background-image','none');
+		$(div).attr('isClick',true);
+		nextSibling.attr('isClick',false);
+		break;
+	case 'sell':
+		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_green.png)');
+		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_green.png)');
+		var prevSibling = $(div).prev();
+		prevSibling.find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_grey.png)');
+		prevSibling.find('span:last-child').css('background-image','none');
+		$(div).attr('isClick',true);
+		prevSibling.attr('isClick',false);
+		break;
+	case 'open':
+		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_yellow.png)');
+		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_yellow.png)');
+		var nextSibling = $(div).next();
+		nextSibling.find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_grey.png)');
+		nextSibling.find('span:last-child').css('background-image','none');
+		$(div).attr('isClick',true);
+		nextSibling.attr('isClick',false);
+		break;
+	case 'close':
+		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_yellow.png)');
+		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_yellow.png)');
+		var prevSibling = $(div).prev();
+		prevSibling.find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_grey.png)');
+		prevSibling.find('span:last-child').css('background-image','none');
+		$(div).attr('isClick',true);
+		prevSibling.attr('isClick',false);
+		break;	
+	default:
+		break;
+	}
+}
+function OMBuySellOpenCloseMouseOver(div,type){
+	var isClick = $(div).attr('isClick');
+	if(isClick == 'true') return;
+	switch (type) {
+	case 'sell':
+		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_green.png)');
+		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_green.png)');
+		break;
+	case 'buy':
+		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_red.png)');
+		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_red.png)');
+		break;
+	case 'open':case 'close':
+		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_yellow.png)');
+		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_yellow.png)');
+		break;
+	default:
+		break;
+	}
+}
+function OMBuySellOpenCloseMouseOut(div,type){
+	var isClick = $(div).attr('isClick');
+	if(isClick == 'true') return;
+	$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_grey.png)');
+	$(div).find('span:last-child').css('background-image','none');
+}
+function OMPriceTypeMouseDown(div){
+	var isClick = $(div).attr('isClick');
+	if(isClick === 'false'){
+		$(div).css('background-image','url(images/gudingjia.png)');
+		$(div).attr('isClick',true);
+	}else{
+		$(div).css('background-image','url(images/gensuijia.png)');
+		$(div).attr('isClick',false);
+	}
+	
 }
 function orderManagerLeftRegionStyle(wrap){
 	var navs = $(wrap[0]).find('div:first-child span');

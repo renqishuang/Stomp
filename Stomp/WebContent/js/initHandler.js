@@ -1,7 +1,8 @@
 $(document).ready(function() {
-	window.MQStompClient = null;
-	window.MQStompSub = null;
-	window.MQMessageMonitor = false;
+	window.KLWSClient = null;
+	window.KLWSSubscribe = null;
+	window.KLMQMessageMonitor = false;
+	window.TradeWSClient = null;
 	window.LoadHisKLData = false;
 	window.CurrentDataTime = null;
 	window.LoadHisLineFinish = false;
@@ -9,10 +10,14 @@ $(document).ready(function() {
 	if(window.WebSocket) {
 	    var destination;
 	    //订阅数据WS接口地址
-	    MQStompClient = Stomp.client(MQWSFullUrl);
-		MQStompClient.connect("","", function(frame) {
+	    KLWSClient = Stomp.client(KLWebSocketUrl);
+	    KLWSClient.connect("","", function(frame) {
 			//默认触发1分钟K线图
 			$(KLTimeShareList[0]).trigger('mousedown');
+	    });
+	    TradeWSClient = Stomp.client(TradeWebSocketUrl);
+	    TradeWSClient.connect('','',function(){
+	    	
 	    });
 	 }else {
 	    return;
@@ -41,6 +46,6 @@ $(document).ready(function() {
 	
 	//下单器数据设置
 	
-	//账户信息设置
+	//账户资金信息设置
 	setAccountInfo();
 });

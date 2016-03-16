@@ -178,8 +178,8 @@ crossLinesAndTipMgr.prototype.addCrossLinesAndTipEvents = function () {
     var canvas = this.canvas;
     var options = this.options;
     var canvasPosition = getPageCoord(canvas);
-    console.log("canvasPosition");
-    console.log(canvasPosition);
+    //console.log("canvasPosition");
+    //console.log(canvasPosition);
     if (canvas.addCrossLinesAndTipEvents == true) return;
     canvas.addCrossLinesAndTipEvents = true;
 

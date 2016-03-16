@@ -453,22 +453,38 @@
 					<div>
 						<span>合约</span>
 						<select>
-						  <option value="volvo">IF1603</option>
-						  <option value="saab">IF1602</option>
+						  <option value="volvo">TF1606</option>
+						  <option value="saab">IF1603</option>
 						</select>
 					</div>
 					<div>
 						<span>买卖</span>
-						<label><input type="radio" value='OrderManager_Buy' checked name='OrderManager_Buy_Sell'><span>买</span></label>
-						<label><input type="radio" value='OrderManager_Sell' name='OrderManager_Buy_Sell'><span>卖</span></label>
+						<div isClick = 'true' onmouseover="OMBuySellOpenCloseMouseOver(this,'buy')" 
+						onmouseout="OMBuySellOpenCloseMouseOut(this,'buy')" onclick="OMBuySellOpenCloseMouseDown(this,'buy')">
+							<span></span>
+							<span>买</span>
+						</div>
+						<div isClick = 'false' onclick="OMBuySellOpenCloseMouseDown(this,'sell')" onmouseover="OMBuySellOpenCloseMouseOver(this,'sell')" 
+						onmouseout="OMBuySellOpenCloseMouseOut(this,'sell')">
+							<span></span>
+							<span>卖</span>				
+						</div>
 					</div>
 					<div>
 						<span>开平</span>
-						<label><input type="radio" value='OrderManager_Open' checked name='OrderManager_Open_Close'><span>开仓</span></label>
-						<label><input type="radio" value='OrderManager_Close' name='OrderManager_Open_Close'><span>平仓</span></label>
+						<div isClick = 'true' onmouseover="OMBuySellOpenCloseMouseOver(this,'open')" 
+						onmouseout="OMBuySellOpenCloseMouseOut(this,'open')" onclick="OMBuySellOpenCloseMouseDown(this,'open')">
+							<span></span>
+							<span>开仓</span>
+						</div>
+						<div isClick = 'false' onmouseover="OMBuySellOpenCloseMouseOver(this,'close')" 
+						onmouseout="OMBuySellOpenCloseMouseOut(this,'close')" onclick="OMBuySellOpenCloseMouseDown(this,'close')">
+							<span></span>
+							<span>平仓</span>						
+						</div>
 					</div>
 					<div>
-						<span>跟随价</span>
+						<span isClick='false' onclick='OMPriceTypeMouseDown(this)'></span>
 						<div class='KL_OM_Price_Number'>
 							<input type="text">
 							<div>
@@ -480,6 +496,7 @@
 					</div>
 					<div>
 						<span>手数</span>
+						<span>123</span>
 						<div class='KL_OM_Volume_Number'>
 							<input type="text">
 							<span></span>
@@ -573,34 +590,49 @@
 					</li>
 				</ul>
 			</div>
-			<div class='Tape_Sub_Viewer_Four'>
+			<div class='Tape_Sub_Viewer_Trade'>
 				<ul>
-					<li>多开
-						<div>0次</div>
+					<li value='longtimes'>
+						<div>多开</div>
+						<span>-</span>
+						<span>次</span>
 					</li>
-					<li>空开
-						<div>0次</div>
+					<li value='shorttimes'>
+						<div>空开</div>
+						<span>-</span>
+						<span>次</span>
 					</li>
-					<li>盈利
-						<div>0次</div>
+					<li value='wintimes'>
+						<div>盈利</div>
+						<span>-</span>
+						<span>次</span>
 					</li>
-					<li>亏损
-						<div>0次</div>
+					<li value='losstimes'>
+						<div>亏损</div>
+						<span>-</span>
+						<span>次</span>
 					</li>
-					<li>正确率
-						<div>0%</div>
+					<li value='winrate'>
+						<div>正确率</div>
+						<span>--</span>
+						<span></span>
 					</li>
 				</ul>
 			</div>
-			<div class='Tape_Sub_Viewer_Five'>
+			<div class='Tape_Sub_Viewer_Trade_Profit'>
+				<div></div>
+				<div>逐笔</div>
+				<div>逐笔</div>
 				<ul>
-					<li>
+					<li value='offsetprofit'>
 						<div>平仓盈亏</div>
-						<div>0<span>元</span></div>
+						<span>-</span>
+						<span>元</span>
 					</li>
-					<li>
+					<li value='floatprofit'>
 						<div>浮动盈亏</div>
-						<div>0<span>元</span></div>
+						<span>-</span>
+						<span>元</span>
 					</li>
 				</ul>
 			</div>
