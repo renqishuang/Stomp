@@ -120,7 +120,6 @@ function originalDataHandle(data){
 		var dateNumber =converDateStrByDate(date);
 		var item = {
 		    quoteTime: dateNumber,
-		    preClose: 2977.0,
 		    open: parseFloat(dt.open),
 		    high: parseFloat(dt.high),
 		    low: parseFloat(dt.low),
@@ -142,7 +141,7 @@ function getHisKLines(interval){
 	var data = {
 		instrumentid:InstrumentID,
 		startdate:1454256000000,  //2016年1月1日的数据
-		enddate:1456988775044,     
+		enddate:1458177863579,     
 		interval:parseInt(interval)
 	};
 	var param = JSON.stringify(data);
@@ -156,11 +155,11 @@ function getHisKLines(interval){
 			ws_func:method,
 			ws_param:param
 		},
-		timeout:5000, //设置超时5秒钟
+		timeout:AjaxTimeOut, //设置超时5秒钟
 		success:function(data){
 			var state = data.rc;
-			//console.log("jquery post data");
-			//console.log(data);
+			console.log("get K line his data");
+			console.log(data);
 			if(state === 0){
 				var obj = data.res.data;
 				LoadHisKLData = true;
@@ -275,7 +274,7 @@ function setKLIntervalEvent(KLTimeShareList){
 				$(this).css('color','black');
 				//取消原来的订阅 ,开始新的订阅
 				if(KLWSSubscribe) KLWSSubscribe.unsubscribe();
-				var val = $(this).val()
+				var val = $(this).val();
 				loadHisKLineData(val);//加载数据  
 				//drawKL();//画图
 			}

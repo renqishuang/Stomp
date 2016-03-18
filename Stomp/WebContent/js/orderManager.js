@@ -24,6 +24,12 @@ function OMConditionMouseOut(div){
 }
 function OMConditionMouseDown(div){
 	$(div).css('background-image','url(images/matiaojian1.png)');
+	var remodalWrap = $('.remodal');
+	if(remodalWrap.length == 0 ) return;
+	var titleWrap = remodalWrap.children('.remodal-title');
+	titleWrap.html('条件单设置');
+	var contentWrap = remodalWrap.children('.remodal-content');
+	contentWrap.empty();
 }
 function OMOrderMouseOver(div){
 	$(div).css('background-image','url(images/maxiadan0.png)');
@@ -33,6 +39,37 @@ function OMOrderMouseOut(div){
 }
 function OMOrderMouseDown(div){
 	$(div).css('background-image','url(images/maxiadan1.png)');
+	var remodalWrap = $('.remodal');
+	if(remodalWrap.length == 0 ) return;
+	var titleWrap = remodalWrap.children('.remodal-title');
+	titleWrap.html('下单提示');
+	var contentWrap = remodalWrap.children('.remodal-content');
+	contentWrap.empty();
+}
+//订单设置
+function OMSetClick(){
+	var remodal = $('.remodal');
+	if(remodal.length == 0)return;
+	var titleWrap = remodal.children('.remodal-title');
+	titleWrap.html('系统提示');
+	var contentWrap = remodal.children('.remodal-content');
+	contentWrap.empty();
+	var htmlFrag = "<ul class='order_set'>"+
+			  	      "<li><span isClick='false'></span><span>不显示下单提示页</span></li>"+
+			  	      "<li><span isClick='false'></span><span>不显示双击平仓提示</span></li>"+
+			  	      "<li><span isClick='false'></span><span>不显示开屏弹幕提示</span></li>"+
+			  	   "</ul>";
+	$(htmlFrag).appendTo(contentWrap);
+	contentWrap.find('span:nth-child(1)').click(function(){
+		var isClick = $(this).attr('isClick');
+		if(isClick === 'true'){
+			$(this).attr('isClick',false);
+			$(this).css('background-image','url(images/ordertipcb_normal.png)');
+		}else{
+			$(this).attr('isClick',true);
+			$(this).css('background-image','url(images/ordertipcb_selected.png)');
+		}
+	});
 }
 function OMBuySellOpenCloseMouseDown(div,type){
 	var isClick = $(div).attr('isClick');
@@ -270,4 +307,364 @@ function orderManagerRightRegion(wrap){
 			$(radio).next().css('background-color','#FBD03A');
 		}
 	}
+}
+function tradeInfoMPHandler(data){
+	var shortCutWrap = $('.TradeInfo_MP');
+	var mpWrap = $('.Order_Manager_TB_Position');
+	if(shortCutWrap.length == 0 || mpWrap.length == 0) return;
+	var len = data.length;
+	for(var i=0;i<len;i++){
+		var dt = data[i];
+		//var avgprice = dt.avgprice;
+		shortCutWrap.find('tr').eq(i+1).css('background-color','#E3FFEA');
+		shortCutWrap.find('tr').eq(i+1).find('td:last-child').html(dt.avgprice);
+		shortCutWrap.find('tr').eq(i+1).find('td:nth-last-child(2)').html(dt.volfcls);
+		shortCutWrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
+		shortCutWrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
+		shortCutWrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.vol);
+		
+		mpWrap.find('tr').eq(i+1).css('background-color','#E3FFEA');
+		mpWrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
+		mpWrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
+		mpWrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.vol);
+		mpWrap.find('tr').eq(i+1).find('td:nth-child(4)').html(dt.volfcls);
+		mpWrap.find('tr').eq(i+1).find('td:nth-child(5)').html(dt.avgprice);
+		mpWrap.find('tr').eq(i+1).find('td:nth-child(6)').html(dt.floatprofit);
+		mpWrap.find('tr').eq(i+1).find('td:nth-child(7)').html(dt.deposit);
+	}
+}
+
+//获取快捷, 持仓信息
+function getTradeInfoMP(){
+	//return;
+	var method = 'tradeInfo';//方法
+	var data = {
+		/*"uid":3018,
+		"aid":2380,
+		"oper":"getMP",
+		"rmc":99839,
+		"lc":"lkajoasd8"*/
+			"rid":1553,
+			"aid":3179,
+			"uid":3018,
+			"lc":"lkajoasd8",
+			"rmc":4928,
+			"oper":"getMP"
+	};
+	var param = JSON.stringify(data);
+	$.ajax({
+		url:WebServiceTransferUrl+'/call_ws/output',
+		type:'post',
+		dataType:"json",
+		//async:false,//同步请求
+		data:{
+			ws_url:WebServiceTradeUrl,
+			ws_func:method,
+			ws_param:param
+		},
+		timeout:AjaxTimeOut, //设置超时5秒钟
+		success:function(data){
+			var state = data.rc;
+			console.log('get mp');
+			console.log(data);
+			if(state === 0){
+				var res=data.res,dt=res.data;
+				if(!dt) return;
+				tradeInfoMPHandler(dt);
+			}
+		},
+		error:function(xhr,state){
+			console.log("get data error");
+			//alert("请求服务器出错");
+		},
+		complete:function(xhr,state){
+			//console.log('get data complete');
+		}
+	});
+}
+
+function tradeInfoPDHandler(data){
+	var wrap = $('.TradeInfoPendingDepute');
+	if(wrap.length == 0) return;
+	var len = data.length;
+	for(var i=0;i<len;i++){
+		var dt=data[i];
+		wrap.find('tr').eq(i+1).css('background-color','#E3FFEA');
+		wrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
+		wrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
+		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'开仓':'平仓');
+		wrap.find('tr').eq(i+1).find('td:nth-last-child(2)').html(dt.dvol);
+		wrap.find('tr').eq(i+1).find('td:last-child').html(dt.dprice);
+	}
+}
+
+//委托挂单
+function getTradeInfoPendingDepute(){
+	var method = 'tradeInfo';//方法
+	/*var data = {
+		"uid":3018,
+		"aid":2380,
+		"oper":"getMP",
+		"rmc":99839,
+		"lc":"lkajoasd8"
+	};*/
+	var data = {
+		"rid":1553,
+		"aid":3179,
+		"uid":3018,
+		"lc":"lkajoasd8",
+		"rmc":4928,
+		"oper":"getPendingDepute"
+	};
+	var param = JSON.stringify(data);
+	$.ajax({
+		url:WebServiceTransferUrl+'/call_ws/output',
+		type:'post',
+		dataType:"json",
+		//async:false,//同步请求
+		data:{
+			ws_url:WebServiceTradeUrl,
+			ws_func:method,
+			ws_param:param
+		},
+		timeout:AjaxTimeOut, //设置超时5秒钟
+		success:function(data){
+			var state = data.rc;
+			console.log('get pending depute');
+			console.log(data);
+			if(state === 0){
+				var res=data.res,dt=res.data;
+				if(!dt) return;
+				tradeInfoPDHandler(dt);
+			}
+		},
+		error:function(xhr,state){
+			console.log("get data error");
+			//alert("请求服务器出错");
+		},
+		complete:function(xhr,state){
+			//console.log('get data complete');
+		}
+	});
+}
+function tradeInfoAllDeputeHandler(data){
+	var wrap = $('.Order_Manager_TB_Delegation');
+	if(wrap.length == 0) return;
+	var i=0,len = data.length;
+	for(;i<len;i++){
+		var dt=data[i];
+		wrap.find('tr').eq(i+1).css('background-color','#E3FFEA');
+		wrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
+		wrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
+		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'开仓':'平仓');
+		var state;
+		if(dt.status == 1){
+			state = '报销';
+		}else if(dt.status == 2){
+			state = '撤单';
+		}else if(dt.status == 3){
+			state = '成交';
+		}
+		wrap.find('tr').eq(i+1).find('td:nth-child(4)').html(state);
+		wrap.find('tr').eq(i+1).find('td:nth-child(5)').html(dt.dprice);
+		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(dt.dtime);
+		wrap.find('tr').eq(i+1).find('td:nth-child(7)').html(dt.otime);
+		wrap.find('tr').eq(i+1).find('td:nth-child(8)').html(dt.tvol);
+		wrap.find('tr').eq(i+1).find('td:nth-child(9)').html(dt.volfcls);
+		wrap.find('tr').eq(i+1).find('td:nth-child(10)').html(dt.otime);
+		wrap.find('tr').eq(i+1).find('td:nth-child(11)').html(dt.dvol);
+		wrap.find('tr').eq(i+1).find('td:nth-child(12)').html(dt.did);
+		wrap.find('tr').eq(i+1).find('td:nth-child(13)').html(dt.comment);
+	}
+}
+
+//当日委托
+function getTradeInfoAllDepute(){
+	var method = 'tradeInfo';//方法
+	/*var data = {
+		"uid":3018,
+		"aid":2380,
+		"oper":"getMP",
+		"rmc":99839,
+		"lc":"lkajoasd8"
+	};*/
+	var data = {
+			"rid":1553,
+			"aid":3179,
+			"uid":3018,
+			"lc":"lkajoasd8",
+			"rmc":4928,
+			"oper":"getAllDepute"
+			};
+	var param = JSON.stringify(data);
+	$.ajax({
+		url:WebServiceTransferUrl+'/call_ws/output',
+		type:'post',
+		dataType:"json",
+		//async:false,//同步请求
+		data:{
+			ws_url:WebServiceTradeUrl,
+			ws_func:method,
+			ws_param:param
+		},
+		timeout:AjaxTimeOut, //设置超时5秒钟
+		success:function(data){
+			var state = data.rc;
+			console.log('get all deputes');
+			console.log(data);
+			if(state === 0){
+				var res=data.res,dt=res.data;
+				if(!dt) return;
+				tradeInfoAllDeputeHandler(dt);
+			}
+		},
+		error:function(xhr,state){
+			console.log("get data error");
+			//alert("请求服务器出错");
+		},
+		complete:function(xhr,state){
+			//console.log('get data complete');
+		}
+	});
+}
+function tradeInfoOrderHandler(data){
+	var wrap = $('.Order_Manager_TB_Bargain');
+	if(wrap.length == 0) return;
+	var i=0,len=data.length;
+	for(;i<len;i++){
+		wrap.find('tr').eq(i+1).css('background-color','#E3FFEA');
+		wrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
+		wrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
+		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'开仓':'平仓');
+		wrap.find('tr').eq(i+1).find('td:nth-child(4)').html(data.price);
+		wrap.find('tr').eq(i+1).find('td:nth-child(5)').html(dt.volfcls);
+		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(dt.otime);
+		wrap.find('tr').eq(i+1).find('td:nth-child(7)').html(dt.otime);//成交编号没找到
+		wrap.find('tr').eq(i+1).find('td:nth-child(8)').html(dt.did);
+		
+		wrap.find('tr').eq(i+1).find('td:nth-child(9)').html(dt.dtime);
+		wrap.find('tr').eq(i+1).find('td:nth-child(10)').html(dt.dprice);
+		wrap.find('tr').eq(i+1).find('td:nth-child(11)').html(dt.tfee);
+		wrap.find('tr').eq(i+1).find('td:nth-child(12)').html(dt.comment);
+	}
+}
+//当日成交
+function getTradeInfoAllOrder(){
+	var method = 'tradeInfo';//方法
+	/*var data = {
+		"uid":3018,
+		"aid":2380,
+		"oper":"getMP",
+		"rmc":99839,
+		"lc":"lkajoasd8"
+	};*/
+	var data = {
+			"aid":2380,
+			"uid":11112,
+			"roomid":1374,
+			"rid":1374,
+			"lc":"e288abe2e13f318f161a5ca286386248",
+			"rmc":42152,
+			"oper":"getAllOrder",
+			"userid":11112
+			};
+	var param = JSON.stringify(data);
+	$.ajax({
+		url:WebServiceTransferUrl+'/call_ws/output',
+		type:'post',
+		dataType:"json",
+		//async:false,//同步请求
+		data:{
+			ws_url:WebServiceTradeUrl,
+			ws_func:method,
+			ws_param:param
+		},
+		timeout:AjaxTimeOut, //设置超时5秒钟
+		success:function(data){
+			var state = data.rc;
+			console.log('get all order');
+			console.log(data);
+			if(state === 0){
+				var res=data.res,dt=res.data;
+				if(!dt) return;
+				tradeInfoOrderHandler(dt);
+			}
+		},
+		error:function(xhr,state){
+			console.log("get data error");
+			//alert("请求服务器出错");
+		},
+		complete:function(xhr,state){
+			//console.log('get data complete');
+		}
+	});
+}
+function tradeInfoConOrderHandler(data){
+	var wrap = $('.Order_Manager_TB_Condition');
+	if(wrap.length == 0) return;
+	var i=0;len=data.length;
+	for(;i<len;i++){
+		/*wrap.find('tr').eq(i+1).css('background-color','#E3FFEA');
+		wrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
+		wrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
+		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'开仓':'平仓');
+		wrap.find('tr').eq(i+1).find('td:nth-child(4)').html(data.price);
+		wrap.find('tr').eq(i+1).find('td:nth-child(5)').html(dt.volfcls);
+		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(dt.otime);
+		wrap.find('tr').eq(i+1).find('td:nth-child(7)').html(dt.otime);//成交编号没找到
+		wrap.find('tr').eq(i+1).find('td:nth-child(8)').html(dt.did);
+		wrap.find('tr').eq(i+1).find('td:nth-child(9)').html(dt.dtime);*/
+	}
+}
+
+//条件单查询
+function getTradeInfoConOrder(){
+	var method = 'tradeInfo';//方法
+	/*var data = {
+		"uid":3018,
+		"aid":2380,
+		"oper":"getMP",
+		"rmc":99839,
+		"lc":"lkajoasd8"
+	};*/
+	var data = {
+		"rmc":44506,
+		"roomid":1374,
+		"rid":1374,
+		"lc":"b4423db756953808eb602c1e52e1b935",
+		"uid":11112,
+		"oper":"getConditionOrder",
+		"userid":11112,
+		"aid":2380
+	};
+	var param = JSON.stringify(data);
+	$.ajax({
+		url:WebServiceTransferUrl+'/call_ws/output',
+		type:'post',
+		dataType:"json",
+		//async:false,//同步请求
+		data:{
+			ws_url:WebServiceTradeUrl,
+			ws_func:method,
+			ws_param:param
+		},
+		timeout:AjaxTimeOut, //设置超时5秒钟
+		success:function(data){
+			var state = data.rc;
+			console.log('get condition order');
+			console.log(data);
+			if(state === 0){
+				var res=data.res,dt=res.data;
+				if(!dt) return;
+				
+			}
+		},
+		error:function(xhr,state){
+			console.log("get data error");
+			//alert("请求服务器出错");
+		},
+		complete:function(xhr,state){
+			//console.log('get data complete');
+		}
+	});
 }

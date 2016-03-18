@@ -638,7 +638,11 @@ kLine.prototype = {
         var high, low;
         filteredData.each(function (val, a, i) {
             if (i == 0) { high = val.high; low = val.low; }
-            else { high = Math.max(val.high, high); low = Math.min(low, val.low); }
+            else { 
+            	if(val) {
+            		high = Math.max(val.high, high); low = Math.min(low, val.low);
+            	}
+            }
         });
 
 //        this.high = Math.max(high,3000.1);

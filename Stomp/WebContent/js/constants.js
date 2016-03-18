@@ -5,3 +5,4 @@ window.WebServiceStrageUrl = 'http://192.168.1.231:8080/axis2/services/StrategyE
 window.WebServiceTradeUrl = 'http://192.168.1.227:8888/axis2/services/SimTrade?wsdl';
 window.InstrumentID = 'TF1606';
 window.AccountAID = '2380';
+window.AjaxTimeOut = 10000;

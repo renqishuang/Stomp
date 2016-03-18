@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="css/css.css" rel="stylesheet">
+<script src='js/jquery.1.11.3.min.js'></script>
+</head>
+<body>
+<div class="fhkmenu" id="default">
+        <div class="default a1 ""><a href="javascript:;">快捷 委托挂单/持仓查询</a><input type="hidden" value="getPendingDepute__getMP" ></div>
+        <div class="default b2 "><a href="javascript:;">当日委托</a><input type="hidden" value="getAllDepute" ></div>
+        <div class="default b2 "><a href="javascript:;">当日成交</a><input type="hidden" value="getAllOrder" ></div>
+        <div class="default b2 "><a href="javascript:;">委托挂单</a><input type="hidden" value="getPendingDepute" ></div>
+        <div class="default b2 "><a href="javascript:;">持仓信息</a><input type="hidden" value="getMP" ></div>
+        <div class="default b2 "><a href="javascript:;">条件单</a><input type="hidden" value="getConditionOrder" ></div>
+        <div class="c1"><a href="javascript:;" id="refresh" value="getPendingDepute__getMP" onclick="add_room_deal_query_refresh('getPendingDepute__getMP')">刷新</a></div>
+</div>
+<div id="list">
+
+<div class="fhk2" style="display:block;">
+        <div class="fhk2a">
+                <table width="597" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                                <td width="26%" height="28" class="jygkbkba"><span class="t999999 t14 tb yahei">合约</span></td>
+                                <td width="14%" class="jygkbkba"><span class="t999999 t14 tb yahei">买卖</span></td>
+                                <td width="14%" class="jygkbkba"><span class="t999999 t14 tb yahei">开平</span></td>
+                                <td width="15%" class="jygkbkba"><span class="t999999 t14 tb yahei">未成交手数</span></td>
+                                <td width="30%" class="jygkbkba"><span class="t999999 t14 tb yahei">报单价格</span></td>
+                        </tr>
+                </table>
+                <div style="width:597px; height:203px; overflow:auto; overflow-x:hidden;" class="xxlb3-">
+                        <table width="597" border="0" cellspacing="0" cellpadding="0" class="songti">
+                                                                								<tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#f0d9d9'" style="background-color:#f0d9d9;">                                <!-- <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'"> -->
+                                        <td width="26%" height="28" class="jygkbkbra">TF1606</td>
+                                        <td width="14%" class="jygkbkbra">买</td>
+                                        <td width="14%" class="jygkbkbra">开</td>
+                                        <td width="15%" class="jygkbkbra">1</td>
+                                        <td width="30%" class="jygkbkba">100.63 </td>
+                                </tr>
+                                                                
+                                                                                                <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'">
+                                        <td width="26%" height="28" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="15%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="30%" class="jygkbkba">&nbsp;</td>
+                                </tr>
+                                                                <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'">
+                                        <td width="26%" height="28" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="15%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="30%" class="jygkbkba">&nbsp;</td>
+                                </tr>
+                                                                <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'">
+                                        <td width="26%" height="28" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="15%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="30%" class="jygkbkba">&nbsp;</td>
+                                </tr>
+                                                                <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'">
+                                        <td width="26%" height="28" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="15%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="30%" class="jygkbkba">&nbsp;</td>
+                                </tr>
+                                                                <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'">
+                                        <td width="26%" height="28" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="15%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="30%" class="jygkbkba">&nbsp;</td>
+                                </tr>
+                                                                <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'">
+                                        <td width="26%" height="28" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="15%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="30%" class="jygkbkba">&nbsp;</td>
+                                </tr>
+                                                                                                                        </table>
+                </div>
+        </div>
+        <div class="fhk2b">
+                <table width="598" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                                <td width="26%" height="28" class="jygkbkba"><span class="t999999 t14 tb yahei">合约</span></td>
+                                <td width="14%" class="jygkbkba"><span class="t999999 t14 tb yahei">买卖</span></td>
+                                <td width="14%" class="jygkbkba"><span class="t999999 t14 tb yahei">总持仓</span></td>
+                                <td width="15%" class="jygkbkba"><span class="t999999 t14 tb yahei">可平量</span></td>
+                                <td width="30%" class="jygkbkba"><span class="t999999 t14 tb yahei">持仓均价</span></td>
+                        </tr>
+                </table>
+                <div style="width:598px; height:203px; overflow:auto; overflow-x:hidden;" class="xxlb3-">
+                        <table width="598" border="0" cellspacing="0" cellpadding="0" class="songti">
+                                                                								<tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#cee9d8'" style="background-color:#cee9d8;">                                <!-- <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'"> -->
+                                        <td width="26%" height="28" class="jygkbkbra">ZC605</td>
+                                        <td width="14%" class="jygkbkbra">卖</td>
+                                        <td width="14%" class="jygkbkbra">1 </td>
+                                        <td width="15%" class="jygkbkbra">1 </td>
+                                        <td width="30%" class="jygkbkba">364 </td>
+                                </tr>
+                                								<tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#cee9d8'" style="background-color:#cee9d8;">                                <!-- <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'"> -->
+                                        <td width="26%" height="28" class="jygkbkbra">a1605</td>
+                                        <td width="14%" class="jygkbkbra">卖</td>
+                                        <td width="14%" class="jygkbkbra">1 </td>
+                                        <td width="15%" class="jygkbkbra">1 </td>
+                                        <td width="30%" class="jygkbkba">3550 </td>
+                                </tr>
+                                								<tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#cee9d8'" style="background-color:#cee9d8;">                                <!-- <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'"> -->
+                                        <td width="26%" height="28" class="jygkbkbra">c1605</td>
+                                        <td width="14%" class="jygkbkbra">卖</td>
+                                        <td width="14%" class="jygkbkbra">1 </td>
+                                        <td width="15%" class="jygkbkbra">1 </td>
+                                        <td width="30%" class="jygkbkba">1755 </td>
+                                </tr>
+                                								<tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#cee9d8'" style="background-color:#cee9d8;">                                <!-- <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'"> -->
+                                        <td width="26%" height="28" class="jygkbkbra">rb1605</td>
+                                        <td width="14%" class="jygkbkbra">卖</td>
+                                        <td width="14%" class="jygkbkbra">1 </td>
+                                        <td width="15%" class="jygkbkbra">1 </td>
+                                        <td width="30%" class="jygkbkba">2080 </td>
+                                </tr>
+                                                                
+                                                                                                <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'">
+                                        <td width="26%" height="28" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="15%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="30%" class="jygkbkba">&nbsp;</td>
+                                </tr>
+                                                                <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'">
+                                        <td width="26%" height="28" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="15%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="30%" class="jygkbkba">&nbsp;</td>
+                                </tr>
+                                                                <tr onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='#eeeeee'">
+                                        <td width="26%" height="28" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="14%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="15%" class="jygkbkbra">&nbsp;</td>
+                                        <td width="30%" class="jygkbkba">&nbsp;</td>
+                                </tr>
+                                                                                                                        </table>
+                </div>
+        </div>
+</div>
+<!--委托查询-->
+<!--成交查询-->
+<!--委托挂单-->
+ 
+<!--持仓查询-->
+ <!--条件单查询-->
+
+<div class="fhk2" style="display:block;" style="height:232px;">
+    </div>
+
+ 
+</div>
+
+</body>
+</html>

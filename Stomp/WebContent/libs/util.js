@@ -50,7 +50,7 @@
             return Math.round(val * Math.pow(10, pos)) / Math.pow(10, pos);*/
         	//if(typeof val == 'number' || !val) return val;
             //return val.toFixed(2);
-        	return val.toFixed(1);
+        	return val.toFixed(CurrentInstrumentDigits);
         },
         bigNumberToText: function (val) {
             var result;

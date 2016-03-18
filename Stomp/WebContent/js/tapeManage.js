@@ -132,6 +132,7 @@ function setTapeThreeViewerData(tapeData,presettlement,isInit){
 
 
 function setTradeInfo(data){
+	if(typeof data.longtimes == 'undefined') return;
 	var tradWrap = $('.Tape_Sub_Viewer_Trade');
 	if(tradWrap.length == 0 ) return;
 	var list = tradWrap.find('li'),len = list.length;
@@ -191,7 +192,7 @@ function setTapeInfo(data){
 	setTapeThreeViewerData(history,data.presettlement,true);
 }
 
-function getTradeInfo(){
+function getTradeInfoInstStat(){
 	//获取交易数据
 	var method = 'tradeInfo';
 	var param = {
@@ -216,7 +217,7 @@ function getTradeInfo(){
 			ws_func : method,
 			ws_param : param
 		},
-		timeout : 5000, // 设置超时5秒钟
+		timeout : AjaxTimeOut, // 设置超时5秒钟
 		success : function(data) {
 			var state = data.rc;
 			//console.log("get trade data");
@@ -252,7 +253,7 @@ function getTapeInfo() {
 			ws_func : method,
 			ws_param : param
 		},
-		timeout : 5000, // 设置超时5秒钟
+		timeout : AjaxTimeOut, // 设置超时5秒钟
 		success : function(data) {
 			var state = data.rc;
 			if(state === 0){
@@ -361,6 +362,11 @@ function TapeTwoViewerHandler(data){
 	}
 	div.find('li[value=lowest] span').html(data.lowest);//9
 	
+	if(data.averageprice < CurrentPresettlement){
+		div.find('li[value=averageprice] span').css('color',greenColor);
+	}else{
+		div.find('li[value=averageprice] span').css('color',redColor);
+	}
 	div.find('li[value=averageprice] span').html(data.averageprice);//10
 	
 	div.find('li[value=presettlement] span').html(data.presettlement);//11

@@ -4,93 +4,29 @@
 <meta charset="UTF-8">
 <title>测试各种页面组件</title>
 <style>
-body{
-	background-color:#191F26;
-}
-ul{
-	list-style:none;
-}
-li{
-	background-color:transparent;
-	color:#8494A4;
-	width:25px;
-	height:25px;
-	line-height:25px;
-	border-top:1px solid #8494A4;
-	border-left:1px solid #8494A4;
-	border-bottom:1px solid #8494A4;
-	border-right:1px solid #8494A4;
-	float:left;
-	font-weight:bold;
-	font-size:smaller;
-	text-align:center;
-	cursor:pointer;
-}
-li:last-child{
-	border:1px solid #8494A4;
+div{
+	width:200px;
+	height:200px;
+	background-color:green;
+	position:absolute;
+	top:200px;
+	left:200px;
 }
 </style>
-<script src="libs/util.js"></script>
-
-<script type="text/javascript">
-	//设置其他分段按钮的样式
-	function setKLTimeSharingInterStyle(list){
-		for(var i in list){
-			var li = list[i];
-			if(li.isMouseDown){
-				li.isMouseDown = false;
-				li.style.backgroundColor="transparent";
-				li.style.color = "#8494A4";
-			}
-		}
-	}
-	function init(){
-		
-		return;
-		//设置li点击事件
-		var div = document.querySelector('div.KL_TimeShareChart_Interval');
-		var list = div.querySelectorAll("li");
-		for(var i in list){
-			var li = list[i];
-			addEvent(li,"mousedown",function(e){
-				if(!this.isMouseDown){
-					setKLTimeSharingInterStyle(list);//设置其他分时样式
-					this.isMouseDown = true;
-					this.style.backgroundColor="#8494A4";
-					this.style.color = "black";
-				}
-			});
-		}
-		//console.log(list);
-	}
-	function testClick(btn){
-		console.log(btn.style.backgroundColor="blue");
-	}
-</script>
 </head>
-<body onload="init();">
-<button type="button" onclick="testClick(this)">1分钟</button>
-<div class="KL_TimeShareChart_Interval">
-	<ul>
-		<li>1</li>
-		<li>3</li>
-		<li>5</li>
-		<li>10</li>
-		<li>15</li>
-		<li>30</li>
-	</ul>
+<body>
+<div hidden="true"></div>
+<button id='12333' type='button'></button>
 <script src='js/jquery.1.11.3.min.js'></script>
 <script src='js/constants.js'></script>
 <script>
-$(function(){
-	var worker = new Worker("js/my.js");
-	////
-	var bundle = {message:'Held', id:333};
-	worker.postMessage(bundle); //postMessage可以传一个可序列化的对象过去
-	worker.onmessage = function(evt){
-	    console.log(evt.data);    //比较worker中传回来的对象和主线程中的对象
-	    console.log(bundle);  //{message:'Hello world', id:1}
-	}
+$(function(){ 
+	//alert('ddd');
+	window.open ('http://localhost:8080/Stomp/empty.html', 'newwindow', 'height=100, width=400, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
+	$('#12333').click(function(){
+		//alert('dd');
+		$(this).prev().show();
+	});
 });
 </script>
 </body>

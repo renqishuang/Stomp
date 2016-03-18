@@ -75,7 +75,7 @@ function setAccountInfo(){
 			ws_func:method,
 			ws_param:param
 		},
-		timeout:5000, //设置超时5秒钟
+		timeout:AjaxTimeOut, //设置超时5秒钟
 		success:function(data){
 			var state = data.rc;
 			//console.log("get account info data");
@@ -84,11 +84,14 @@ function setAccountInfo(){
 				setInitAccountInfo(data.res);
 				//监听资金数据
 				if(!TradeWSClient) return;
-				console.log("添加 资金数据监听--------->");
+				//console.log("添加 资金数据监听--------->");
 				var MQAccountSub = TradeWSClient.subscribe('/topic/'+AccountAID,function(message){
 					var tempData = message.body;
-					console.log(tempData);
+					//console.log(tempData);
+					//设置资金信息
 					setInitAccountInfo(JSON.parse(tempData));
+					//设置交易信息
+					setTradeInfo(JSON.parse(tempData));
 				});
 			}
 		},
