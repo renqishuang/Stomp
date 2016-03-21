@@ -10,6 +10,36 @@ function OMPriceNumberDownMouseOver(div){
 function OMPriceNumberDownMouseOut(div){
 	$(div).css('background-image','url(images/NumericStepperxup.png)');
 }
+
+function OMVolumeUpMouseOver(div){
+	$(div).css('background-image','url(images/NumericSteppersdown1.png)');
+}
+function OMVolumeUpMouseOut(div){
+	$(div).css('background-image','url(images/NumericSteppersup.png)');
+}
+function OMVolumeDownMouseOver(div){
+	$(div).css('background-image','url(images/NumericStepperxdown.png)');
+}
+function OMVolumeDownMouseOut(div){
+	$(div).css('background-image','url(images/NumericStepperxup.png)');
+}
+
+function OMPriceNumberUpClick(div){
+	var input = $(div).parent().prev();
+	input.val(Number(input.val())+1);
+}
+function OMPriceNumberDownClick(div){
+	var input = $(div).parent().prev();
+	input.val(Number(input.val())-1);
+}
+function OMVolumeUpClick(div){
+	var input = $(div).parents('.KL_OM_Volume_Number').children('input');
+	input.val(Number(input.val())+1);
+}
+function OMVolumeDownClick(div){
+	var input = $(div).parents('.KL_OM_Volume_Number').children('input');
+	input.val(Number(input.val())-1);
+}
 function OMSetMouseOver(div){
 	$(div).css('background-image','url(images/order_manager_set_up.png)');
 }
@@ -44,7 +74,7 @@ function OMOrderMouseDown(div){
 	var titleWrap = remodalWrap.children('.remodal-title');
 	titleWrap.html('下单提示');
 	var contentWrap = remodalWrap.children('.remodal-content');
-	contentWrap.empty();
+	//contentWrap.empty();
 }
 //订单设置
 function OMSetClick(){

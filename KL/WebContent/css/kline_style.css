@@ -110,6 +110,9 @@ a:focus { outline: none; }
 	margin-left:10px;
 	height:28px;
 }
+.KL_OrderManager_SecondWrap div:nth-child(5){
+	position:relative;
+}
 .KL_OrderManager_SecondWrap > div:nth-last-child(1){
 	height:36px;
 	margin-top: 5px;
@@ -123,11 +126,20 @@ a:focus { outline: none; }
     position: relative;
     width: 125px;
     border: 1px solid #C2C9D2;
+    border-radius:2px;
+}
+.KL_OM_Price_Number:hover,.KL_OM_Volume_Number:hover{
+	border:2px solid black;
+	border-radius:4px;
 }
 .KL_OM_Volume_Number{
 	top:4px;
+	left: 82px;
 }
 .KL_OM_Price_Number input{
+	color: red;
+    font-weight: bold;
+    font-size:13px;
 	width: 92px;
     position: relative;
     top: 4px;
@@ -135,6 +147,9 @@ a:focus { outline: none; }
     left: 2px;
 }
 .KL_OM_Volume_Number input{
+	color: black;
+    font-weight: bold;
+    font-size:13px;
 	width: 92px;
     position: relative;
     top: -6px;
@@ -210,16 +225,17 @@ a:focus { outline: none; }
     cursor:pointer;
 }
 .KL_OrderManager_SecondWrap > div:nth-child(5) > span:first-child{
-	position:relative;
-	top:-1px;
+	position:absolute;
+	top:9px;
 	width:30px;
 }
 .KL_OrderManager_SecondWrap > div:nth-child(5) > span:nth-child(2){
-	position: relative;
+	position: absolute;
     font-size: 12px;
     width: 37px;
     display: inline-block;
-    top: -1px;
+    top: 13px;
+    left:35px;
     background-color: #B0B8C5;
     border-radius: 7px;
     height: 14px;

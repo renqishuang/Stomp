@@ -491,8 +491,8 @@
 						<div class='KL_OM_Price_Number'>
 							<input type="text">
 							<div>
-								<div onmouseover="OMPriceNumberUpMouseOver(this)" onmouseout="OMPriceNumberUpMouseOut(this)"></div>								
-								<div onmouseover="OMPriceNumberDownMouseOver(this)" onmouseout="OMPriceNumberDownMouseOut(this)"></div>
+								<div onclick='OMPriceNumberUpClick(this)' onmouseover="OMPriceNumberUpMouseOver(this)" onmouseout="OMPriceNumberUpMouseOut(this)"></div>								
+								<div onclick='OMPriceNumberDownClick(this)' onmouseover="OMPriceNumberDownMouseOver(this)" onmouseout="OMPriceNumberDownMouseOut(this)"></div>
 								<span></span>
 							</div>
 						</div>
@@ -504,8 +504,8 @@
 							<input type="text">
 							<span></span>
 							<div>
-								<div onmouseover="OMPriceNumberUpMouseOver(this)" onmouseout="OMPriceNumberUpMouseOut(this)"></div>
-								<div onmouseover="OMPriceNumberDownMouseOver(this)" onmouseout="OMPriceNumberDownMouseOut(this)"></div>
+								<div onclick='OMVolumeUpClick(this)' onmouseover="OMVolumeUpMouseOver(this)" onmouseout="OMVolumeUpMouseOut(this)"></div>
+								<div onclick='OMVolumeDownClick(this)' onmouseover="OMVolumeDownMouseOver(this)" onmouseout="OMVolumeDownMouseOut(this)"></div>
 								<span></span>
 							</div>
 						</div>
@@ -688,16 +688,18 @@
 	  <div class='remodal-title'></div>
 	  <div data-remodal-action="close" class='remodal-close'></div>
 	  <div class='remodal-content'>
-	  	   
+	  	   <div class='remodal-order'>
+	  	   		按<span>99.5</span>价格, <span>买</span><span>TF1606</span><sapan>平仓</sapan><span>1</span>手
+	  	   </div>
 	  </div>
 	  <span data-remodal-action="cancel" class="remodal-confirm"></span>
 	  <span data-remodal-action="confirm" class="remodal-cancel"></span>
 	</div>
 	
+	<script src='js/constants.js'></script>
     <script src='js/jquery.1.11.3.min.js'></script>
     <script src="js/remodal.js"></script>
     <script src="js/stomp.js"></script>
-    <script src='js/constants.js'></script>
     <script src='js/commonTool.js'></script>
     <script src="libs/loading.js" ></script>
     <script src="libs/util.js" ></script>

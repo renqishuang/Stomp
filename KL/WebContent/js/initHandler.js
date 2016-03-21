@@ -3,16 +3,6 @@ function afterInitSysInfo(){
 	getTapeInfo();
 	//获取交易数据
 	getTradeInfoInstStat();
-	//下单器界面设置
-	var orderManagerFirstWrap = $('.KL_OrderManager_FirstWrap');
-	if(orderManagerFirstWrap.length != 0){
-		orderManagerLeftRegion(orderManagerFirstWrap);
-	}
-	var orderManagerSecondWrap = $('.KL_OrderManager_SecondWrap');
-	if(orderManagerSecondWrap.length != 0 ){
-		orderManagerRightRegion(orderManagerSecondWrap);
-	}
-	
 	//持仓信息
 	getTradeInfoMP();
 	//委托挂单
@@ -79,6 +69,15 @@ $(document).ready(function() {
 	var KLTimeShareList = KLTimeShareDiv.find("li");
 	setKLIntervalEvent(KLTimeShareList);
 	
+	//下单器界面设置
+	var orderManagerFirstWrap = $('.KL_OrderManager_FirstWrap');
+	if(orderManagerFirstWrap.length != 0){
+		orderManagerLeftRegion(orderManagerFirstWrap);
+	}
+	var orderManagerSecondWrap = $('.KL_OrderManager_SecondWrap');
+	if(orderManagerSecondWrap.length != 0 ){
+		orderManagerRightRegion(orderManagerSecondWrap);
+	}
 	//获取合约集合信息, 调用合约历史数据前调用
 	var method = 'sysInfo';//方法
 	var data = {

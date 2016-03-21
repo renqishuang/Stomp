@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="Stomp">
+    <wb-module deploy-name="KL">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <property name="java-output-path" value="/Stomp/build/classes"/>
-        <property name="context-root" value="Stomp"/>
+        <property name="java-output-path" value="/KL/build/classes"/>
+        <property name="context-root" value="KL"/>
     </wb-module>
 </project-modules>
