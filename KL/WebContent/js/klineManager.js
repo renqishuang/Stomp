@@ -47,7 +47,7 @@ function KLSubscribeHandler(dt){
 		//console.log(dt);
 		if(!CurrentKLObj) return;
 		//对订阅数据的小数位数进行判断
-		var item = KLDataDecimalHandler(dt,1);
+		var item = KLDataDecimalHandler(dt,CurrentInstrumentDigits);
 		//var item = dt;
 		//console.log(item);
 		//console.log("open:"+item.open+",high:"+item.high+",low:"+item.low+",close"+item.close);
@@ -139,7 +139,7 @@ function getHisKLines(interval){
 	GlobalKLData.ks.length = 0;
 	var method = 'getHisKlines';//方法
 	var data = {
-		instrumentid:InstrumentID,
+		instrumentid:CurrentInstrumentID,
 		startdate:1454256000000,  //2016年1月1日的数据
 		enddate:1458177863579,     
 		interval:parseInt(interval)
@@ -165,7 +165,7 @@ function getHisKLines(interval){
 				LoadHisKLData = true;
 				originalDataHandle(obj);
 				drawKL();//画图
-				var destination = "/topic/"+InstrumentID+"_"+interval; 
+				var destination = "/topic/"+CurrentInstrumentID+"_"+interval; 
 				if(!KLWSClient) return;
 				//console.log("添加监听");
 				LoadHisLineFinish = true;  //标识历史数据加载完成

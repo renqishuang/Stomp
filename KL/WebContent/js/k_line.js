@@ -15,6 +15,7 @@ function calcMAPrices(ks, startIndex, count, daysCn) {
         }
         var sum = 0;
         for (var k = startCalcIndex; k <= i; k++) {
+        	if(!ks[k]) break;
             sum += ks[k].close;
         }
         var val = sum / daysCn;
@@ -536,6 +537,7 @@ kLine.prototype = {
     
     //画一跟蜡烛
     drawCandle: function(ki, i){
+    	if(!ki) return;
     	var options = this.options;
     	var painter = this.painter;
     	var ctx = painter.ctx;

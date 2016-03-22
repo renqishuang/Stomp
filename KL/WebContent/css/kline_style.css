@@ -308,6 +308,20 @@ a:focus { outline: none; }
 }
 .KL_OrderManager_FirstWrap > div:not(:first-child){
 	margin-left:10px;
+	height:154px;
+}
+.KL_OrderManager_FirstWrap > div:not(:first-child)::-webkit-scrollbar{
+	height:6px;
+	width:6px;
+}
+.KL_OrderManager_FirstWrap > div:not(:first-child)::-webkit-scrollbar-track-piece{
+	background:#E1E5EB;
+}
+.KL_OrderManager_FirstWrap > div:not(:first-child)::-webkit-scrollbar-thumb:horizontal{
+	background-color:#9299A5;
+}
+.KL_OrderManager_FirstWrap > div:not(:first-child)::-webkit-scrollbar-thumb:vertical{
+	background-color:#9299A5;
 }
 .KL_OrderManager_FirstWrap td{
 	border-bottom:none;
@@ -653,16 +667,7 @@ a:focus { outline: none; }
 	background-image: url('../images/icon_kuaijie_chi.png');
 	left: 365px;
 }
-.Order_Manager_TB_Delegation::-webkit-scrollbar{
-	height:6px;
-	width:0px !important;
-}
-.Order_Manager_TB_Delegation::-webkit-scrollbar-track-piece{
-	background:#E1E5EB;
-}
-.Order_Manager_TB_Delegation::-webkit-scrollbar-thumb:horizontal{
-	background-color:#9299A5;
-}
+
 .Order_Manager_TB_Delegation{
 	width:740px;
 	position:absolute;
@@ -706,18 +711,9 @@ a:focus { outline: none; }
 	width:130px;
 }
 
-.Order_Manager_TB_Bargain::-webkit-scrollbar{
-	height:6px;
-	width:0px !important;
-}
-.Order_Manager_TB_Bargain::-webkit-scrollbar-track-piece{
-	background:#E1E5EB;
-}
-.Order_Manager_TB_Bargain::-webkit-scrollbar-thumb:horizontal{
-	background-color:#9299A5;
-}
 .Order_Manager_TB_Bargain{
 	position:absolute;
+	height: 154px;
 	width:740px;
 	overflow:auto;
 	border-left:1px solid rgba(41, 114, 220, 0.7);
@@ -802,4 +798,86 @@ a:focus { outline: none; }
 .Order_Manager_TB_Condition tr td:nth-child(8),
 .Order_Manager_TB_Condition tr td:nth-child(9){
 	width:80px;
+}
+.remodal-content ul.order_set{
+	position: relative;
+    top: 20px;
+    width: 150px;
+    margin: auto;
+}
+.remodal-content ul.order_set li{
+	height:30px;
+    line-height: 30px;
+    text-align: left;
+}
+.remodal-content ul.order_set li span:first-child{
+	cursor:pointer;
+	display: inline-block;
+    width: 17px;
+    height: 17px;
+    background-image: url('../images/ordertipcb_normal.png');
+    vertical-align: middle;
+    margin-right: 5px;
+}
+.remodal-content .remodal-order{
+	position: relative;
+    top: 30px;
+    color: #CBDAF7;
+}
+.remodal-content .remodal-order>div:first-child{
+	height: 60px;
+    font-size: 16px;
+}
+.remodal-content .remodal-order>div:first-child>span:nth-child(odd){
+	color: #FFFFFF;
+    font-size: 20px;
+}
+.remodal-content .remodal-order>div:nth-child(2){
+	font-size: 14px;
+	height: 26px;
+    line-height: 26px;
+}
+.remodal-content .remodal-order>div:nth-child(2)>span:first-child{
+	display: inline-block;
+    width: 17px;
+    height: 17px;
+    background-image: url(../images/ordertipcb_normal.png);
+    margin-right: 5px;
+    position: relative;
+    top: 3px;
+}
+.order_notify_wrap{
+	text-align: center;
+	width: 500px;
+    height: 36px;
+    line-height:36px;
+    font-size:22px;
+    background-color: #000000;
+    position: absolute;
+    top: 160px;
+    left: 50%;
+    margin: 0px 0px 0px -250px;
+    color:#9A9691;
+}
+.order_notify_wrap span[value=iid]{
+	color:#0060E4;
+}
+.order_notify_wrap span[value=dir],
+.order_notify_wrap span[value=co],
+.order_notify_wrap span[value=price]{
+	color:#FF0000;
+}
+.order_notify_wrap span[value=co]{
+	margin-right:10px;
+}
+.order_notify_wrap span[value=img]{
+	margin-right: 6px;
+	display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-image: url(../images/hongjiantou.png);
+    background-size: 100% 100%;
+    background-repeat:no-repeat;
+    background-position:center;
+}
 }

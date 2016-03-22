@@ -41,7 +41,8 @@ function setInitAccountInfo(data){
 			div.html(data.froze);			
 			break;
 		case 'available':
-			div.html(data.available);	
+			AvalibleAmount = data.available;
+			div.html(data.available);
 			break;
 		case 'risk':
 			div.html(data.risk);
@@ -53,16 +54,14 @@ function setInitAccountInfo(data){
 }
 
 //资金信息
-function setAccountInfo(){
+function getAccountInfo(){
 	var method = 'accountInfo';//方法
 	var data = {
-		"lc":"24a9ac1d9c8e2e3c6f355e78a4526428",
-		"roomid":1374,
-		"uid":11112,
-		"aid":2380,
-		"rmc":93935,
-		"rid":1374,
-		"userid":11112
+		"lc":CurrentLC,
+		"uid":CurrentUserId,
+		"aid":CurrentAccountID,
+		"rmc":CurrentRMC,
+		"rid":CurrentRoomID,
 	};
 	var param = JSON.stringify(data);
 	$.ajax({
@@ -78,21 +77,24 @@ function setAccountInfo(){
 		timeout:AjaxTimeOut, //设置超时5秒钟
 		success:function(data){
 			var state = data.rc;
-			//console.log("get account info data");
-			//console.log(data);
+			console.log("get account info data");
+			console.log(data);
 			if(state === 0){
 				setInitAccountInfo(data.res);
 				//监听资金数据
 				if(!TradeWSClient) return;
 				//console.log("添加 资金数据监听--------->");
-				var MQAccountSub = TradeWSClient.subscribe('/topic/'+AccountAID,function(message){
+				var MQAccountSub = TradeWSClient.subscribe('/topic/'+CurrentAccountID,function(message){
 					var tempData = message.body;
-					//console.log(tempData);
+					console.log('topic aid --- ');
+					console.log(tempData);
 					//设置资金信息
 					setInitAccountInfo(JSON.parse(tempData));
 					//设置交易信息
 					setTradeInfo(JSON.parse(tempData));
 				});
+				//获取房间合约信息
+				getRoomInstrumentInfo();
 			}
 		},
 		error:function(xhr,state){

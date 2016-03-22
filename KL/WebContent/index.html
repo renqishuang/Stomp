@@ -455,9 +455,10 @@
 				<div class='KL_OrderManager_SecondWrap'>
 					<div>
 						<span>合约</span>
-						<select>
-						  <option value="volvo">TF1606</option>
-						  <option value="saab">IF1603</option>
+						<select class='Order_Instrument_Select'>
+						    <!-- <option value="i1609">i1609</option>
+						    <option value="TF1606">TF1606</option>
+						    <option value="IF1603">IF1603</option> -->
 						</select>
 					</div>
 					<div>
@@ -465,12 +466,12 @@
 						<div isClick = 'true' onmouseover="OMBuySellOpenCloseMouseOver(this,'buy')" 
 						onmouseout="OMBuySellOpenCloseMouseOut(this,'buy')" onclick="OMBuySellOpenCloseMouseDown(this,'buy')">
 							<span></span>
-							<span>买</span>
+							<span value='0'>买</span>
 						</div>
 						<div isClick = 'false' onclick="OMBuySellOpenCloseMouseDown(this,'sell')" onmouseover="OMBuySellOpenCloseMouseOver(this,'sell')" 
 						onmouseout="OMBuySellOpenCloseMouseOut(this,'sell')">
 							<span></span>
-							<span>卖</span>				
+							<span value='1'>卖</span>				
 						</div>
 					</div>
 					<div>
@@ -478,12 +479,12 @@
 						<div isClick = 'true' onmouseover="OMBuySellOpenCloseMouseOver(this,'open')" 
 						onmouseout="OMBuySellOpenCloseMouseOut(this,'open')" onclick="OMBuySellOpenCloseMouseDown(this,'open')">
 							<span></span>
-							<span>开仓</span>
+							<span value='0'>开仓</span>
 						</div>
 						<div isClick = 'false' onmouseover="OMBuySellOpenCloseMouseOver(this,'close')" 
 						onmouseout="OMBuySellOpenCloseMouseOut(this,'close')" onclick="OMBuySellOpenCloseMouseDown(this,'close')">
 							<span></span>
-							<span>平仓</span>						
+							<span value='1'>平仓</span>						
 						</div>
 					</div>
 					<div>
@@ -499,7 +500,7 @@
 					</div>
 					<div>
 						<span>手数</span>
-						<span>123</span>
+						<span></span>
 						<div class='KL_OM_Volume_Number'>
 							<input type="text">
 							<span></span>
@@ -688,21 +689,31 @@
 	  <div class='remodal-title'></div>
 	  <div data-remodal-action="close" class='remodal-close'></div>
 	  <div class='remodal-content'>
-	  	   <div class='remodal-order'>
-	  	   		按<span>99.5</span>价格, <span>买</span><span>TF1606</span><sapan>平仓</sapan><span>1</span>手
-	  	   </div>
+	  	   
 	  </div>
 	  <span data-remodal-action="cancel" class="remodal-confirm"></span>
 	  <span data-remodal-action="confirm" class="remodal-cancel"></span>
 	</div>
 	
+	<!-- <div class='order_notify_wrap'>
+		<span value='iid'>i1609</span>
+		<span value='img'></span>
+		<span value='dir'>多</span>
+		<span value='co'>开</span>
+		<span value='price'>430</span>
+		<span value='vol'>1</span>
+		<span>手</span>
+		<span value='time'>11:26:20</span>
+	</div> -->
+	
 	<script src='js/constants.js'></script>
     <script src='js/jquery.1.11.3.min.js'></script>
-    <script src="js/remodal.js"></script>
     <script src="js/stomp.js"></script>
     <script src='js/commonTool.js'></script>
     <script src="libs/loading.js" ></script>
     <script src="libs/util.js" ></script>
+    <script src="js/remodal.js"></script>
+    <script src='js/remodalEventHandler.js'></script>
     <script src="libs/absPainter.js" ></script>
     <script src="libs/ajax.js"  ></script>
     <script src="libs/crossLines.js"  ></script>
@@ -713,6 +724,7 @@
     <script src="libs/axis-y.js"  ></script>
     <script src="libs/chartEventHelper.js?abc"  ></script>
     <script src="libs/controller.js" ></script>
+    <script src='js/room.js'></script>
     <script src='js/tapeManage.js'></script>
     <script src="js/klineManager.js"></script>
     <script src="js/k_line.js"></script>

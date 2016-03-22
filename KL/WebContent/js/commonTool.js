@@ -29,3 +29,14 @@ function convertDate(val, withWeek) {
         return year + '-' + month + '-' + day;
     }
 }
+//根据毫秒数获取时分秒
+function msecondConvertToDate(millisecond){
+	var date = new Date(millisecond);
+	var hours = date.getHours(),
+	minutes = date.getMinutes(),
+	seconds=date.getSeconds();
+	hours = hours < 10 ? hours+'0' : hours;
+	minutes = minutes < 10 ? minutes + '0' : minutes;
+	seconds = seconds < 10 ? seconds + '0' : seconds;
+	return hours+':'+minutes+':'+seconds;
+}

@@ -67,6 +67,7 @@ function OMOrderMouseOver(div){
 function OMOrderMouseOut(div){
 	$(div).css('background-image','url(images/maxiadan1.png)');
 }
+//下单
 function OMOrderMouseDown(div){
 	$(div).css('background-image','url(images/maxiadan1.png)');
 	var remodalWrap = $('.remodal');
@@ -74,7 +75,59 @@ function OMOrderMouseDown(div){
 	var titleWrap = remodalWrap.children('.remodal-title');
 	titleWrap.html('下单提示');
 	var contentWrap = remodalWrap.children('.remodal-content');
-	//contentWrap.empty();
+	contentWrap.attr('remodalConType','order');
+	contentWrap.empty();
+	var htmlFrag = "<div class='remodal-order'>"+
+			  	   		"<div>"+
+			  	   			"按<span></span>价格, <span></span>"+
+			  	   		"<span></span><span></span><span></span>手"+
+			  	   		"</div>"+
+			  	   		"<div isClick='false'>"+
+			  	   			"<span></span>不显示下单提示页"+
+			  	   		"</div>"+
+			  	   "</div>";
+	contentWrap.append($(htmlFrag));
+	var orderWrap = $('.KL_OrderManager_SecondWrap');
+	if(orderWrap.length == 0) return;
+	//合约
+	var instrumentSelect = orderWrap.find('select.Order_Instrument_Select');
+	var instrumentVal = instrumentSelect.val();
+	var buySell = orderWrap.find('>div:nth-child(2)>div'),buySellLen=buySell.length;
+	var buySellVal;
+	//买-卖
+	for(var i=0;i<buySellLen;i++){
+		var radioDiv = buySell[i];
+		if($(radioDiv).attr('isClick') == 'true') 
+			buySellVal=$(radioDiv).find('span:last-child').attr('value');
+	}
+	//开仓-平仓
+	var openClose = orderWrap.find('>div:nth-child(3)>div'),openCloseLen=openClose.length;
+	var openCloseVal;
+	for(var i=0;i<openCloseLen;i++){
+		var radioDiv = openClose[i];
+		if($(radioDiv).attr('isClick') == 'true')
+			openCloseVal = $(radioDiv).find('span:last-child').attr('value');
+	}
+	//价格
+	var priceInput = orderWrap.find('div.KL_OM_Price_Number input[type=text]');
+	var priceVal = priceInput.val();
+	//手数
+	var volumeInput = orderWrap.find('div.KL_OM_Volume_Number input[type=text]');
+	var volumeVal = volumeInput.val();
+	
+	var remodalOrderWrap = contentWrap.find('.remodal-order');
+	var remodalOrderInnerWrap = remodalOrderWrap.find('>div:first-child');
+	remodalOrderInnerWrap.find('>span:first-child').html(' '+priceVal+' ');
+	remodalOrderInnerWrap.find('>span:nth-child(2)').html(buySellVal == '0'?'买':'卖');
+	remodalOrderInnerWrap.find('>span:nth-child(3)').html(' '+instrumentVal+' ');
+	remodalOrderInnerWrap.find('>span:nth-child(4)').html(openCloseVal=='0'?'开仓':'平仓');
+	remodalOrderInnerWrap.find('>span:nth-child(5)').html(' '+volumeVal+' ');
+	
+	remodalOrderWrap.attr('instrument',instrumentVal);
+	remodalOrderWrap.attr('dir',buySellVal);
+	remodalOrderWrap.attr('co',openCloseVal);
+	remodalOrderWrap.attr('price',priceVal);
+	remodalOrderWrap.attr('volume',volumeVal);
 }
 //订单设置
 function OMSetClick(){
@@ -346,21 +399,21 @@ function tradeInfoMPHandler(data){
 	for(var i=0;i<len;i++){
 		var dt = data[i];
 		//var avgprice = dt.avgprice;
-		shortCutWrap.find('tr').eq(i+1).css('background-color','#E3FFEA');
+		shortCutWrap.find('tr').eq(i+1).css('background-color','#FFE7E7');
 		shortCutWrap.find('tr').eq(i+1).find('td:last-child').html(dt.avgprice);
 		shortCutWrap.find('tr').eq(i+1).find('td:nth-last-child(2)').html(dt.volfcls);
 		shortCutWrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
 		shortCutWrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
 		shortCutWrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.vol);
 		
-		mpWrap.find('tr').eq(i+1).css('background-color','#E3FFEA');
+		mpWrap.find('tr').eq(i+1).css('background-color','#FFE7E7');
 		mpWrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
 		mpWrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
 		mpWrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.vol);
 		mpWrap.find('tr').eq(i+1).find('td:nth-child(4)').html(dt.volfcls);
-		mpWrap.find('tr').eq(i+1).find('td:nth-child(5)').html(dt.avgprice);
-		mpWrap.find('tr').eq(i+1).find('td:nth-child(6)').html(dt.floatprofit);
-		mpWrap.find('tr').eq(i+1).find('td:nth-child(7)').html(dt.deposit);
+		mpWrap.find('tr').eq(i+1).find('td:nth-child(5)').html((dt.avgprice).toFixed(CurrentInstrumentDigits));
+		mpWrap.find('tr').eq(i+1).find('td:nth-child(6)').html(Math.round(dt.floatprofit));
+		mpWrap.find('tr').eq(i+1).find('td:nth-child(7)').html((dt.deposit).toFixed(2));//占用保证金 固定2位小数
 	}
 }
 
@@ -369,17 +422,12 @@ function getTradeInfoMP(){
 	//return;
 	var method = 'tradeInfo';//方法
 	var data = {
-		/*"uid":3018,
-		"aid":2380,
-		"oper":"getMP",
-		"rmc":99839,
-		"lc":"lkajoasd8"*/
-			"rid":1553,
-			"aid":3179,
-			"uid":3018,
-			"lc":"lkajoasd8",
-			"rmc":4928,
-			"oper":"getMP"
+		"rid":CurrentRoomID,
+		"aid":CurrentAccountID,
+		"uid":CurrentUserId,
+		"lc":CurrentLC,
+		"rmc":CurrentRMC,
+		"oper":"getMP"
 	};
 	var param = JSON.stringify(data);
 	$.ajax({
@@ -417,12 +465,33 @@ function tradeInfoPDHandler(data){
 	var wrap = $('.TradeInfoPendingDepute');
 	if(wrap.length == 0) return;
 	var len = data.length;
+	if(len > 5){//大于5行
+		var htmlFrage = "<tr>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+						"</tr>";
+		var fragLen = len - 5;
+		var table = wrap.find('table');
+		for(var j=0;j<fragLen;j++){
+			table.append($(htmlFrage));
+		}
+	}
 	for(var i=0;i<len;i++){
 		var dt=data[i];
-		wrap.find('tr').eq(i+1).css('background-color','#E3FFEA');
+		wrap.find('tr').eq(i+1).css('cursor','pointer');
+		wrap.find('tr').eq(i+1).mouseover(function(){
+			$(this).css('background-color','#E9EBEE');
+		});
+		wrap.find('tr').eq(i+1).mouseout(function(){
+			$(this).css('background-color','#FFE7E7');
+		});
+		wrap.find('tr').eq(i+1).css('background-color','#FFE7E7');
 		wrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
 		wrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
-		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'开仓':'平仓');
+		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'开':'平');
 		wrap.find('tr').eq(i+1).find('td:nth-last-child(2)').html(dt.dvol);
 		wrap.find('tr').eq(i+1).find('td:last-child').html(dt.dprice);
 	}
@@ -431,19 +500,12 @@ function tradeInfoPDHandler(data){
 //委托挂单
 function getTradeInfoPendingDepute(){
 	var method = 'tradeInfo';//方法
-	/*var data = {
-		"uid":3018,
-		"aid":2380,
-		"oper":"getMP",
-		"rmc":99839,
-		"lc":"lkajoasd8"
-	};*/
 	var data = {
-		"rid":1553,
-		"aid":3179,
-		"uid":3018,
-		"lc":"lkajoasd8",
-		"rmc":4928,
+		"rid":CurrentRoomID,
+		"aid":CurrentAccountID,
+		"uid":CurrentUserId,
+		"lc":CurrentLC,
+		"rmc":CurrentRMC,
 		"oper":"getPendingDepute"
 	};
 	var param = JSON.stringify(data);
@@ -481,49 +543,68 @@ function tradeInfoAllDeputeHandler(data){
 	var wrap = $('.Order_Manager_TB_Delegation');
 	if(wrap.length == 0) return;
 	var i=0,len = data.length;
+	if(len > 5){//大于5行
+		var htmlFrage = "<tr>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+						"</tr>";
+		var fragLen = len - 5;
+		var table = wrap.find('table');
+		for(var j=0;j<fragLen;j++){
+			table.append($(htmlFrage));
+		}
+	}
 	for(;i<len;i++){
 		var dt=data[i];
-		wrap.find('tr').eq(i+1).css('background-color','#E3FFEA');
+		wrap.find('tr').eq(i+1).css('background-color','#FFE7E7');
 		wrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
 		wrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
-		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'开仓':'平仓');
+		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'开':'平');
 		var state;
 		if(dt.status == 1){
-			state = '报销';
+			state = '已报销';
 		}else if(dt.status == 2){
-			state = '撤单';
+			state = '已撤单';
 		}else if(dt.status == 3){
-			state = '成交';
+			state = '已成交';
 		}
 		wrap.find('tr').eq(i+1).find('td:nth-child(4)').html(state);
-		wrap.find('tr').eq(i+1).find('td:nth-child(5)').html(dt.dprice);
-		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(dt.dtime);
-		wrap.find('tr').eq(i+1).find('td:nth-child(7)').html(dt.otime);
+		wrap.find('tr').eq(i+1).find('td:nth-child(5)').html((dt.dprice).toFixed(CurrentInstrumentDigits));
+		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(msecondConvertToDate(dt.dtime));
+		wrap.find('tr').eq(i+1).find('td:nth-child(7)').html(msecondConvertToDate(dt.otime));
 		wrap.find('tr').eq(i+1).find('td:nth-child(8)').html(dt.tvol);
 		wrap.find('tr').eq(i+1).find('td:nth-child(9)').html(dt.volfcls);
-		wrap.find('tr').eq(i+1).find('td:nth-child(10)').html(dt.otime);
+		if(dt.volfcls > 0){
+			wrap.find('tr').eq(i+1).find('td:nth-child(10)').html(msecondConvertToDate(dt.otime));
+		}else{
+			wrap.find('tr').eq(i+1).find('td:nth-child(10)').html();
+		}
 		wrap.find('tr').eq(i+1).find('td:nth-child(11)').html(dt.dvol);
 		wrap.find('tr').eq(i+1).find('td:nth-child(12)').html(dt.did);
-		wrap.find('tr').eq(i+1).find('td:nth-child(13)').html(dt.comment);
+		wrap.find('tr').eq(i+1).find('td:nth-child(13)').html(state);
 	}
 }
 
 //当日委托
 function getTradeInfoAllDepute(){
 	var method = 'tradeInfo';//方法
-	/*var data = {
-		"uid":3018,
-		"aid":2380,
-		"oper":"getMP",
-		"rmc":99839,
-		"lc":"lkajoasd8"
-	};*/
 	var data = {
-			"rid":1553,
-			"aid":3179,
-			"uid":3018,
-			"lc":"lkajoasd8",
-			"rmc":4928,
+			"rid":CurrentRoomID,
+			"aid":CurrentAccountID,
+			"uid":CurrentUserId,
+			"lc":CurrentLC,
+			"rmc":CurrentRMC,
 			"oper":"getAllDepute"
 			};
 	var param = JSON.stringify(data);
@@ -561,43 +642,59 @@ function tradeInfoOrderHandler(data){
 	var wrap = $('.Order_Manager_TB_Bargain');
 	if(wrap.length == 0) return;
 	var i=0,len=data.length;
+	if(len > 5){//大于5行
+		var htmlFrage = "<tr>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+							"<td></td>"+
+						"</tr>";
+		var fragLen = len - 5;
+		var table = wrap.find('table');
+		for(var j=0;j<fragLen;j++){
+			table.append($(htmlFrage));
+		}
+	}
 	for(;i<len;i++){
-		wrap.find('tr').eq(i+1).css('background-color','#E3FFEA');
+		var dt = data[i];
+		wrap.find('tr').eq(i+1).css('background-color','#FFE7E7');
 		wrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
 		wrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
-		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'开仓':'平仓');
-		wrap.find('tr').eq(i+1).find('td:nth-child(4)').html(data.price);
-		wrap.find('tr').eq(i+1).find('td:nth-child(5)').html(dt.volfcls);
-		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(dt.otime);
-		wrap.find('tr').eq(i+1).find('td:nth-child(7)').html(dt.otime);//成交编号没找到
+		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'仓':'仓');
+		wrap.find('tr').eq(i+1).find('td:nth-child(4)').html((dt.price).toFixed(CurrentInstrumentDigits));
+		wrap.find('tr').eq(i+1).find('td:nth-child(5)').html(dt.vol);
+		if(dt.vol > 0){
+			wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(msecondConvertToDate(dt.otime));
+		}else{
+			wrap.find('tr').eq(i+1).find('td:nth-child(6)').html();
+		}
+		wrap.find('tr').eq(i+1).find('td:nth-child(7)').html(dt.oid);//成交编号没找到
 		wrap.find('tr').eq(i+1).find('td:nth-child(8)').html(dt.did);
-		
-		wrap.find('tr').eq(i+1).find('td:nth-child(9)').html(dt.dtime);
-		wrap.find('tr').eq(i+1).find('td:nth-child(10)').html(dt.dprice);
-		wrap.find('tr').eq(i+1).find('td:nth-child(11)').html(dt.tfee);
-		wrap.find('tr').eq(i+1).find('td:nth-child(12)').html(dt.comment);
+		wrap.find('tr').eq(i+1).find('td:nth-child(9)').html(msecondConvertToDate(dt.dtime));
+		wrap.find('tr').eq(i+1).find('td:nth-child(10)').html((dt.dprice).toFixed(CurrentInstrumentDigits));
+		wrap.find('tr').eq(i+1).find('td:nth-child(11)').html((dt.tfee).toFixed(2));//手续费固定保留两位
+		wrap.find('tr').eq(i+1).find('td:nth-child(12)').html();
 	}
 }
 //当日成交
 function getTradeInfoAllOrder(){
 	var method = 'tradeInfo';//方法
-	/*var data = {
-		"uid":3018,
-		"aid":2380,
-		"oper":"getMP",
-		"rmc":99839,
-		"lc":"lkajoasd8"
-	};*/
 	var data = {
-			"aid":2380,
-			"uid":11112,
-			"roomid":1374,
-			"rid":1374,
-			"lc":"e288abe2e13f318f161a5ca286386248",
-			"rmc":42152,
-			"oper":"getAllOrder",
-			"userid":11112
-			};
+		"rid":CurrentRoomID,
+		"aid":CurrentAccountID,
+		"uid":CurrentUserId,
+		"lc":CurrentLC,
+		"rmc":CurrentRMC,
+		"oper":"getAllOrder"
+	};
 	var param = JSON.stringify(data);
 	$.ajax({
 		url:WebServiceTransferUrl+'/call_ws/output',
@@ -650,22 +747,13 @@ function tradeInfoConOrderHandler(data){
 //条件单查询
 function getTradeInfoConOrder(){
 	var method = 'tradeInfo';//方法
-	/*var data = {
-		"uid":3018,
-		"aid":2380,
-		"oper":"getMP",
-		"rmc":99839,
-		"lc":"lkajoasd8"
-	};*/
 	var data = {
-		"rmc":44506,
-		"roomid":1374,
-		"rid":1374,
-		"lc":"b4423db756953808eb602c1e52e1b935",
-		"uid":11112,
-		"oper":"getConditionOrder",
-		"userid":11112,
-		"aid":2380
+		"rid":CurrentRoomID,
+		"aid":CurrentAccountID,
+		"uid":CurrentUserId,
+		"lc":CurrentLC,
+		"rmc":CurrentRMC,
+		"oper":"getConditionOrder"
 	};
 	var param = JSON.stringify(data);
 	$.ajax({

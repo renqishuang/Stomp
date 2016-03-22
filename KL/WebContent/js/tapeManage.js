@@ -196,15 +196,13 @@ function getTradeInfoInstStat(){
 	//获取交易数据
 	var method = 'tradeInfo';
 	var param = {
-		"rmc":99839,
-		"rid":1374,
-		"userid":11112,
-		"uid":3018,
-		"aid":2380,
+		"rmc":CurrentRMC,
+		"rid":CurrentRoomID,
+		"uid":CurrentUserId,
+		"aid":CurrentAccountID,
 		"oper":"getInstStat",
-		"iid":"IF1603",
-		"lc":"lkajoasd8",
-		"roomid":1374
+		"iid":CurrentInstrumentID,
+		"lc":CurrentLC
 	};
 	var param = JSON.stringify(param);
 	$.ajax({
@@ -242,7 +240,7 @@ window.TapeThreeViewerStore=[];//盘口数据缓存
 function getTapeInfo() {
 	//获取盘口数据
 	var method = 'getTape';
-	var param = InstrumentID+'_TAPE';
+	var param = CurrentInstrumentID+'_TAPE';
 	$.ajax({
 		url : WebServiceTransferUrl+'/call_ws/output',
 		type : 'post',
@@ -267,7 +265,7 @@ function getTapeInfo() {
 				LoadTapeFinish = true;//标识历史数据加载完成
 				setTapeInfo(res);
 				//监听盘口数据
-				var MQTapeSub = KLWSClient.subscribe('/topic/'+InstrumentID+'_TAPE',function(message){
+				var MQTapeSub = KLWSClient.subscribe('/topic/'+CurrentInstrumentID+'_TAPE',function(message){
 					//console.log("盘口数据");
 					var tempData = message.body;
 					//return;

@@ -266,26 +266,6 @@
   width: 700px;
 }
 
-.remodal-content ul.order_set{
-	position: relative;
-    top: 20px;
-    width: 150px;
-    margin: auto;
-}
-.remodal-content ul.order_set li{
-	height:30px;
-    line-height: 30px;
-    text-align: left;
-}
-.remodal-content ul.order_set li span:first-child{
-	cursor:pointer;
-	display: inline-block;
-    width: 17px;
-    height: 17px;
-    background-image: url('../images/ordertipcb_normal.png');
-    vertical-align: middle;
-    margin-right: 5px;
-}
 html.remodal-is-locked {
   overflow: hidden;
 
