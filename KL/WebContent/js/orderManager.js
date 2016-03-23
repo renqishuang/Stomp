@@ -506,23 +506,40 @@ function hisTradeDataSet(dt){
 			var klDt = GlobalKLData.ks[j];
 			if(!klDt) return;
 			if(otime < klDt.closeTime && otime > klDt.openTime){
-				console.log('find trade pointer');
-				console.log(klDt);
+				//console.log('find trade pointer');
+				//console.log(klDt);
 				var KLIndex = klDt.KLIndex;
 				//获取X坐标
 				var x = CurrentKLObj.getCandleXByIndex(KLIndex)+
 				CanvasPagePosition.x+GlobalKLOptionObj.region.x-5;
 				//获取Y坐标
-				var topY = CurrentKLObj.getYCoordByPrice(klDt.high)+CanvasPagePosition.y;
-		        var bottomY = CurrentKLObj.getYCoordByPrice(klDt.low)+CanvasPagePosition.y;
-		        console.log("x - topY - bottomY: "+x+'-'+topY+'-'+bottomY);
-		        var tradePointerClass = 'trade-pointer-wrap-'+otime;
-		        var htmlFrag = "<div class='"+tradePointerClass+"'></div>";
-		        $('body').append($(htmlFrag));
-		        console.log($('.'+tradePointerClass));
-		        $('.'+tradePointerClass).css('background-image','url(images/xinhaodianheise.png)');
-		        $('.'+tradePointerClass).css('top',topY);
-		        $('.'+tradePointerClass).css('left',x);
+				var y = CurrentKLObj.getYCoordByPrice(price)+CanvasPagePosition.y-5;
+				var topY = CurrentKLObj.getYCoordByPrice(klDt.high)+CanvasPagePosition.y-5;
+		        var bottomY = CurrentKLObj.getYCoordByPrice(klDt.low)+CanvasPagePosition.y-5;
+		        //console.log("x - topY - bottomY: "+x+'-'+topY+'-'+bottomY);
+		        var tradeDefaultPointer = 'trade-pointer-wrap-'+otime;
+		        var defaultFrag = "<div class='"+tradeDefaultPointer+"'></div>";
+		        $('body').append($(defaultFrag));
+		        //console.log($('.'+tradeDefaultPointer));
+		        $('.'+tradeDefaultPointer).css('background-image','url(images/xinhaodianheise.png)');
+		        $('.'+tradeDefaultPointer).css('top',y);
+		        $('.'+tradeDefaultPointer).css('left',x);
+		        var tradeCOPointer = 'trade-pointer-wrap-'+otime+co;
+		        var COPointerFrag = "<div class='"+tradeCOPointer+"'></div>";
+		        $('body').append($(COPointerFrag));
+		        if(co == 0){//开仓
+		        	var openPointerImage = 'url(images/hongjiantou.png)';
+		        	if(dir == 1) openPointerImage = 'url(images/lvjiantou.png)';
+		        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
+			        $('.'+tradeCOPointer).css('top',bottomY);
+			        $('.'+tradeCOPointer).css('left',x);
+		        }else if(co == 1){//平仓
+		        	var closePointerImage = 'url(images/hongduihao.png)';
+		        	if(dir == 1) openPointerImage = 'url(images/lvduihao.png)';
+		        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
+			        $('.'+tradeCOPointer).css('top',topY);
+			        $('.'+tradeCOPointer).css('left',x);
+		        }
 			}
 		}
 	}
@@ -530,6 +547,9 @@ function hisTradeDataSet(dt){
 
 //获取交易历史数据
 function getHisTradeInfo(){
+	//清空所有交易点
+	var pointList = $('div[class^=trade-pointer-wrap-]');
+	pointList.remove();
 	var method = 'tradeInfo';//方法
 	var data = {
 		"oper":"getHisTrade",

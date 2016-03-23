@@ -115,8 +115,9 @@ crossLinesAndTipMgr.prototype._onMouseOrTouchMove = function (ev) {
             });
             me.tip = tip;
         }
-
-        //me.tip.show(crossPoint, tipOp.getTipHtml(ev));
+        if(!me.tip.isShow){
+        	me.tip.show(crossPoint, tipOp.getTipHtml(ev));
+        }
     }
 };
 

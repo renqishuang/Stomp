@@ -66,11 +66,10 @@ function KLSubscribeHandler(dt){
 		}
 	}
 }
-
-//对原始数据进行处理
-function originalDataHandle(data){
+//针对当天K线数据不足以填满整个屏幕时,对历史K线数据的处理
+function originalDataHandleSplice(data){
 	var len = data.length;//原始数据是倒序的, 在这里正序过来,并封装成自己想要的数据
-	for(var i=len-1;i>=0;i--){
+	for(var i=0;i<len;i++){
 		var tempData=[];
 		var dt = data[i];
 		var time=dt.datetime;
@@ -93,7 +92,39 @@ function originalDataHandle(data){
 			lowchg:Number(dt.lowchg),
 			closechg:Number(dt.closechg)
 		};
-		GlobalKLData.ks.push(item);
+		GlobalKLData.ks.splice(0,0,item);
+	}
+}
+
+//对原始数据进行处理(针对当天K线数据或没有当天数据时历史K线数据)
+function originalDataHandle(data){
+	var len = data.length;//原始数据是倒序的, 在这里正序过来,并封装成自己想要的数据
+	var endIndex = 0;
+	if(len > CurrentMaxKLShowCount) len = CurrentMaxKLShowCount;
+	for(var i=0;i<len;i++){
+		var tempData=[];
+		var dt = data[i];
+		var time=dt.datetime;
+		var date = new Date(time);
+		var dateNumber =converDateStrByDate(date);
+		var item = {
+			//开盘时间
+			openTime:time,
+			//收盘时间
+			closeTime:time+CurrentKLInterval*1000,
+		    quoteTime: dateNumber,
+		    open: parseFloat(dt.open),
+		    high: parseFloat(dt.high),
+		    low: parseFloat(dt.low),
+		    close: parseFloat(dt.close),
+		    volume: parseFloat(dt.volume),
+		    amount: 2939,
+		    openchg:Number(dt.openchg),
+			highchg:Number(dt.highchg),
+			lowchg:Number(dt.lowchg),
+			closechg:Number(dt.closechg)
+		};
+		GlobalKLData.ks.splice(0,0,item);
 	}
 }
 //画K线
@@ -149,13 +180,13 @@ function getCurrentDateKLines(interval){
 				var obj = data.res.data;
 				if(obj.length == 0){
 					//如果当天没有数据,请求历史数据
-					getHisKLines(interval,getCurrentTimes);
+					getHisKLines(interval,getCurrentTimes,CurrentMaxKLShowCount,'not');
 				}else{
 					originalDataHandle(obj);
 					//判断是否加载历史数据
-					console.log(CurrentMaxKLShowCount);
 					if(obj.length < CurrentMaxKLShowCount){
-						getHisKLines(interval,obj[0].datetime);
+						var amount = CurrentMaxKLShowCount - obj.length;
+						getHisKLines(interval,obj[obj.length-1].datetime,amount,'yes');
 					}else{
 						drawKLHandler(interval);
 					}
@@ -175,14 +206,14 @@ function getCurrentDateKLines(interval){
 }
 
 //ajax请求获取历史数据
-function getHisKLines(interval,time){
+function getHisKLines(interval,time,amount,have){
 	var method = 'getHisKlines';
 	var data = {
 		instrumentid:CurrentInstrumentID,
-		startdate:time,  //当天00:00:00
-		amount:1,
-		type:1,
-		action:3,
+		startdate:time,
+		amount:amount,
+		type:2,
+		action:1,
 		interval:parseInt(interval)
 	};
 	var param = JSON.stringify(data);
@@ -204,7 +235,11 @@ function getHisKLines(interval,time){
 			if(state === 0){
 				var obj = data.res.data;
 				LoadKLineDataFinish = true;
-				originalDataHandle(obj);
+				if(have == 'not'){
+					originalDataHandle(obj);
+				}else if(have == 'yes'){
+					originalDataHandleSplice(obj);
+				}
 				drawKLHandler(interval);
 			}else{
 				//alert("请求服务器出错");	

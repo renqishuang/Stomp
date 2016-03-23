@@ -40,6 +40,28 @@ function msecondConvertToDate(millisecond){
 	seconds = seconds < 10 ? seconds + '0' : seconds;
 	return hours+':'+minutes+':'+seconds;
 }
+
+//根据毫秒数, 获取年月日格式为  yyyy/MM/dd
+function getYMDFormatOne(millisecond){
+	var date = new Date(millisecond);
+	var year = date.getFullYear();
+	var month = date.getMonth()+1;
+	month = month < 9? '0'+month:month;
+	var day = date.getDate();
+	day = day < 9? '0'+day:day;
+	var ymd = year+'/'+month+'/'+day;
+	return ymd;
+}
+//根据毫秒数, 获取时分
+function getHourMinute(millisecond){
+	var date = new Date(millisecond);
+	var hours = date.getHours(),
+	minutes = date.getMinutes();
+	hours = hours < 10 ? hours+'0' : hours;
+	minutes = minutes < 10 ? minutes + '0' : minutes;
+	return hours+':'+minutes;
+}
+
 //获取当前时分秒
 function getCurrentHMS(){
 	var date = new Date();

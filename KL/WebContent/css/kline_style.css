@@ -906,3 +906,17 @@ div[class^=trade-pointer-wrap]{
   	background-position:center;
     position: absolute;
 }
+.KL_Tip_Wrap > div:first-child{
+	background-color: #EBE9C7;
+    font-size: 12px;	
+}
+.KL_Tip_Wrap > div:first-child>span:first-child{
+	color: #DF8C23;
+}
+.KL_Tip_Wrap > div:first-child>span:nth-child(2){
+	color: black;
+    margin-left: 10px;
+}
+#canvasKL_tip{
+	border: 2px solid #EBE9C7;
+}

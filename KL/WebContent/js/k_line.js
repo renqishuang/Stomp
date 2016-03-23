@@ -83,14 +83,16 @@ kLine.prototype = {
         if (index >= maxLength) index = maxLength - 1;
         if (index < 0) index = 0;
         var ki = data.ks[index];
+        if(!ki) return;
         //console.log("更新Tip时的数据如下:");
         //console.log("open:"+ki.open+",high:"+ki.high+",low:"+ki.low+",close"+ki.close);
-        var tipHtml = '<div><b>' + convertDate(ki.quoteTime) + '</b></div>' +
+        var tipHtml = '<div class="KL_Tip_Wrap">'+
+        '<div><span>' + getYMDFormatOne(ki.openTime) + '</span><span>'+getHourMinute(ki.openTime)+'</span></div>' +
         //'昨收价：<font color="' + getPriceColor(ki, ki.preClose) + '">' + toMoney(ki.preClose) + '</font><br/>' +
         '开盘价：<font color="' + this.getPriceColor(ki, "open") + '">' + toMoney(ki.open) + '</font><br/>' +
         '最高价：<font color="' + this.getPriceColor(ki, "high") + '">' + toMoney(ki.high) + '</font><br/>' +
         '最低价：<font color="' + this.getPriceColor(ki, "low") + '">' + toMoney(ki.low) + '</font><br/>' +
-        '收盘价：<font color="' + this.getPriceColor(ki, "close") + '">' + toMoney(ki.close) + '</font><br/>';
+        '收盘价：<font color="' + this.getPriceColor(ki, "close") + '">' + toMoney(ki.close) + '</font><br/></div>';
         /*'成交量：' + bigNumberToText(ki.volume / 100) + '手<br/>' +
         '成交额：' + bigNumberToText(ki.amount);*/
         return tipHtml;
@@ -188,12 +190,15 @@ kLine.prototype = {
     	var options = me.options;
     	var region = options.region;
     	var painter = this.painter;
-    	var index = this.getIndex(x);
+    	var i = this.getIndex(x);
         //console.log("get X index -> "+index);
-    	var offsetX = region.x + options.spaceWidth * (index + 1) + options.barWidth * index + 
-    		options.barWidth * .5;
-    	//console.log("offset x for x: "+offsetX);
-        return offsetX; 
+    	/*var offsetX = region.x + options.spaceWidth * (index + 1) + options.barWidth * index + 
+    		options.barWidth * .5;*/
+    	var result = i * (options.spaceWidth + options.barWidth) + (options.spaceWidth + options.barWidth) * .5; 
+    	if (result * 10 % 10 == 0) result += .5;
+    	result +=region.x;
+    	//console.log("offset x for x: "+result);
+        return result;
     },
     //更新一跟K线图
     updateKLOnCandle:function(item,updateType){
@@ -393,8 +398,8 @@ kLine.prototype = {
             //Tip属性
             tipOptions: {
                 getTipHtml: function (ev) { return me.getTipHtml(ev.offsetX); },
-                size:{width:120,height:150},
-                position:{x:false,y:region.y+(region.height-150)/3}, //position中的值是相对于canvas的左上角的
+                size:{width:132,height:222},
+                position:{x:false,y:region.y}, //position中的值是相对于canvas的左上角的
                 opacity:80,
                 cssClass:'',
                 offsetToPoint:10

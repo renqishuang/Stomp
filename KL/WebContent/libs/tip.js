@@ -81,8 +81,8 @@ Tip.prototype = {
             }
         }
 
-        
-        if (position.y) tipY = position.y;
+        tipY = position.y;
+        /*if (position.y) tipY = position.y;
         else {
             if (otip) {
                 var currentY = parseInt(otip.style.top) - canvasPosition.y;
@@ -107,7 +107,7 @@ Tip.prototype = {
                     tipY = y - offset - size.height;
                 }
             }
-        }
+        }*/
 
 
         if (!otip) {
@@ -118,7 +118,7 @@ Tip.prototype = {
             var opacity = this.opacity || 100;
             //cssText是直接设置属性值 如: style.cssText = 'color:red;';
             otip.style.cssText = '-moz-opacity:.' + opacity + '; filter:alpha(opacity='
-                + opacity + '); opacity:' + (opacity / 100) + ';pointer-events:none;line-height:18px;font-family:Arial,"����";font-size:9pt;padding:4px;';
+                + opacity + '); opacity:' + (opacity / 100) + ';pointer-events:none;line-height:18px;font-family:Arial,"����";font-size:9pt;';
             otip.style.position = 'absolute';
             otip.style.zIndex = 4 + (this.canvas.style.zIndex || 1);
             otip.style.color="white";
