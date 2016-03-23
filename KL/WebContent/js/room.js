@@ -129,9 +129,9 @@ function getRoomInstrumentInfo(){
 		timeout:AjaxTimeOut, //设置超时5秒钟
 		success:function(data){
 			var state = data.rc;
+			console.log('room instrument');
+			console.log(data);
 			if(state === 0){
-				console.log('room instrument');
-				console.log(data);
 				var res = data.res,dt = res.inst,len = dt.length;
 				if(!dt) return;
 				//房间合约设置

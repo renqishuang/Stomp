@@ -293,7 +293,7 @@ a:focus { outline: none; }
 }
 .TradeInfoPendingDepute,.TradeInfo_MP{
 	width:365px;
-	height:42px;
+	/* height:42px; */
     float:left;
 }
 .TradeInfoPendingDepute tr:first-child th:first-child{
@@ -667,6 +667,19 @@ a:focus { outline: none; }
 	background-image: url('../images/icon_kuaijie_chi.png');
 	left: 365px;
 }
+.Order_Manager_TB_Convenience::-webkit-scrollbar{
+	height:6px;
+	width:6px;
+}
+.Order_Manager_TB_Convenience::-webkit-scrollbar-track-piece{
+	background:#E1E5EB;
+}
+.Order_Manager_TB_Convenience::-webkit-scrollbar-thumb:horizontal{
+	background-color:#9299A5;
+}
+.Order_Manager_TB_Convenience::-webkit-scrollbar-thumb:vertical{
+	background-color:#9299A5;
+}
 
 .Order_Manager_TB_Delegation{
 	width:740px;
@@ -880,4 +893,16 @@ a:focus { outline: none; }
     background-repeat:no-repeat;
     background-position:center;
 }
+div[class^=order-dashed-wrap]{
+	position: absolute;
+    height: 1px;
+    border-top: 1px dashed #FFCA00;
+}
+div[class^=trade-pointer-wrap]{
+	width: 10px;
+    height: 10px;
+    background-size: 100% 100%;
+    background-repeat:no-repeat;
+  	background-position:center;
+    position: absolute;
 }

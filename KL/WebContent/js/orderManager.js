@@ -286,18 +286,27 @@ function orderManagerLeftRegion(wrap){
 			switch ($(this).attr('name')) {
 			case 'convenience':
 				$('.Order_Manager_TB_Convenience').show();
+				//委托挂单
+				getTradeInfoPendingDepute();
+				//持仓信息
+				getTradeInfoMP();
 				break;
 			case 'delegation':
 				$('.Order_Manager_TB_Delegation').show();
+				getTradeInfoAllDepute();
 				break;
 			case 'bargain':
 				$('.Order_Manager_TB_Bargain').show();
+				getTradeInfoAllOrder();
 				break;
 			case 'position':
 				$('.Order_Manager_TB_Position').show();
+				//持仓信息
+				getTradeInfoMP();
 				break;
 			case 'condition':
 				$('.Order_Manager_TB_Condition').show();
+				getTradeInfoConOrder();
 				break;
 			default:
 				break;
@@ -460,11 +469,253 @@ function getTradeInfoMP(){
 		}
 	});
 }
+//委托单变成成交单的提示
+function pdConvertToOrderTip(dt){
+	var dir = dt.dir==0?'多':'空';
+	var co = dt.co==0?'开':'平';
+	var htmlFrag = "<div class='order_notify_wrap'>"+
+		"<span value='iid'>"+dt.iid+"</span>"+
+		"<span value='img'></span>"+
+		"<span value='dir'>"+dir+"</span>"+
+		"<span value='co'>"+co+"</span>"+
+		"<span value='price'>"+dt.dprice+"</span>"+
+		"<span value='vol'>1</span>"+
+		"<span>手</span>"+
+		"<span value='time'>"+getCurrentHMS()+"</span>"+
+	"</div>";
+	$('body').append($(htmlFrag));
+	setTimeout(function(){
+		$('.order_notify_wrap').remove();
+	},3000);
+}
+//历史交易数据设置
+function hisTradeDataSet(dt){
+	var len = dt.length;
+	console.log(CurrentKLStartIndex);
+	console.log(CurrentKLEndIndex);
+	//GlobalKLData
+	for(var i=0;i<len;i++){
+		var tempDt = dt[i];
+		var otime = tempDt.otime,
+		dir = tempDt.dir,
+		co = tempDt.co,
+		vol = tempDt.vol,
+		iid = tempDt.iid,
+		price = tempDt.price;
+		for(var j=CurrentKLStartIndex;j<=CurrentKLEndIndex;j++){
+			var klDt = GlobalKLData.ks[j];
+			if(!klDt) return;
+			if(otime < klDt.closeTime && otime > klDt.openTime){
+				console.log('find trade pointer');
+				console.log(klDt);
+				var KLIndex = klDt.KLIndex;
+				//获取X坐标
+				var x = CurrentKLObj.getCandleXByIndex(KLIndex)+
+				CanvasPagePosition.x+GlobalKLOptionObj.region.x-5;
+				//获取Y坐标
+				var topY = CurrentKLObj.getYCoordByPrice(klDt.high)+CanvasPagePosition.y;
+		        var bottomY = CurrentKLObj.getYCoordByPrice(klDt.low)+CanvasPagePosition.y;
+		        console.log("x - topY - bottomY: "+x+'-'+topY+'-'+bottomY);
+		        var tradePointerClass = 'trade-pointer-wrap-'+otime;
+		        var htmlFrag = "<div class='"+tradePointerClass+"'></div>";
+		        $('body').append($(htmlFrag));
+		        console.log($('.'+tradePointerClass));
+		        $('.'+tradePointerClass).css('background-image','url(images/xinhaodianheise.png)');
+		        $('.'+tradePointerClass).css('top',topY);
+		        $('.'+tradePointerClass).css('left',x);
+			}
+		}
+	}
+}
 
+//获取交易历史数据
+function getHisTradeInfo(){
+	var method = 'tradeInfo';//方法
+	var data = {
+		"oper":"getHisTrade",
+		"aid":CurrentAccountID,
+		"lc":CurrentLC,
+		"rid":CurrentRoomID,
+		"rmc":CurrentRMC,
+		"startdate":CurrentKLStartDate,
+		"uid":CurrentUserId,
+		"enddate":CurrentKLEndDate,
+		"iid":CurrentInstrumentID
+	};
+	var param = JSON.stringify(data);
+	$.ajax({
+		url:WebServiceTransferUrl+'/call_ws/output',
+		type:'post',
+		dataType:"json",
+		//async:false,//同步请求
+		data:{
+			ws_url:WebServiceTradeUrl,
+			ws_func:method,
+			ws_param:param
+		},
+		timeout:AjaxTimeOut, //设置超时5秒钟
+		success:function(data){
+			var state = data.rc;
+			console.log('get his trade data');
+			console.log(data);
+			if(state === 0){
+				var res=data.res,dt=res.data;
+				if(!dt || dt.length == 0) return;
+				hisTradeDataSet(dt);
+			}
+		},
+		error:function(xhr,state){
+			console.log("get data error");
+			//alert("请求服务器出错");
+		},
+		complete:function(xhr,state){
+			//console.log('get data complete');
+		}
+	});
+}
+//委托单转换为成交单
+function pendingDeputeConvertToOrder(dt){
+	var did = dt.did;
+	var wrap = $('.TradeInfoPendingDepute');
+	if(wrap.length == 0) return;
+	var trList = wrap.find('tr'),trLen = trList.length;
+	for(var i=1;i<trLen;i++){
+		var tr = trList[i];
+		var trDtStr = $(tr).attr('orderData');
+		if(!trDtStr) continue;
+		var trDt = JSON.parse(trDtStr);
+		if(trDt.did == did){
+			$(tr).css('cursor','default');
+			$(tr).css('background-color','white');
+			$(tr).unbind('mouseover');
+			$(tr).unbind('mouseout');
+			wrap.attr('trLen',wrap.attr('trLen')-1);
+			//删除挂单虚线
+			var wrap = $('.order-dashed-wrap-'+did);
+			wrap.remove();
+			//添加提示
+			pdConvertToOrderTip(trDt);
+			//交易数据
+			//getHisTradeInfo();
+			$(tr).attr('orderData','');
+			var tds = $(tr).find('td'),tdLen = tds.length;
+			for(var j=0;j<tdLen;j++){
+				var td = tds[j];
+				$(td).html('');
+			}
+		}
+	}
+}
+
+//委托挂单表格数据设置
+function tradeInfoPDDataSet(wrap, index, dt){
+	var dtStr = JSON.stringify(dt);
+	var tr = wrap.find('tr').eq(index); 
+	tr.css('cursor','pointer');
+	tr.mouseover(function(){
+		$(this).css('background-color','#E9EBEE');
+	});
+	tr.mouseout(function(){
+		$(this).css('background-color','#FFE7E7');
+	});
+	tr.dbclick(function(){
+		alert('双击');
+	});
+	tr.css('background-color','#FFE7E7');
+	tr.attr('orderData',dtStr);//把数据赋给行
+	//console.log('---------------===============');
+	//console.log(wrap.find('tr').eq(index).attr('orderData'));
+	tr.find('td:first-child').html(dt.iid);
+	tr.find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
+	tr.find('td:nth-child(3)').html(dt.co==0?'开':'平');
+	tr.find('td:nth-last-child(2)').html(dt.dvol);
+	tr.find('td:last-child').html(dt.dprice);
+}
+//委托挂单通知
+function pendingDeputeOrderNotify(price,did){
+	if(!GlobalKLOptionObj) return;
+	var pendingDeputeFrag = "<div class='order-dashed-wrap-"+did+"'></div>";
+	//CanvasPagePosition
+	$('body').append($(pendingDeputeFrag));
+	var wrap = $('.order-dashed-wrap-'+did);
+	var width = CanvasPagePosition.width-GlobalKLOptionObj.region.x;
+	wrap.css('width',width);
+	var left = CanvasPagePosition.x+GlobalKLOptionObj.region.x;
+	wrap.css('left',left);
+	var top = CanvasPagePosition.y+CurrentKLObj.getYCoordByPrice(price);
+	wrap.css('top',top);
+}
+//监听MQ, 获取委托挂单
+function tradeInfoPDMQHandler(dt){
+	var wrap = $('.TradeInfoPendingDepute');
+	if(wrap.length == 0) return;
+	var trLen = Number(wrap.attr('trLen'));
+	var index = trLen +1;
+	if(trLen <= 5){
+		tradeInfoPDDataSet(wrap,index,dt);
+	}else{
+		var htmlFrage = "<tr>"+
+				"<td></td>"+
+				"<td></td>"+
+				"<td></td>"+
+				"<td></td>"+
+				"<td></td>"+
+			"</tr>";
+		wrap.append($(htmlFrage));
+		tradeInfoPDDataSet(wrap,index,dt);
+	}
+	wrap.attr('trLen',index);
+	pendingDeputeOrderNotify(dt.dprice,dt.did);
+}
+//撤销委托挂单
+function repealPendingDepute(dt){
+	var method = 'tradeInfo';//方法
+	var data = {
+		"uid":CurrentUserId,
+		"rid":CurrentRoomID,
+		"lc":CurrentLC,
+		"did":dt.did,
+		"action":2,
+		"rmc":CurrentRMC,
+		"aid":CurrentAccountID
+	};
+	var param = JSON.stringify(data);
+	$.ajax({
+		url:WebServiceTransferUrl+'/call_ws/output',
+		type:'post',
+		dataType:"json",
+		//async:false,//同步请求
+		data:{
+			ws_url:WebServiceTradeUrl,
+			ws_func:method,
+			ws_param:param
+		},
+		timeout:AjaxTimeOut, //设置超时5秒钟
+		success:function(data){
+			var state = data.rc;
+			console.log('repeal pending depute');
+			console.log(data);
+			if(state === 0){
+				var res=data.res,dt=res.data;
+				if(!dt || dt.length == 0) return;
+			}
+		},
+		error:function(xhr,state){
+			console.log("get data error");
+			//alert("请求服务器出错");
+		},
+		complete:function(xhr,state){
+			//console.log('get data complete');
+		}
+	});
+}
+
+//获取历史数据设置挂单
 function tradeInfoPDHandler(data){
 	var wrap = $('.TradeInfoPendingDepute');
 	if(wrap.length == 0) return;
 	var len = data.length;
+	wrap.attr('trLen',len);
 	if(len > 5){//大于5行
 		var htmlFrage = "<tr>"+
 							"<td></td>"+
@@ -474,26 +725,30 @@ function tradeInfoPDHandler(data){
 							"<td></td>"+
 						"</tr>";
 		var fragLen = len - 5;
-		var table = wrap.find('table');
 		for(var j=0;j<fragLen;j++){
-			table.append($(htmlFrage));
+			wrap.append($(htmlFrage));
 		}
 	}
 	for(var i=0;i<len;i++){
 		var dt=data[i];
-		wrap.find('tr').eq(i+1).css('cursor','pointer');
-		wrap.find('tr').eq(i+1).mouseover(function(){
+		var tr = wrap.find('tr').eq(i+1);
+		tr.css('cursor','pointer');
+		tr.mouseover(function(){
 			$(this).css('background-color','#E9EBEE');
 		});
-		wrap.find('tr').eq(i+1).mouseout(function(){
+		tr.mouseout(function(){
 			$(this).css('background-color','#FFE7E7');
 		});
-		wrap.find('tr').eq(i+1).css('background-color','#FFE7E7');
-		wrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
-		wrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
-		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'开':'平');
-		wrap.find('tr').eq(i+1).find('td:nth-last-child(2)').html(dt.dvol);
-		wrap.find('tr').eq(i+1).find('td:last-child').html(dt.dprice);
+		tr.dblclick(function(){
+			repealPendingDepute($(this).attr('orderData'));
+		});
+		tr.attr('orderData',JSON.stringify(dt));
+		tr.css('background-color','#FFE7E7');
+		tr.find('td:first-child').html(dt.iid);
+		tr.find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
+		tr.find('td:nth-child(3)').html(dt.co==0?'开':'平');
+		tr.find('td:nth-last-child(2)').html(dt.dvol);
+		tr.find('td:last-child').html(dt.dprice);
 	}
 }
 
@@ -526,7 +781,7 @@ function getTradeInfoPendingDepute(){
 			console.log(data);
 			if(state === 0){
 				var res=data.res,dt=res.data;
-				if(!dt) return;
+				if(!dt || dt.length == 0) return;
 				tradeInfoPDHandler(dt);
 			}
 		},

@@ -85,13 +85,30 @@ function getAccountInfo(){
 				if(!TradeWSClient) return;
 				//console.log("添加 资金数据监听--------->");
 				var MQAccountSub = TradeWSClient.subscribe('/topic/'+CurrentAccountID,function(message){
-					var tempData = message.body;
-					console.log('topic aid --- ');
-					console.log(tempData);
+					var tempData = JSON.parse(message.body);
+					//console.log('topic aid --- ');
+					//console.log(tempData);
+					//{"co":0,"dir":0,"aid":3179,"tvol":1,"dvol":1,"volfcls":0,"ds":1,"status":1,"otype":0,"comment":0,"frozen":20108,"iid":"TF1606","rid":"1553","price":0,"dprice":100.54,"user":3018,"vol":1,"action":1,"did":3179092621545,"dtime":1458609981546,"com":1,"returncode":0,"datatype":33,"actiontype":6}
 					//设置资金信息
-					setInitAccountInfo(JSON.parse(tempData));
-					//设置交易信息
-					setTradeInfo(JSON.parse(tempData));
+					var actionType = tempData.actiontype;
+					var returnCode = tempData.returncode;
+					var status = tempData.status;
+					
+					if(actionType == 6){
+						if(returnCode == 0){
+							tradeInfoPDMQHandler(tempData);
+						}
+						if(status == 3){//把委托单变成成交单
+							pendingDeputeConvertToOrder(tempData);
+						}else if(status == 2){//撤单
+							
+						}
+					}else if(actionType == 4){
+						setInitAccountInfo(tempData);
+					}else if(actionType == 9){
+						//设置交易信息
+						setTradeInfo(tempData);
+					}					
 				});
 				//获取房间合约信息
 				getRoomInstrumentInfo();

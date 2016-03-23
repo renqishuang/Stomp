@@ -40,3 +40,39 @@ function msecondConvertToDate(millisecond){
 	seconds = seconds < 10 ? seconds + '0' : seconds;
 	return hours+':'+minutes+':'+seconds;
 }
+//获取当前时分秒
+function getCurrentHMS(){
+	var date = new Date();
+	var hours = date.getHours(),
+	minutes = date.getMinutes(),
+	seconds=date.getSeconds();
+	hours = hours < 10 ? hours+'0' : hours;
+	minutes = minutes < 10 ? minutes + '0' : minutes;
+	seconds = seconds < 10 ? seconds + '0' : seconds;
+	return hours+':'+minutes+':'+seconds;
+}
+//获取当天的毫秒数
+function getCurrentMilliSecond(){
+	var date = new Date();
+	var year = date.getFullYear();
+	var month = date.getMonth()+1;
+	month = month < 9? '0'+month:month;
+	var day = date.getDate();
+	var ds = year+'-'+month+'-'+day;
+	return Date.parse(ds+' 00:00:00');
+}
+//获取当前的毫秒数
+function getCurrentTimes(){
+	var date = new Date();
+	var time = date.getTime();
+	return time;
+}
+//获取当天的年月日
+function getCurrentYMD(){
+	var date = new Date();
+	var year = date.getFullYear();
+	var month = date.getMonth()+1;
+	month = month < 9? '0'+month:month;
+	var day = date.getDate();
+	return year+'-'+month+'-'+'-'+day;
+}

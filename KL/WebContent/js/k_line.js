@@ -58,7 +58,7 @@ kLine.prototype = {
     
     //添加一跟K线图
     addCandleToKL:function(item){
-    	if(!KLMQMessageMonitor && !LoadHisKLData) return;
+    	if(!LoadKLineDataFinish) return;
     	//console.log("添加新数据");
 		GlobalKLData.ks.push(item);
     },
@@ -197,7 +197,7 @@ kLine.prototype = {
     },
     //更新一跟K线图
     updateKLOnCandle:function(item,updateType){
-    	if(!KLMQMessageMonitor && !LoadHisKLData) return;
+    	if(!LoadKLineDataFinish) return;
     	//如果更新的数据的最大值和最小值 与 当前Y轴最大值和最小值不匹配, 那么重新画图
     	this.updateGlobalKLLastDt(item);
     	if(item.high+this.priceGap > this.high || item.low-this.priceGap < this.low){
@@ -631,9 +631,24 @@ kLine.prototype = {
         //this.needCalcSpaceAndBarWidth();//是否需要重新计算蜡烛和空隙的宽度
 		//过滤数据(获取显示到页面上的数据)
         var filteredData = [];
-        for (var i = startIndex; i <= toIndex && i < maxDataLength; i++) {
+        CurrentKLStartIndex = startIndex;
+        CurrentKLEndIndex = toIndex;
+        for (var i = startIndex; i <= toIndex; i++) {
+        	var tempData = me.getKLStore().ks[i];
+        	if(i == startIndex) {
+        		CurrentKLStartDate = tempData.openTime;
+        	}
+        	if(i == toIndex) {
+        		CurrentKLEndDate = tempData.openTime;
+        	}
+        	me.getKLStore().ks[i].KLIndex = i-startIndex;
             filteredData.push(me.getKLStore().ks[i]);
         }
+       /* console.log('-------start----------time');
+        console.log(CurrentKLStartDate);
+        console.log('-------end----------time');
+        console.log(CurrentKLEndDate);
+        console.log(filteredData);*/
         this.filteredData = filteredData;
         //console.log("显示到页面的数据如下:");
         //console.log(filteredData);
@@ -962,15 +977,6 @@ kLine.prototype = {
     }
 };
 
-window.KLPainter=null;
-window.CurrentKLObj = null;
-window.CurrentDataTime = null;
-window.GlobalKLData = {
-		ks:[]
-//	ks:[],
-//	high:0,
-//	low:0
-};
 //初始化数据
 function initAddData(){
 	for(var i=0;i<InitTestData.length;i++){
@@ -1008,7 +1014,7 @@ function initAddData(){
 //画K线接口
 function drawKL(height) {
 	//return;
-	if(!KLMQMessageMonitor && !LoadHisKLData) return;
+	if(!LoadKLineDataFinish) return;
 	var canvasObj = $('#canvasKL');
 	var ht = height ? height : canvasObj[0].clientHeight-40;
 	//console.log(ht);
@@ -1016,7 +1022,7 @@ function drawKL(height) {
 		//var initialWidth = Math.min(screen.width,500);
 		var initialWidth = canvasObj[0].clientWidth;
 		//console.log("初始化宽度-->"+initialWidth);
-	    var kOptions = {
+		GlobalKLOptionObj = {
 	        backgroundColor:'#191F26',
 	        klbackgroundColor:"#191F26",
 	        riseColor: '#D72F32',
@@ -1030,7 +1036,7 @@ function drawKL(height) {
 	        //主图区域的边距
 	        chartMargin:{left:45,top:5,right:0},
 	        region: { x: 45, y: 5, width: initialWidth - 45, height: ht},
-	        barWidth: 10, spaceWidth: 4, horizontalLineCount: 10, verticalLineCount: 7, lineStyle: 'solid', borderColor: 'gray', splitLineColor: '#252A31', lineWidth: 1,
+	        barWidth: CurrentBarWidth, spaceWidth: CurrentSpaceWidth, horizontalLineCount: 10, verticalLineCount: 7, lineStyle: 'solid', borderColor: 'gray', splitLineColor: '#252A31', lineWidth: 1,
 	        MAs: [
 	            { color: '#0063CD', daysCount: 5 },
 	            { color: '#FFCB34', daysCount: 10 },
@@ -1086,7 +1092,7 @@ function drawKL(height) {
         var canvas = $id('canvasKL');
         if(!canvas) return;
         if(canvas.width != initialWidth) canvas.width = initialWidth;
-        CurrentKLObj = new kLine(kOptions);
+        CurrentKLObj = new kLine(GlobalKLOptionObj);
         //var kl = new kLine(kOptions);
         //var data = getKLData();
         //加载历史数据

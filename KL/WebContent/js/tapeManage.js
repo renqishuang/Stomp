@@ -188,6 +188,7 @@ function setTapeInfo(data){
 	TapeOneViewerHandler(data);
 	TapeTwoViewerHandler(data);
 	var history = data.history;
+	if(history.length == 0) return;
 	history.length = 6;
 	setTapeThreeViewerData(history,data.presettlement,true);
 }
@@ -218,8 +219,8 @@ function getTradeInfoInstStat(){
 		timeout : AjaxTimeOut, // 设置超时5秒钟
 		success : function(data) {
 			var state = data.rc;
-			//console.log("get trade data");
-			//console.log(data);
+			console.log("get trade data");
+			console.log(data);
 			if(state === 0){
 				setTradeInfo(data.res);
 			}
@@ -262,7 +263,7 @@ function getTapeInfo() {
 				window.CurrentPresettlement= res.presettlement;
 				//console.log("当前昨结价位:-----------------");
 				//console.log(CurrentPresettlement);
-				LoadTapeFinish = true;//标识历史数据加载完成
+				//LoadTapeFinish = true;//标识历史数据加载完成
 				setTapeInfo(res);
 				//监听盘口数据
 				var MQTapeSub = KLWSClient.subscribe('/topic/'+CurrentInstrumentID+'_TAPE',function(message){

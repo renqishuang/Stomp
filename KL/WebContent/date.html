@@ -6,6 +6,23 @@
 <script src="js/jquery.1.11.3.min.js"></script>
 <script>
 	$(function(){
+		/* var date = new Date();
+		var year = date.getFullYear();
+		var month = date.getMonth()+1;
+		month = month < 9? '0'+month:month;
+		var day = date.getDate();
+		var hours = date.getHours(),
+		minutes = date.getMinutes(),
+		seconds=date.getSeconds();
+		hours = hours < 10 ? hours+'0' : hours;
+		minutes = minutes < 10 ? minutes + '0' : minutes;
+		seconds = seconds < 10 ? seconds + '0' : seconds;
+		var ds = year+'-'+month+'-'+day+' '+hours+':'+minutes+':'+seconds;
+		console.log(Date.parse('2016-03-22 00:00:00'));
+		console.log(Date.parse(year+'-'+month+'-'+day+' 00:00:00'));
+		console.log(Date.parse(ds));
+		console.log(date.getTime());
+		return; */
 		var str='-0.2%';
 		
 		console.log(str.indexOf('-'));
@@ -22,7 +39,7 @@
 				return;
 			}
 			var date = new Date(parseInt(ms));
-			var str = date.getFullYear()+"年"+date.getMonth()+
+			var str = date.getFullYear()+"年"+(date.getMonth()+1)+
 			"月"+date.getDate()+'日'+date.getHours()+'时'+date.getMinutes()+'分'+date.getSeconds()+'秒';
 			var p = $('<p>');
 			p.html(str);

@@ -1,124 +1,86 @@
-//定义全局变量存储K线数据
-window.GlobalKLData = {
-	ks:[]
-};
+//计算屏幕显示的最多K线个数
+function getMaxKLShowCount(){
+	if(CurrentMaxKLShowCount != 0) return;
+	var canvasObj = $('#canvasKL');
+	var initialWidth = canvasObj[0].clientWidth;
+	var width = initialWidth - 45;
+	CurrentMaxKLShowCount = Math.ceil(width / (CurrentSpaceWidth + CurrentBarWidth))-1;
+}
 
 //根据类型转换数据格式
-function KLDataDecimalHandler(dt,type){
+function KLDataDecimalHandler(dt){
 	if(!dt) return;
-	//console.log(dt);
 	var time=dt.datetime;
 	var date = new Date(time);
-	var dateNumber = converDateStrByDate(date);
-	var open,high,low,close,volume,amount=2939,preClose=2985.8;
-	if(type == 0){//整数
-		open  = parseInt(dt.open);
-		high = parseInt(dt.high);
-		low = parseInt(dt.low);
-		close = parseInt(dt.close);
-		volume = parseInt(dt.volume);
-	}else if(type == 1){//小数点后一位
-		open  = parseFloat(dt.open);
-		high = parseFloat(dt.high);
-		low = parseFloat(dt.low);
-		close = parseFloat(dt.close);
-		volume = parseFloat(dt.volume);
-	}
+	var dateNumber =converDateStrByDate(date);
 	var item = {
-		quoteTime:dateNumber,
-		open:open,
-		high:high,
-		low:low,
-		close:close,
-		volume:volume,
-		amount:amount,
-		preClose:preClose,
-		openchg:Number(dt.openchg),
+		//开盘时间
+		openTime:time,
+		//收盘时间
+		closeTime:time+CurrentKLInterval*1000,
+	    quoteTime: dateNumber,
+	    open: parseFloat(dt.open),
+	    high: parseFloat(dt.high),
+	    low: parseFloat(dt.low),
+	    close: parseFloat(dt.close),
+	    volume: parseFloat(dt.volume),
+	    amount: 2939,
+	    openchg:Number(dt.openchg),
 		highchg:Number(dt.highchg),
 		lowchg:Number(dt.lowchg),
-		closechg:Number(dt.lowchg)
+		closechg:Number(dt.closechg)
 	};
 	return item;
 }
 //收到订阅数据后调用     K线订阅处理器
 function KLSubscribeHandler(dt){
-		/* GlobalKLData.high = Math.max(GlobalKLData.high,parseFloat(dt.high));
-		GlobalKLData.low = Math.min(GlobalKLData.low,parseFloat(dt.low)); */
-		//console.log(dt);
-		if(!CurrentKLObj) return;
-		//对订阅数据的小数位数进行判断
-		var item = KLDataDecimalHandler(dt,CurrentInstrumentDigits);
-		//var item = dt;
-		//console.log(item);
-		//console.log("open:"+item.open+",high:"+item.high+",low:"+item.low+",close"+item.close);
+	if(!CurrentKLObj) return;
+	//对订阅数据的小数位数进行判断
+	var item = KLDataDecimalHandler(dt);		
 	var time=dt.datetime;
-	/* ////////////////
-	//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;//临时修改最后一条数据
-	if(!this.isInit) this.isInit = 'yes';
-	if(this.isInit == 'yes') {
-		CurrentKLObj.addCandleToKL(item); //添加最后更新的数据    
-		drawKL();
-	}
-	//console.log("..................item");
-	//console.log(item);
-	this.lastUpdateItem = item;
-	if(!this.count) this.count = 2;
-	if(this.count == 2){
-		CurrentKLObj.updateKLOnCandle(item,"first");
+	if(!CurrentDataTime){
+		CurrentDataTime = time;
+		CurrentKLObj.addCandleToKL(item);//收到订阅数据后, 先添加第一条数据
+		//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;//临时修改最后一条数据
+		drawKL();//重新画图
+		CurrentKLObj.updateKLOnCandle(item);
 	}else{
-		CurrentKLObj.updateKLOnCandle(item,"more");	
-	}
-	this.count +=1;
-	if(this.count == 7){
-		if(isInit == "yes"){
-			drawKL();
-		} 
-		GlobalKLData.ks[GlobalKLData.ks.length-1] = lastUpdateItem;
-		drawKL();
-		CurrentKLObj.addCandleToKL(item); //添加最后更新的数据
-		this.count = 2;
-	}
-	this.isInit = 'no'; 
-	//////////////// */
-		if(!CurrentDataTime){
-			CurrentDataTime = time;
-			CurrentKLObj.addCandleToKL(item);//收到订阅数据后, 先添加第一条数据
+		//return;
+		if(CurrentDataTime == time){
+			//修改一条数据
+			//console.log("修改一条数据");
+			this.lastUpdateDt = dt;
 			//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;//临时修改最后一条数据
-			drawKL();//重新画图
+			//CurrentKLObj.addCandleToKL(item);
+			//drawKL();
 			CurrentKLObj.updateKLOnCandle(item);
 		}else{
-			//return;
-			if(CurrentDataTime == time){
-				//修改一条数据
-				//console.log("修改一条数据");
-				this.lastUpdateDt = dt;
-				//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;//临时修改最后一条数据
-				//CurrentKLObj.addCandleToKL(item);
-				//drawKL();
-				CurrentKLObj.updateKLOnCandle(item);
-				
-			}else{
-				//添加一条数据
-				var lastItem = KLDataDecimalHandler(this.lastUpdateDt,1);
-				CurrentKLObj.updateGlobalKLLastDt(lastItem);//更新最后一条数据
-				drawKL();
-				//CurrentKLObj.addCandleToKL(lastItem); //添加最后更新的数据 
-				CurrentKLObj.addCandleToKL(item);//添加新数据
-				drawKL();
-				CurrentDataTime = time;
-			}
+			//添加一条数据
+			var lastItem = KLDataDecimalHandler(this.lastUpdateDt);
+			CurrentKLObj.updateGlobalKLLastDt(lastItem);//更新最后一条数据
+			drawKL();
+			//CurrentKLObj.addCandleToKL(lastItem); //添加最后更新的数据 
+			CurrentKLObj.addCandleToKL(item);//添加新数据
+			drawKL();
+			CurrentDataTime = time;
 		}
+	}
 }
 
 //对原始数据进行处理
 function originalDataHandle(data){
-	for(var i=0;i<data.length;i++){
+	var len = data.length;//原始数据是倒序的, 在这里正序过来,并封装成自己想要的数据
+	for(var i=len-1;i>=0;i--){
 		var tempData=[];
 		var dt = data[i];
 		var time=dt.datetime;
 		var date = new Date(time);
 		var dateNumber =converDateStrByDate(date);
 		var item = {
+			//开盘时间
+			openTime:time,
+			//收盘时间
+			closeTime:time+CurrentKLInterval*1000,
 		    quoteTime: dateNumber,
 		    open: parseFloat(dt.open),
 		    high: parseFloat(dt.high),
@@ -134,22 +96,44 @@ function originalDataHandle(data){
 		GlobalKLData.ks.push(item);
 	}
 }
-//ajax请求获取历史数据
-function getHisKLines(interval){
+//画K线
+function drawKLHandler(interval){
+	LoadKLineDataFinish = true;//标识数据加载完成
+	if(GlobalKLData.ks.length == 0)return;
+	drawKL();//画图
+	//调取交易历史数据
+	getHisTradeInfo();
+	var destination = "/topic/"+CurrentInstrumentID+"_"+interval; 
+	if(!KLWSClient) return;
+	//console.log("添加监听");
+	KLWSSubscribe = KLWSClient.subscribe(destination,function(message){
+		if(!LoadKLineDataFinish)return;
+		var tempData = message.body;
+		KLSubscribeHandler(JSON.parse(tempData));//实时K线变化
+	});
+}
+
+//获取当天K线数据
+function getCurrentDateKLines(interval){
+	CurrentKLInterval = interval;
 	GlobalKLData.ks.length = 0;
-	var method = 'getHisKlines';//方法
+	var method = 'getKlines';
 	var data = {
-		instrumentid:CurrentInstrumentID,
-		startdate:1454256000000,  //2016年1月1日的数据
-		enddate:1458177863579,     
-		interval:parseInt(interval)
+		"rid":CurrentRoomID,
+		"lc":CurrentLC,
+		"startdate":getCurrentYMD,
+		"enddate":getCurrentYMD,
+		"rmc":CurrentRMC,
+		"klname":CurrentInstrumentID+"_"+CurrentKLInterval,
+		"uid":CurrentUserId,
+		"interval":CurrentKLInterval,
+		"aid":CurrentAccountID
 	};
 	var param = JSON.stringify(data);
 	$.ajax({
 		url:WebServiceTransferUrl+'/call_ws/output',
 		type:'post',
 		dataType:"json",
-		//async:false,//同步请求
 		data:{
 			ws_url:WebServiceStrageUrl,
 			ws_func:method,
@@ -158,30 +142,70 @@ function getHisKLines(interval){
 		timeout:AjaxTimeOut, //设置超时5秒钟
 		success:function(data){
 			var state = data.rc;
-			console.log("get K line his data");
+			console.log("get today K line data");
+			//数据是倒序的
 			console.log(data);
 			if(state === 0){
 				var obj = data.res.data;
-				LoadHisKLData = true;
+				if(obj.length == 0){
+					//如果当天没有数据,请求历史数据
+					getHisKLines(interval,getCurrentTimes);
+				}else{
+					originalDataHandle(obj);
+					//判断是否加载历史数据
+					console.log(CurrentMaxKLShowCount);
+					if(obj.length < CurrentMaxKLShowCount){
+						getHisKLines(interval,obj[0].datetime);
+					}else{
+						drawKLHandler(interval);
+					}
+				}
+			}else{
+				//alert("请求服务器出错");	
+			}
+		},
+		error:function(xhr,state){
+			console.log("get data error");
+			//alert("请求服务器出错");
+		},
+		complete:function(xhr,state){
+			//console.log('get data complete');
+		}
+	});
+}
+
+//ajax请求获取历史数据
+function getHisKLines(interval,time){
+	var method = 'getHisKlines';
+	var data = {
+		instrumentid:CurrentInstrumentID,
+		startdate:time,  //当天00:00:00
+		amount:1,
+		type:1,
+		action:3,
+		interval:parseInt(interval)
+	};
+	var param = JSON.stringify(data);
+	$.ajax({
+		url:WebServiceTransferUrl+'/call_ws/output',
+		type:'post',
+		dataType:"json",
+		data:{
+			ws_url:WebServiceStrageUrl,
+			ws_func:method,
+			ws_param:param
+		},
+		timeout:AjaxTimeOut, //设置超时5秒钟
+		success:function(data){
+			var state = data.rc;
+			console.log("get his K line data");
+			//数据是倒序的
+			console.log(data);
+			if(state === 0){
+				var obj = data.res.data;
+				LoadKLineDataFinish = true;
 				originalDataHandle(obj);
-				drawKL();//画图
-				var destination = "/topic/"+CurrentInstrumentID+"_"+interval; 
-				if(!KLWSClient) return;
-				//console.log("添加监听");
-				LoadHisLineFinish = true;  //标识历史数据加载完成
-				KLWSSubscribe = KLWSClient.subscribe(destination,function(message){
-					//return;
-					//判断历史数据是否加载完成
-					if(!LoadTapeFinish || !LoadHisLineFinish)return;
-					var tempData = message.body;
-					KLMQMessageMonitor = true;
-					//console.log("新pong");
-					//console.log('涨跌: -->'+JSON.parse(tempData).pricechg);
-					//console.log('幅度:-->'+JSON.parse(tempData).pricechgrate);
-					//console.log(JSON.parse(tempData));
-					//return;
-					KLSubscribeHandler(JSON.parse(tempData));//实时K线变化
-				});
+				drawKLHandler(interval);
 			}else{
 				//alert("请求服务器出错");	
 			}
@@ -200,47 +224,7 @@ function loadHisKLineData(interval){
 	GlobalKLData.ks.length = 0;
 	var data = null;
 	var time = 0;
-	//console.log(interval+"----");
-	getHisKLines(interval);
-	//return;
-	/*if(interval == "60"){
-		data = InitTestDataOne;
-	}else if(interval == "180"){
-		data = InitTestDataThree;
-	}else if(interval == "300"){
-		data = InitTestDataFive;
-	}else if(interval == "600"){
-		data = InitTestDataTen;
-	}else if(interval == "900"){
-		data = InitTestDataFifteen;
-	}else if(interval == "1800"){
-		data = InitTestDataThirty;
-	}else if(interval == "86400"){
-		data = InitTestDataDaily;
-	}*/
-//	
-//	for(var i=0;i<data.length;i++){
-//		var tempData=[];
-//		var dt = data[i];
-//		var time=dt.datetime;
-//		var date = new Date(time);
-//		var dateNumber =converDateStrByDate(date);
-//		var item = {
-//		    quoteTime: dateNumber,
-//		    preClose: 2977.0,
-//		    open: parseFloat(dt.open),
-//		    high: parseFloat(dt.high),
-//		    low: parseFloat(dt.low),
-//		    close: parseFloat(dt.close),
-//		    volume: parseFloat(dt.volume),
-//		    amount: 2939,
-//		    openchg:Number(dt.openchg),
-//			highchg:Number(dt.highchg),
-//			lowchg:Number(dt.lowchg),
-//			closechg:Number(dt.closechg)
-//		};
-//		GlobalKLData.ks.push(item);
-//	}
+	getCurrentDateKLines(interval);
 }
 
 //设置其他分段按钮的样式
@@ -266,8 +250,7 @@ function setKLIntervalEvent(KLTimeShareList){
 		$('li').mousedown(function(e){
 			if($(this).attr('isMouseDown') == 'false'){
 				CurrentDataTime = null;
-				LoadHisKLData = false;
-				KLMQMessageMonitor = false;
+				LoadKLineDataFinish = false;
 				setKLIntervalStyle(KLTimeShareList);//设置其他分时样式
 				$(this).attr('isMouseDown','true');
 				$(this).css('backgroundColor','#8494A4');

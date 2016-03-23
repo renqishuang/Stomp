@@ -1,30 +1,28 @@
 function afterInitSysInfo(){
-	//委托挂单
+	/*//委托挂单
 	getTradeInfoPendingDepute();
+	//持仓信息
+	getTradeInfoMP();*/
+	
 	//获取盘口数据
 	getTapeInfo();
 	//获取交易数据
 	getTradeInfoInstStat();
-	//持仓信息
-	getTradeInfoMP();
-	//当日委托
+	
+	/*//当日委托
 	getTradeInfoAllDepute();
 	//当日成交
 	getTradeInfoAllOrder();
 	//条件单查询
-	getTradeInfoConOrder();
-	
-	var re_oper = "";
-	
+	getTradeInfoConOrder();*/
 }
 $(document).ready(function() {
 	window.KLWSClient = null;
 	window.KLWSSubscribe = null;
 	window.KLMQMessageMonitor = false;
 	window.TradeWSClient = null;
-	window.LoadHisKLData = false;
 	window.CurrentDataTime = null;
-	window.LoadHisLineFinish = false;
+	window.LoadKLineDataFinish = false;
 	window.LoadTapeFinish = false;
 	window.CurrentInstrumentDigits = 0;
 	console.log(Math.round(499.9));
@@ -43,6 +41,13 @@ $(document).ready(function() {
 	 }else {
 	    return;
 	 }
+	//获取Canvas相对于页面的偏移量
+	var canvas = $id('canvasKL');
+	CanvasPagePosition = getPageCoord(canvas);
+	CanvasPagePosition.width = canvas.width;
+	
+	//最大K线个数
+	getMaxKLShowCount();
 	
 	 //分时段设置
 	var KLTimeShareDiv = $('div.KL_TimeShareChart_Interval');

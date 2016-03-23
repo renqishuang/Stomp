@@ -1,5 +1,17 @@
-//确认下单通知
-function confirmOrderNotify(){
+//委托挂单通知
+/*function pendingDeputeOrderNotify1(){
+	var pendingDeputeFrag = "<div class='order-dashed-wrap'></div>";
+	//CanvasPagePosition
+	$('body').append($(pendingDeputeFrag));
+	var wrap = $('.order-dashed-wrap');
+	var width = CanvasPagePosition.width-GlobalKLOptionObj.region.x;
+	wrap.css('width',width);
+	var left = CanvasPagePosition.x+GlobalKLOptionObj.region.x;
+	wrap.css('left',left);
+	var top = CanvasPagePosition.y+CurrentKLObj.getYCoordByPrice(305);
+	wrap.css('top',top);
+	
+	return;
 	var htmlFrag = "<div class='order_notify_wrap'>"+
 			"<span value='iid'>i1609</span>"+
 			"<span value='img'></span>"+
@@ -14,7 +26,7 @@ function confirmOrderNotify(){
 	setTimeout(function(){
 		//$('.order_notify_wrap').remove();
 	},3000);
-}
+}*/
 $('.remodal-confirm').click(function(){
 	var prev = $(this).prev();
 	var remodalType = prev.attr('remodalConType');
@@ -61,7 +73,7 @@ $('.remodal-confirm').click(function(){
 				console.log('trade order');
 				console.log(data);
 				//添加页面提示
-				confirmOrderNotify();
+				//confirmOrderNotify();
 			},
 			error:function(xhr,state){
 				console.log("get data error");
