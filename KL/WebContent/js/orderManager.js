@@ -506,7 +506,7 @@ function hisTradeDataSet(dt){
 			var klDt = GlobalKLData.ks[j];
 			if(!klDt) return;
 			if(otime < klDt.closeTime && otime > klDt.openTime){
-				//console.log('find trade pointer');
+				console.log('find trade pointer');
 				//console.log(klDt);
 				var KLIndex = klDt.KLIndex;
 				//获取X坐标
@@ -528,19 +528,88 @@ function hisTradeDataSet(dt){
 		        var COPointerFrag = "<div class='"+tradeCOPointer+"'></div>";
 		        $('body').append($(COPointerFrag));
 		        if(co == 0){//开仓
-		        	var openPointerImage = 'url(images/hongjiantou.png)';
-		        	if(dir == 1) openPointerImage = 'url(images/lvjiantou.png)';
+		        	//多开空平在下
+		        	var openPointerImage = 'url(images/trade-pointer-duokai.png)';
+		        	var tempY = bottomY;
+		        	if(dir == 1) {
+		        		openPointerImage = 'url(images/trade-pointer-kongkai.png)';
+		        		tempY = topY;
+		        	}
 		        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
-			        $('.'+tradeCOPointer).css('top',bottomY);
+			        $('.'+tradeCOPointer).css('top',tempY);
 			        $('.'+tradeCOPointer).css('left',x);
 		        }else if(co == 1){//平仓
-		        	var closePointerImage = 'url(images/hongduihao.png)';
-		        	if(dir == 1) openPointerImage = 'url(images/lvduihao.png)';
+		        	//空开多平在上
+		        	var closePointerImage = 'url(images/trade-pointer-duoping.png)';
+		        	var tempY = topY
+		        	if(dir == 1){
+		        		openPointerImage = 'url(images/trade-pointer-kongping.png)';
+		        		tempY = bottomY;
+		        	} 
 		        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
-			        $('.'+tradeCOPointer).css('top',topY);
+			        $('.'+tradeCOPointer).css('top',tempY);
 			        $('.'+tradeCOPointer).css('left',x);
 		        }
 			}
+		}
+	}
+}
+//增加交易点
+function addTradePointer(tempDt){
+	var otime = tempDt.otime,
+	dir = tempDt.dir,
+	co = tempDt.co,
+	vol = tempDt.vol,
+	iid = tempDt.iid,
+	price = tempDt.price;
+	for(var j=CurrentKLStartIndex;j<=CurrentKLEndIndex;j++){
+		var klDt = GlobalKLData.ks[j];
+		if(!klDt) return;
+		if(otime < klDt.closeTime && otime > klDt.openTime){
+			console.log('find trade pointer');
+			//console.log(klDt);
+			var KLIndex = klDt.KLIndex;
+			//获取X坐标
+			var x = CurrentKLObj.getCandleXByIndex(KLIndex)+
+			CanvasPagePosition.x+GlobalKLOptionObj.region.x-5;
+			//获取Y坐标
+			var y = CurrentKLObj.getYCoordByPrice(price)+CanvasPagePosition.y-5;
+			var topY = CurrentKLObj.getYCoordByPrice(klDt.high)+CanvasPagePosition.y-5;
+	        var bottomY = CurrentKLObj.getYCoordByPrice(klDt.low)+CanvasPagePosition.y-5;
+	        //console.log("x - topY - bottomY: "+x+'-'+topY+'-'+bottomY);
+	        var tradeDefaultPointer = 'trade-pointer-wrap-'+otime;
+	        var defaultFrag = "<div class='"+tradeDefaultPointer+"'></div>";
+	        $('body').append($(defaultFrag));
+	        //console.log($('.'+tradeDefaultPointer));
+	        $('.'+tradeDefaultPointer).css('background-image','url(images/xinhaodianheise.png)');
+	        $('.'+tradeDefaultPointer).css('top',y);
+	        $('.'+tradeDefaultPointer).css('left',x);
+	        var tradeCOPointer = 'trade-pointer-wrap-'+otime+co;
+	        var COPointerFrag = "<div class='"+tradeCOPointer+"'></div>";
+	        $('body').append($(COPointerFrag));
+	        if(co == 0){//开仓
+	        	//多开空平在下
+	        	var openPointerImage = 'url(images/trade-pointer-duokai.png)';
+	        	var tempY = bottomY;
+	        	if(dir == 1) {
+	        		openPointerImage = 'url(images/trade-pointer-kongkai.png)';
+	        		tempY = topY;
+	        	}
+	        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
+		        $('.'+tradeCOPointer).css('top',tempY);
+		        $('.'+tradeCOPointer).css('left',x);
+	        }else if(co == 1){//平仓
+	        	//空开多平在上
+	        	var closePointerImage = 'url(images/trade-pointer-duoping.png)';
+	        	var tempY = topY
+	        	if(dir == 1){
+	        		openPointerImage = 'url(images/trade-pointer-kongping.png)';
+	        		tempY = bottomY;
+	        	} 
+	        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
+		        $('.'+tradeCOPointer).css('top',tempY);
+		        $('.'+tradeCOPointer).css('left',x);
+	        }
 		}
 	}
 }
@@ -609,14 +678,13 @@ function pendingDeputeConvertToOrder(dt){
 			$(tr).css('background-color','white');
 			$(tr).unbind('mouseover');
 			$(tr).unbind('mouseout');
+			$(tr).unbind('dblclick');
 			wrap.attr('trLen',wrap.attr('trLen')-1);
 			//删除挂单虚线
 			var wrap = $('.order-dashed-wrap-'+did);
 			wrap.remove();
 			//添加提示
 			pdConvertToOrderTip(trDt);
-			//交易数据
-			//getHisTradeInfo();
 			$(tr).attr('orderData','');
 			var tds = $(tr).find('td'),tdLen = tds.length;
 			for(var j=0;j<tdLen;j++){
@@ -625,6 +693,44 @@ function pendingDeputeConvertToOrder(dt){
 			}
 		}
 	}
+	//在成交单表格中添加一行数据
+	/*var bargainWrap = $('.Order_Manager_TB_Bargain');
+	if(bargainWrap.length == 0) return;
+	var bargainTB = bargainWrap.find('table');
+	var htmlFrage = "<tr>"+
+			"<td></td>"+
+			"<td></td>"+
+			"<td></td>"+
+			"<td></td>"+
+			"<td></td>"+
+			"<td></td>"+
+			"<td></td>"+
+			"<td></td>"+
+			"<td></td>"+
+			"<td></td>"+
+			"<td></td>"+
+			"<td></td>"+
+		"</tr>";
+	bargainTB.append(htmlFrage);
+	var trList = bargainTB.find('tr');
+	var tr = trList.eq(trList.length-1);
+	tr.css('background-color','#FFE7E7');
+	tr.find('td:first-child').html(dt.iid);
+	tr.find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
+	tr.find('td:nth-child(3)').html(dt.co==0?'仓':'仓');
+	tr.find('td:nth-child(4)').html((dt.price).toFixed(CurrentInstrumentDigits));
+	tr.find('td:nth-child(5)').html(dt.vol);
+	if(dt.vol > 0){
+		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(msecondConvertToDate(dt.otime));
+	}else{
+		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html();
+	}
+	tr.find('td:nth-child(7)').html(dt.oid);//成交编号没找到
+	tr.find('td:nth-child(8)').html(dt.did);
+	tr.find('td:nth-child(9)').html(msecondConvertToDate(dt.dtime));
+	tr.find('td:nth-child(10)').html((dt.dprice).toFixed(CurrentInstrumentDigits));
+	tr.find('td:nth-child(11)').html((dt.tfee).toFixed(2));//手续费固定保留两位
+	tr.find('td:nth-child(12)').html();*/
 }
 
 //委托挂单表格数据设置
@@ -632,15 +738,16 @@ function tradeInfoPDDataSet(wrap, index, dt){
 	var dtStr = JSON.stringify(dt);
 	var tr = wrap.find('tr').eq(index); 
 	tr.css('cursor','pointer');
-	tr.mouseover(function(){
+	tr.bind('mouseover',function(){
 		$(this).css('background-color','#E9EBEE');
 	});
-	tr.mouseout(function(){
+	tr.bind('mouseout',function(){
 		$(this).css('background-color','#FFE7E7');
 	});
-	tr.dbclick(function(){
-		alert('双击');
+	tr.bind('dblclick',function(){
+		repealPendingDepute(dt);
 	});
+
 	tr.css('background-color','#FFE7E7');
 	tr.attr('orderData',dtStr);//把数据赋给行
 	//console.log('---------------===============');
@@ -687,9 +794,42 @@ function tradeInfoPDMQHandler(dt){
 	wrap.attr('trLen',index);
 	pendingDeputeOrderNotify(dt.dprice,dt.did);
 }
+
+//收到MQ通知, 委托单撤单成功
+function MQRepealPendingDepute(dt){
+	var did = dt.did;
+	var wrap = $('.TradeInfoPendingDepute');
+	if(wrap.length == 0) return;
+	var trList = wrap.find('tr'),trLen = trList.length;
+	for(var i=1;i<trLen;i++){
+		var tr = trList[i];
+		var trDtStr = $(tr).attr('orderData');
+		if(!trDtStr) continue;
+		var trDt = JSON.parse(trDtStr);
+		if(trDt.did == did){
+			$(tr).css('cursor','default');
+			$(tr).css('background-color','white');
+			$(tr).unbind('mouseover');
+			$(tr).unbind('mouseout');
+			$(tr).unbind('dblclick');
+			wrap.attr('trLen',wrap.attr('trLen')-1);
+			//删除挂单虚线
+			var wrap = $('.order-dashed-wrap-'+did);
+			wrap.remove();
+			/*//添加提示
+			pdConvertToOrderTip(trDt);*/
+			$(tr).attr('orderData','');
+			var tds = $(tr).find('td'),tdLen = tds.length;
+			for(var j=0;j<tdLen;j++){
+				var td = tds[j];
+				$(td).html('');
+			}
+		}
+	}
+}
 //撤销委托挂单
 function repealPendingDepute(dt){
-	var method = 'tradeInfo';//方法
+	var method = 'trade';//方法
 	var data = {
 		"uid":CurrentUserId,
 		"rid":CurrentRoomID,
@@ -753,15 +893,15 @@ function tradeInfoPDHandler(data){
 		var dt=data[i];
 		var tr = wrap.find('tr').eq(i+1);
 		tr.css('cursor','pointer');
-		tr.mouseover(function(){
+		tr.bind('mouseover',function(){
 			$(this).css('background-color','#E9EBEE');
 		});
-		tr.mouseout(function(){
+		tr.bind('mouseout',function(){
 			$(this).css('background-color','#FFE7E7');
 		});
-		tr.dblclick(function(){
+		tr.bind('dblclick',function(){
 			repealPendingDepute($(this).attr('orderData'));
-		});
+		})
 		tr.attr('orderData',JSON.stringify(dt));
 		tr.css('background-color','#FFE7E7');
 		tr.find('td:first-child').html(dt.iid);
@@ -817,8 +957,10 @@ function getTradeInfoPendingDepute(){
 function tradeInfoAllDeputeHandler(data){
 	var wrap = $('.Order_Manager_TB_Delegation');
 	if(wrap.length == 0) return;
+	var table = wrap.find('table');
+	var trLen = table.attr('trLen');
 	var i=0,len = data.length;
-	if(len > 5){//大于5行
+	if(len > trLen){//大于5行
 		var htmlFrage = "<tr>"+
 							"<td></td>"+
 							"<td></td>"+
@@ -835,11 +977,11 @@ function tradeInfoAllDeputeHandler(data){
 							"<td></td>"+
 						"</tr>";
 		var fragLen = len - 5;
-		var table = wrap.find('table');
 		for(var j=0;j<fragLen;j++){
 			table.append($(htmlFrage));
 		}
 	}
+	if(len > 5) table.attr('trLen',len);
 	for(;i<len;i++){
 		var dt=data[i];
 		wrap.find('tr').eq(i+1).css('background-color','#FFE7E7');
@@ -916,8 +1058,10 @@ function getTradeInfoAllDepute(){
 function tradeInfoOrderHandler(data){
 	var wrap = $('.Order_Manager_TB_Bargain');
 	if(wrap.length == 0) return;
+	var table = wrap.find('table');
+	var trLen = table.attr('trLen');
 	var i=0,len=data.length;
-	if(len > 5){//大于5行
+	if(len > trLen){//大于5行
 		var htmlFrage = "<tr>"+
 							"<td></td>"+
 							"<td></td>"+
@@ -933,30 +1077,31 @@ function tradeInfoOrderHandler(data){
 							"<td></td>"+
 						"</tr>";
 		var fragLen = len - 5;
-		var table = wrap.find('table');
 		for(var j=0;j<fragLen;j++){
 			table.append($(htmlFrage));
 		}
 	}
+	if(len > 5) table.attr('trLen',len);
 	for(;i<len;i++){
 		var dt = data[i];
-		wrap.find('tr').eq(i+1).css('background-color','#FFE7E7');
-		wrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
-		wrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
-		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'仓':'仓');
-		wrap.find('tr').eq(i+1).find('td:nth-child(4)').html((dt.price).toFixed(CurrentInstrumentDigits));
-		wrap.find('tr').eq(i+1).find('td:nth-child(5)').html(dt.vol);
+		var tr = wrap.find('tr').eq(i+1);
+		tr.css('background-color','#FFE7E7');
+		tr.find('td:first-child').html(dt.iid);
+		tr.find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
+		tr.find('td:nth-child(3)').html(dt.co==0?'仓':'仓');
+		tr.find('td:nth-child(4)').html((dt.price).toFixed(CurrentInstrumentDigits));
+		tr.find('td:nth-child(5)').html(dt.vol);
 		if(dt.vol > 0){
 			wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(msecondConvertToDate(dt.otime));
 		}else{
 			wrap.find('tr').eq(i+1).find('td:nth-child(6)').html();
 		}
-		wrap.find('tr').eq(i+1).find('td:nth-child(7)').html(dt.oid);//成交编号没找到
-		wrap.find('tr').eq(i+1).find('td:nth-child(8)').html(dt.did);
-		wrap.find('tr').eq(i+1).find('td:nth-child(9)').html(msecondConvertToDate(dt.dtime));
-		wrap.find('tr').eq(i+1).find('td:nth-child(10)').html((dt.dprice).toFixed(CurrentInstrumentDigits));
-		wrap.find('tr').eq(i+1).find('td:nth-child(11)').html((dt.tfee).toFixed(2));//手续费固定保留两位
-		wrap.find('tr').eq(i+1).find('td:nth-child(12)').html();
+		tr.find('td:nth-child(7)').html(dt.oid);//成交编号没找到
+		tr.find('td:nth-child(8)').html(dt.did);
+		tr.find('td:nth-child(9)').html(msecondConvertToDate(dt.dtime));
+		tr.find('td:nth-child(10)').html((dt.dprice).toFixed(CurrentInstrumentDigits));
+		tr.find('td:nth-child(11)').html((dt.tfee).toFixed(2));//手续费固定保留两位
+		tr.find('td:nth-child(12)').html();
 	}
 }
 //当日成交

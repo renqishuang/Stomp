@@ -65,7 +65,11 @@ kLine.prototype = {
     
     //修改全局KL数据的最后一条数据
     updateGlobalKLLastDt:function(item){
-    	GlobalKLData.ks[GlobalKLData.ks.length-1] = item;
+    	for(var s in GlobalKLData.ks[GlobalKLData.ks.length-1]){
+    		if(s == 'KLIndex') continue;
+    		GlobalKLData.ks[GlobalKLData.ks.length-1][s] = item[s];
+    	}
+    	//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;
     },
     
     //获取同时显示的KL数据的个数
@@ -89,10 +93,10 @@ kLine.prototype = {
         var tipHtml = '<div class="KL_Tip_Wrap">'+
         '<div><span>' + getYMDFormatOne(ki.openTime) + '</span><span>'+getHourMinute(ki.openTime)+'</span></div>' +
         //'昨收价：<font color="' + getPriceColor(ki, ki.preClose) + '">' + toMoney(ki.preClose) + '</font><br/>' +
-        '开盘价：<font color="' + this.getPriceColor(ki, "open") + '">' + toMoney(ki.open) + '</font><br/>' +
-        '最高价：<font color="' + this.getPriceColor(ki, "high") + '">' + toMoney(ki.high) + '</font><br/>' +
-        '最低价：<font color="' + this.getPriceColor(ki, "low") + '">' + toMoney(ki.low) + '</font><br/>' +
-        '收盘价：<font color="' + this.getPriceColor(ki, "close") + '">' + toMoney(ki.close) + '</font><br/></div>';
+        '<span>开盘价：</span><font color="' + this.getPriceColor(ki, "open") + '">' + toMoney(ki.open) + '</font><br/>' +
+        '<span>最高价：</span><font color="' + this.getPriceColor(ki, "high") + '">' + toMoney(ki.high) + '</font><br/>' +
+        '<span>最低价：</span><font color="' + this.getPriceColor(ki, "low") + '">' + toMoney(ki.low) + '</font><br/>' +
+        '<span>收盘价：</span><font color="' + this.getPriceColor(ki, "close") + '">' + toMoney(ki.close) + '</font><br/></div>';
         /*'成交量：' + bigNumberToText(ki.volume / 100) + '手<br/>' +
         '成交额：' + bigNumberToText(ki.amount);*/
         return tipHtml;

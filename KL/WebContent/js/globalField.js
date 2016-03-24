@@ -1,8 +1,9 @@
 window.WebServiceTransferUrl = 'http://jyw.zlw.com';
 window.KLWebSocketUrl = 'ws://192.168.1.188:61610';
 window.TradeWebSocketUrl = 'ws://192.168.1.188:61625';
-//window.KLWebSocketUrl='mq1.zlw.com:61614';
-//window.TradeWebSocketUrl='mq1.zlw.com:61613';
+window.KLWebSocketUrl='ws://mq1.zlw.com:61634';
+window.TradeWebSocketUrl='ws://mq1.zlw.com:61633';
+
 //window.WebServiceStrageUrl = 'http://192.168.1.231:8080/axis2/services/StrategyEngine?wsdl';
 //window.WebServiceTradeUrl = 'http://192.168.1.227:8888/axis2/services/SimTrade?wsdl';
 window.WebServiceStrageUrl = 'http://kline1.zlw.com:8080/axis2/services/StrategyEngine?wsdl';

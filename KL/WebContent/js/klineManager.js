@@ -58,10 +58,12 @@ function KLSubscribeHandler(dt){
 			//添加一条数据
 			var lastItem = KLDataDecimalHandler(this.lastUpdateDt);
 			CurrentKLObj.updateGlobalKLLastDt(lastItem);//更新最后一条数据
-			drawKL();
+			//drawKL();
 			//CurrentKLObj.addCandleToKL(lastItem); //添加最后更新的数据 
 			CurrentKLObj.addCandleToKL(item);//添加新数据
 			drawKL();
+			//调取交易历史数据
+			getHisTradeInfo();
 			CurrentDataTime = time;
 		}
 	}

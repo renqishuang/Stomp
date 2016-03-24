@@ -101,14 +101,16 @@ function getAccountInfo(){
 						if(status == 3){//把委托单变成成交单
 							pendingDeputeConvertToOrder(tempData);
 						}else if(status == 2){//撤单
-							
+							MQRepealPendingDepute(tempData);
 						}
 					}else if(actionType == 4){
 						setInitAccountInfo(tempData);
-					}else if(actionType == 9){
+					}else if(actionType == 9){//合约持仓盈亏、平仓盈亏 订信息 
 						//设置交易信息
 						setTradeInfo(tempData);
-					}					
+					}else if(actionType == 1){//下单成功
+						addTradePointer(tempData);
+					}
 				});
 				//获取房间合约信息
 				getRoomInstrumentInfo();
