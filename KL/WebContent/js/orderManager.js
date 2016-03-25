@@ -60,6 +60,80 @@ function OMConditionMouseDown(div){
 	titleWrap.html('条件单设置');
 	var contentWrap = remodalWrap.children('.remodal-content');
 	contentWrap.empty();
+	//remodalConditionPriceClick
+	//remodalConditionPriceOver
+	//remodalConditionPriceOut
+	var htmlFrag = "<div class='remodal-condition-order-wrap'>"+
+	  	   	   "<div>当行情满足以下条件时:</div>"+
+	  	   	   "<div>"+
+	  	   	   		"<font>当最新价</font>"+
+	  	   	   		"<select>"+
+		  	   	   		"<option value='dayu'>&gt;</option>"+
+		  	   	   		"<option value='dayudengyu'>&gt;=</option>"+
+		  	   	   		"<option value='xiaoyu'>&lt;</option>"+
+		  	   	   		"<option value='xiaoyudengyu'>&lt;=</option>"+
+		  	   	   "</select>"+
+		  	   	   "<div class='remodal-condition-price'>"+
+		  	   	   		"<input type='text' name='price'>"+
+		  	   	   		"<div>"+
+		  	   	   			"<div value='up'></div>"+
+		  	   	   			"<div value='down'></div>"+
+		  	   	   		"</div>"+
+		  	   	   "</div>"+
+		  	   	   "<font>时</font>"+
+	  	   	   "</div>"+
+	  	   	    "<div>"+
+	  	   	    	"<span>按</span>"+
+	  	   	    	"<span value='price'></span>"+
+	  	   	    	"<span>价格</span>"+
+	  	   	    	"<span>,</span>"+
+	  	   	    	"<span value='dir'></span>"+
+	  	   	    	"<span value='iid'></span>"+
+	  	   	    	"<span value='co'></span>"+
+	  	   	    	"<span value='vol'></span>"+
+	  	   	    	"<span>手</span>"+
+	  	   	    "</div>"+
+	  	   "</div>";
+	contentWrap.append($(htmlFrag));
+	var conditionOrderWrap = $('.remodal-condition-order-wrap');
+	var priceWrap = $('.remodal-condition-price'),
+		upDiv=priceWrap.find('div[value=up]'),
+		downDiv=priceWrap.find('div[value=up]');
+	//priceWrap.find('div[value=up]')
+	upDiv.bind('click',function(){
+		remodalConditionPriceClick($(this),'up');
+	});
+	
+	upDiv.bind('mouseover',function(){
+		remodalConditionPriceOver($(this),'up');
+	});
+	upDiv.bind('mouseout',function(){
+		remodalConditionPriceOut($(this),'up');
+	});
+	downDiv.bind('click',function(){
+		remodalConditionPriceClick($(this),'down');
+	});
+	
+	downDiv.bind('mouseover',function(){
+		remodalConditionPriceOver($(this),'down');
+	});
+	downDiv.bind('mouseout',function(){
+		remodalConditionPriceOut($(this),'down');
+	});
+	
+	var orderWrap = $('.KL_OrderManager_SecondWrap');
+	if(orderWrap.length == 0) return;
+	var iidVal = orderWrap.find('select').val(),
+		price = orderWrap.find('.KL_OM_Price_Number input').val(),
+		dir=orderWrap.find('div:nth-child(2) div[isClick=true]').attr('value');
+		co=orderWrap.find('div:nth-child(3) div[isClick=true]').attr('value'),
+		vol=orderWrap.find('.KL_OM_Volume_Number input').val();
+	conditionOrderWrap.find('span[value=iid]').html(iidVal);
+	conditionOrderWrap.find('span[value=price]').html(price);
+	conditionOrderWrap.find('input[name=price]').val(price);
+	conditionOrderWrap.find('span[value=dir]').html(dir==0?'买':'卖');
+	conditionOrderWrap.find('span[value=co]').html(co==0?'开仓':'平仓');
+	conditionOrderWrap.find('span[value=vol]').html(vol);
 }
 function OMOrderMouseOver(div){
 	$(div).css('background-image','url(images/maxiadan0.png)');
@@ -407,22 +481,44 @@ function tradeInfoMPHandler(data){
 	var len = data.length;
 	for(var i=0;i<len;i++){
 		var dt = data[i];
+		var shortTr =shortCutWrap.find('tr').eq(i+1); 
 		//var avgprice = dt.avgprice;
-		shortCutWrap.find('tr').eq(i+1).css('background-color','#FFE7E7');
-		shortCutWrap.find('tr').eq(i+1).find('td:last-child').html(dt.avgprice);
-		shortCutWrap.find('tr').eq(i+1).find('td:nth-last-child(2)').html(dt.volfcls);
-		shortCutWrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
-		shortCutWrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
-		shortCutWrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.vol);
+		shortTr.bind('mouseover',function(){
+			$(this).css('background-color','#E9EBEE');
+		});
+		shortTr.bind('mouseout',function(){
+			$(this).css('background-color','#FFE7E7');
+		});
+		shortTr.bind('dblclick',function(){
+			//repealPendingDepute(dt);
+		});
+		shortTr.css('cursor','pointer');
+		shortTr.css('background-color','#FFE7E7');
+		shortTr.find('td:last-child').html(dt.avgprice);
+		shortTr.find('td:nth-last-child(2)').html(dt.volfcls);
+		shortTr.find('td:first-child').html(dt.iid);
+		shortTr.find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
+		shortTr.find('td:nth-child(3)').html(dt.vol);
 		
-		mpWrap.find('tr').eq(i+1).css('background-color','#FFE7E7');
-		mpWrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
-		mpWrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
-		mpWrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.vol);
-		mpWrap.find('tr').eq(i+1).find('td:nth-child(4)').html(dt.volfcls);
-		mpWrap.find('tr').eq(i+1).find('td:nth-child(5)').html((dt.avgprice).toFixed(CurrentInstrumentDigits));
-		mpWrap.find('tr').eq(i+1).find('td:nth-child(6)').html(Math.round(dt.floatprofit));
-		mpWrap.find('tr').eq(i+1).find('td:nth-child(7)').html((dt.deposit).toFixed(2));//占用保证金 固定2位小数
+		var mpTr = mpWrap.find('tr').eq(i+1);
+		mpTr.bind('mouseover',function(){
+			$(this).css('background-color','#E9EBEE');
+		});
+		mpTr.bind('mouseout',function(){
+			$(this).css('background-color','#FFE7E7');
+		});
+		mpTr.bind('dblclick',function(){
+			//repealPendingDepute(dt);
+		});
+		mpTr.css('background-color','#FFE7E7');
+		mpTr.css('cursor','pointer');
+		mpTr.find('td:first-child').html(dt.iid);
+		mpTr.find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
+		mpTr.find('td:nth-child(3)').html(dt.vol);
+		mpTr.find('td:nth-child(4)').html(dt.volfcls);
+		mpTr.find('td:nth-child(5)').html((dt.avgprice).toFixed(CurrentInstrumentDigits));
+		mpTr.find('td:nth-child(6)').html(Math.round(dt.floatprofit));
+		mpTr.find('td:nth-child(7)').html((dt.deposit).toFixed(2));//占用保证金 固定2位小数
 	}
 }
 
@@ -484,6 +580,21 @@ function pdConvertToOrderTip(dt){
 		"<span value='time'>"+getCurrentHMS()+"</span>"+
 	"</div>";
 	$('body').append($(htmlFrag));
+	var image;
+	if(dt.dir == 0){
+		if(dt.co == 0){
+			image = 'url(images/trade-pointer-duokai.png)';
+		}else{
+			image = 'url(images/trade-pointer-duoping.png)';
+		}
+	}else{
+		if(dt.co == 0){
+			image = 'url(images/trade-pointer-kongkai.png)';
+		}else{
+			image = 'url(images/trade-pointer-kongping.png)';
+		}
+	}
+	$('.order_notify_wrap span[value=img]').css('background-image',image);
 	setTimeout(function(){
 		$('.order_notify_wrap').remove();
 	},3000);
@@ -1205,4 +1316,28 @@ function getTradeInfoConOrder(){
 			//console.log('get data complete');
 		}
 	});
+}
+
+function remodalConditionPriceOver(div,type){
+	var image = 'url(images/NumericSteppersdown1.png)';
+	if(type == 'down'){
+		image = 'url(images/NumericStepperxdown.png)';
+	}
+	$(div).css('background-image',image);
+}
+function remodalConditionPriceOut(div,type){
+	var image = 'url(images/NumericSteppersup.png)';
+	if(type == 'down'){
+		image = 'url(images/NumericStepperxup.png)';
+	}
+	$(div).css('background-image',image);
+}
+function remodalConditionPriceClick(div,type){
+	var parent = $(div).parent();
+	var input = parent.prev();
+	if(type == 'up'){
+		input.val(Number(input.val())+1);
+	}else if(type == 'down'){
+		input.val(Number(input.val())-1);
+	}
 }

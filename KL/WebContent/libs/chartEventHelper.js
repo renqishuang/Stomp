@@ -111,7 +111,8 @@ crossLinesAndTipMgr.prototype._onMouseOrTouchMove = function (ev) {
                 relativePoint: { x: crossPoint.x, y: crossPoint.y },
                 canvas: canvas,
                 canvasRange: options.triggerEventRanges,
-                innerHTML: tipOp.getTipHtml(ev)
+                innerHTML: tipOp.getTipHtml(ev),
+                hideYPriceTip: tipOp.hideYPriceTip
             });
             me.tip = tip;
         }

@@ -35,9 +35,9 @@ function msecondConvertToDate(millisecond){
 	var hours = date.getHours(),
 	minutes = date.getMinutes(),
 	seconds=date.getSeconds();
-	hours = hours < 10 ? hours+'0' : hours;
-	minutes = minutes < 10 ? minutes + '0' : minutes;
-	seconds = seconds < 10 ? seconds + '0' : seconds;
+	hours = hours < 10 ? '0'+hours: hours;
+	minutes = minutes < 10 ? '0'+minutes: minutes;
+	seconds = seconds < 10 ? '0'+seconds: seconds;
 	return hours+':'+minutes+':'+seconds;
 }
 
@@ -68,7 +68,7 @@ function getCurrentHMS(){
 	var hours = date.getHours(),
 	minutes = date.getMinutes(),
 	seconds=date.getSeconds();
-	hours = hours < 10 ? hours+'0' : hours;
+	hours = hours < 10 ? '0' + hours: hours;
 	minutes = minutes < 10 ? '0'+minutes: minutes;
 	seconds = seconds < 10 ? '0'+seconds: seconds;
 	return hours+':'+minutes+':'+seconds;
@@ -80,6 +80,7 @@ function getCurrentMilliSecond(){
 	var month = date.getMonth()+1;
 	month = month < 9? '0'+month:month;
 	var day = date.getDate();
+	day = day < 9? '0'+day:day;
 	var ds = year+'-'+month+'-'+day;
 	return Date.parse(ds+' 00:00:00');
 }
@@ -96,5 +97,6 @@ function getCurrentYMD(){
 	var month = date.getMonth()+1;
 	month = month < 9? '0'+month:month;
 	var day = date.getDate();
+	day = day < 9? '0'+day:day;
 	return year+'-'+month+'-'+'-'+day;
 }

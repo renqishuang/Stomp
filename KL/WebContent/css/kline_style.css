@@ -888,7 +888,7 @@ a:focus { outline: none; }
 	display: inline-block;
     width: 14px;
     height: 14px;
-    background-image: url(../images/hongjiantou.png);
+    /* background-image: url(../images/trade-pointer-duokai.png); */
     background-size: 100% 100%;
     background-repeat:no-repeat;
     background-position:center;
@@ -897,6 +897,14 @@ div[class^=order-dashed-wrap]{
 	position: absolute;
     height: 1px;
     border-top: 1px dashed #FFCA00;
+    /* width: 800px;
+    top: 50%; */
+}
+div[class^=order-dashed-wrap]>span:first-child{
+	width: 51px;
+    height: 18px;
+    display: inline-block;
+    background-image: url(../images/maiduokai.png);
 }
 div[class^=trade-pointer-wrap]{
 	width: 10px;
@@ -912,18 +920,118 @@ div[class^=trade-pointer-wrap]{
     height: 100%;
 }
 .KL_Tip_Wrap > div:first-child{
-	background-color: #EBE9C7;
     font-size: 12px;
     height: 16px;
     margin-bottom: 3px;	
 }
 .KL_Tip_Wrap > span{
 	color:#EBE9C7;
+	margin-bottom: 1px;
+    display: inline-block;
 }
-.KL_Tip_Wrap > div:first-child>span:first-child{
+.KL_Tip_Wrap > div:first-child>span:nth-last-child(2){
 	color: #DF8C23;
 }
 .KL_Tip_Wrap > div:first-child>span:nth-child(2){
 	color: black;
     margin-left: 10px;
+}
+.KL_Tip_Wrap > img{
+	margin-left:10px;
+	margin-right:10px;
+	margin-top: 10px;
+}
+.KL_Tip_Wrap font{
+	margin-left:8px;
+}
+.remodal-order-fail{
+	height: 100%;
+    line-height: 147px;
+    font-size: 18px;
+    color: white;
+}
+div[class^=KL_Y_Axis_Price_Tip]{
+	position:absolute;
+	width:50px;
+	height:18px;
+	background-color:#0079FE;
+	color:white;
+	text-align:center;
+}
+.remodal-condition-order-wrap select{
+	width:122px;
+	height:28px;
+	margin-right: 3px;
+}
+.remodal-condition-order-wrap > div:first-child{
+	text-align: left;
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+}
+.remodal-condition-order-wrap > div:nth-child(2){
+	text-align:left;
+}
+.remodal-condition-order-wrap > div:nth-child(2)>font{
+	font-size: 14px;
+    margin-right: 5px;
+}
+.remodal-condition-order-wrap > div:nth-child(2)>font:last-child{
+    margin-left: 5px;
+}
+.remodal-condition-order-wrap > div:nth-child(3){
+	height: 70px;
+    line-height: 70px;
+    font-size: 15px;
+}
+.remodal-condition-order-wrap > div:nth-child(3) span[value=price],
+.remodal-condition-order-wrap > div:nth-child(3) span[value=vol]{
+	color:#FFFF99;
+	width: 48px;
+    display: inline-block
+}
+.remodal-condition-order-wrap > div:nth-child(3) span[value=vol]{
+	width: 28px;
+}
+.remodal-condition-order-wrap > div:nth-child(3) span[value=iid]{
+	color:#3569F2;
+	width: 60px;
+    display: inline-block;
+}
+.remodal-condition-price{
+	width:122px;
+	height:28px;
+	display:inline-block;
+	margin-top: -1px;
+	vertical-align: middle;
+	text-align:left;
+	background-color:white;
+	position: relative;
+}
+.remodal-condition-price input{
+	width: 85px;
+    height: 100%;
+    color: red;
+    font-size: 15px;
+    padding-left: 5px;
+}
+.remodal-condition-price > div{
+	display: inline-block;
+    width: 25px;
+    vertical-align: middle;
+    height: 100%;
+    position: absolute;
+    top: 1px;
+    right: 4px;
+}
+.remodal-condition-price > div > div{
+	width:27px;
+	height:14px;
+	cursor:pointer;
+}
+.remodal-condition-price > div > div:nth-child(1){
+	background-image: url(../images/NumericSteppersup.png);
+}
+.remodal-condition-price > div > div:nth-child(2){
+	background-image: url(../images/NumericStepperxup.png);
 }

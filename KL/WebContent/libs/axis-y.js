@@ -31,7 +31,7 @@ yAxis.prototype = {
     paintItem: function (i, x, y) {
         if (typeof this.scalerOptions.color == 'function')
             this.ctx.fillStyle = this.scalerOptions.color(this.data[i]);
-        this.ctx.fillText(this.data[i], x, y);
+        this.ctx.fillText(this.data[i], x/2, y);
     }
 };
 

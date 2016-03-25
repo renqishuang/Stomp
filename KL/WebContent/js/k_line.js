@@ -79,8 +79,43 @@ kLine.prototype = {
     	var dataCount = Math.ceil(region.width / (options.spaceWidth + options.barWidth))-1;
     	return dataCount;
     },
+    
+    showKLPriceTip:function(y,yPrice){
+    	var leftFrag = '<div class="KL_Y_Axis_Price_Tip_Left"></div>';
+    	var rightFrag = '<div class="KL_Y_Axis_Price_Tip_Right"></div>';
+    	if($('.KL_Y_Axis_Price_Tip_Left').length == 0){
+    		$('body').append($(leftFrag));
+    	}
+    	if($('.KL_Y_Axis_Price_Tip_Right').length == 0){
+    		$('body').append($(rightFrag));
+    	}
+    	if($('.KL_Y_Axis_Price_Tip_Left').is(':hidden')){
+    		$('.KL_Y_Axis_Price_Tip_Left').show();
+    	}
+    	if($('.KL_Y_Axis_Price_Tip_Right').is(':hidden')){
+    		$('.KL_Y_Axis_Price_Tip_Right').show();
+    	}
+    	$('.KL_Y_Axis_Price_Tip_Left').css('top',CanvasPagePosition.y+y);
+    	$('.KL_Y_Axis_Price_Tip_Left').css('left',
+    			CanvasPagePosition.x);
+    	
+    	$('.KL_Y_Axis_Price_Tip_Right').css('top',CanvasPagePosition.y+y);
+    	$('.KL_Y_Axis_Price_Tip_Right').css('left',
+    			CanvasPagePosition.x+GlobalKLOptionObj.region.width+GlobalKLOptionObj.region.x);
+    	
+    	$('.KL_Y_Axis_Price_Tip_Left').html(yPrice);
+    	$('.KL_Y_Axis_Price_Tip_Right').html(yPrice);
+    },
+    
+    hideKLPriceTip:function(){
+    	$('.KL_Y_Axis_Price_Tip_Left').hide();
+    	$('.KL_Y_Axis_Price_Tip_Right').hide();
+    },
+    
     //根据X坐标获取蜡烛的索引,并获取数据, 显示到Tip里面
-    getTipHtml: function(x){
+    getTipHtml: function(x,y){
+    	var yPrice = this.getPriceByYCoord(y).toFixed(CurrentInstrumentDigits);
+    	this.showKLPriceTip(y,yPrice);
     	var data = this.getKLStore();
     	var maxLength = this.getMaxDataLength();
     	var index = this.dataRanges.start + this.getIndex(x);
@@ -88,15 +123,49 @@ kLine.prototype = {
         if (index < 0) index = 0;
         var ki = data.ks[index];
         if(!ki) return;
+        var redImage = 'images/hongseshangjiantou.png';
+        var greenImage = 'images/lvsexiajiantou.png';
+        var priceSrc,volumeSrc,openinterestSrc,
+        	priceColor,volumeColor,openinterestColor;
+        if(ki.pricechg < 0){
+        	priceSrc=greenImage;
+        	priceColor='#06E65A';
+        }else{
+        	priceSrc=redImage;
+        	priceColor='#E60302';
+        }
+        
+        if(ki.volumechg < 0){
+        	volumeSrc=greenImage;
+        	volumeColor='#06E65A';
+        }else{
+        	volumeSrc=redImage;
+        	volumeColor='#E60302';
+        }
+        
+        if(ki.openinterestchg < 0){
+        	openinterestSrc=greenImage;
+        	openinterestColor='#06E65A';
+        }else{
+        	openinterestSrc=redImage;
+        	openinterestColor='#E60302';
+        }
         //console.log("更新Tip时的数据如下:");
         //console.log("open:"+ki.open+",high:"+ki.high+",low:"+ki.low+",close"+ki.close);
         var tipHtml = '<div class="KL_Tip_Wrap">'+
         '<div><span>' + getYMDFormatOne(ki.openTime) + '</span><span>'+getHourMinute(ki.openTime)+'</span></div>' +
         //'昨收价：<font color="' + getPriceColor(ki, ki.preClose) + '">' + toMoney(ki.preClose) + '</font><br/>' +
-        '<span>开盘价：</span><font color="' + this.getPriceColor(ki, "open") + '">' + toMoney(ki.open) + '</font><br/>' +
-        '<span>最高价：</span><font color="' + this.getPriceColor(ki, "high") + '">' + toMoney(ki.high) + '</font><br/>' +
-        '<span>最低价：</span><font color="' + this.getPriceColor(ki, "low") + '">' + toMoney(ki.low) + '</font><br/>' +
-        '<span>收盘价：</span><font color="' + this.getPriceColor(ki, "close") + '">' + toMoney(ki.close) + '</font><br/></div>';
+        '<span>价格:</span><font color="#FFFF99">'+yPrice+'</font><br/>'+
+        '<span>开盘: </span><font color="' + this.getPriceColor(ki, "open") + '">' + toMoney(ki.open) + '</font><br/>' +
+        '<span>最高: </span><font color="' + this.getPriceColor(ki, "high") + '">' + toMoney(ki.high) + '</font><br/>' +
+        '<span>最低: </span><font color="' + this.getPriceColor(ki, "low") + '">' + toMoney(ki.low) + '</font><br/>' +
+        '<span>收盘: </span><font color="' + this.getPriceColor(ki, "close") + '">' + toMoney(ki.close) + '</font><br/>'+
+        '<img src="'+priceSrc+'"></img><font color="'+priceColor+'">'+ki.pricechg+'/'+ki.pricechgrate+'</font><br/>'+
+        '<span>总手: </span><font color="#FFFF99">'+ki.volume+'</font><br/>'+
+        '<img src="'+volumeSrc+'"></img><font color="'+volumeColor+'">'+ki.volumechg+'</font><br/>'+
+        '<span>持仓: </span><font color="#FFFF99">'+ki.openinterest+'</font><br/>'+
+        '<img src="'+openinterestSrc+'"></img><font color="'+openinterestColor+'">'+ki.openinterestchg+'</font><br/>'+
+        '</div>';
         /*'成交量：' + bigNumberToText(ki.volume / 100) + '手<br/>' +
         '成交额：' + bigNumberToText(ki.amount);*/
         return tipHtml;
@@ -144,12 +213,19 @@ kLine.prototype = {
     //根据蜡烛的索引获取蜡烛的X坐标  相对于Body坐标   这个方法用于更新单个蜡烛
     getCandleXByIndexForUpdate:function(i){
     	var options = this.options;
-    	var left = options.chartMargin.left;
+    	var left = options.region.x;
     	var result = i * (options.spaceWidth + options.barWidth) + (options.spaceWidth + options.barWidth) * .5; 
     	result += left;
     	if (result * 10 % 10 == 0) result += .5;
     	//console.log("蜡烛的X坐标: "+result);
     	return result; 
+    },
+    //根据Y轴坐标,获取价格
+    getPriceByYCoord:function(y){
+    	var options = this.options;
+    	var region = options.region;
+    	var price = this.high - (y * (this.high-this.low))/region.height;
+    	return price;
     },
     
     //根据价格获取Y坐标 用于整体画图
@@ -401,12 +477,15 @@ kLine.prototype = {
             },
             //Tip属性
             tipOptions: {
-                getTipHtml: function (ev) { return me.getTipHtml(ev.offsetX); },
+                getTipHtml: function (ev) { return me.getTipHtml(ev.offsetX,ev.offsetY); },
                 size:{width:132,height:222},
                 position:{x:false,y:region.y}, //position中的值是相对于canvas的左上角的
                 opacity:80,
                 cssClass:'',
-                offsetToPoint:10
+                offsetToPoint:10,
+                hideYPriceTip:function(){
+                	me.hideKLPriceTip();
+                }
             },
             crossLineOptions: {
                 color: 'white'
@@ -1044,7 +1123,7 @@ function drawKL(height) {
 	        priceSameHeight:1,//高开低收价格一样时的高度
 	        //主图区域的边距
 	        chartMargin:{left:45,top:5,right:0},
-	        region: { x: 45, y: 5, width: initialWidth - 45, height: ht},
+	        region: { x: 55, y: 5, width: initialWidth - 55 - 55, height: ht},
 	        barWidth: CurrentBarWidth, spaceWidth: CurrentSpaceWidth, horizontalLineCount: 10, verticalLineCount: 7, lineStyle: 'solid', borderColor: 'gray', splitLineColor: '#252A31', lineWidth: 1,
 	        MAs: [
 	            { color: '#0063CD', daysCount: 5 },
@@ -1055,7 +1134,7 @@ function drawKL(height) {
 	        yAxis: {
 	            font: '11px Arial', // region: { },
 	            color: '#55616E',
-	            align: 'right',
+	            align: 'middle',
 	            fontHeight: 8,
 	            textBaseline: 'top'
 	        },

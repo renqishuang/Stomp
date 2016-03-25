@@ -72,6 +72,22 @@ $('.remodal-confirm').click(function(){
 				var state = data.rc;
 				console.log('trade order');
 				console.log(data);
+				if(state == 0){
+					var res = data.res,
+					returncode = res.returncode;
+					if(returncode == 99){//非交易时间, 下单失败
+						RemodalInstance.open();
+						var remodalWrap = $('.remodal');
+						var titleWrap = remodalWrap.children('.remodal-title');
+						titleWrap.html('下单提示');
+						var contentWrap = remodalWrap.children('.remodal-content');
+						contentWrap.attr('remodalConType','order');
+						contentWrap.empty();
+						var htmlFrag = "<div class='remodal-order-fail'>非交易时间， 无法下单"+
+							"</div>";
+						contentWrap.append($(htmlFrag));
+					}
+				}
 				//添加页面提示
 				//confirmOrderNotify();
 			},

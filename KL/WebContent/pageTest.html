@@ -4,29 +4,32 @@
 <meta charset="UTF-8">
 <title>测试各种页面组件</title>
 <style>
-div{
+/* div{
 	width:200px;
 	height:200px;
 	background-color:green;
 	position:absolute;
 	top:200px;
 	left:200px;
-}
+} */
 </style>
 </head>
 <body>
 <div hidden="true"></div>
 <button id='12333' type='button'></button>
+<div style='width:300px'>
+		<input>
+	</div>
 <script src='js/jquery.1.11.3.min.js'></script>
 <script src='js/constants.js'></script>
 <script>
 $(function(){ 
 	//alert('ddd');
-	window.open ('http://localhost:8080/Stomp/empty.html', 'newwindow', 'height=100, width=400, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
+	/* window.open ('http://localhost:8080/Stomp/empty.html', 'newwindow', 'height=100, width=400, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
 	$('#12333').click(function(){
 		//alert('dd');
 		$(this).prev().show();
-	});
+	}); */
 });
 </script>
 </body>

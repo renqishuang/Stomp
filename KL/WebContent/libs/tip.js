@@ -148,6 +148,7 @@ Tip.prototype = {
         if(!o) return;
         if (o) o.style.display = 'none';
         if(o.isShow) o.isShow = false;
+        this.hideYPriceTip();
     },
     update: function (relativePoint, html) {
     	//如果交叉点的坐标不变, 不需要移动Tip

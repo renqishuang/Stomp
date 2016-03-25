@@ -463,12 +463,12 @@
 					</div>
 					<div>
 						<span>买卖</span>
-						<div isClick = 'true' onmouseover="OMBuySellOpenCloseMouseOver(this,'buy')" 
+						<div value='0' isClick = 'true' onmouseover="OMBuySellOpenCloseMouseOver(this,'buy')" 
 						onmouseout="OMBuySellOpenCloseMouseOut(this,'buy')" onclick="OMBuySellOpenCloseMouseDown(this,'buy')">
 							<span></span>
 							<span value='0'>买</span>
 						</div>
-						<div isClick = 'false' onclick="OMBuySellOpenCloseMouseDown(this,'sell')" onmouseover="OMBuySellOpenCloseMouseOver(this,'sell')" 
+						<div value='1' isClick = 'false' onclick="OMBuySellOpenCloseMouseDown(this,'sell')" onmouseover="OMBuySellOpenCloseMouseOver(this,'sell')" 
 						onmouseout="OMBuySellOpenCloseMouseOut(this,'sell')">
 							<span></span>
 							<span value='1'>卖</span>				
@@ -476,12 +476,12 @@
 					</div>
 					<div>
 						<span>开平</span>
-						<div isClick = 'true' onmouseover="OMBuySellOpenCloseMouseOver(this,'open')" 
+						<div value='0' isClick = 'true' onmouseover="OMBuySellOpenCloseMouseOver(this,'open')" 
 						onmouseout="OMBuySellOpenCloseMouseOut(this,'open')" onclick="OMBuySellOpenCloseMouseDown(this,'open')">
 							<span></span>
 							<span value='0'>开仓</span>
 						</div>
-						<div isClick = 'false' onmouseover="OMBuySellOpenCloseMouseOver(this,'close')" 
+						<div value='1' isClick = 'false' onmouseover="OMBuySellOpenCloseMouseOver(this,'close')" 
 						onmouseout="OMBuySellOpenCloseMouseOut(this,'close')" onclick="OMBuySellOpenCloseMouseDown(this,'close')">
 							<span></span>
 							<span value='1'>平仓</span>						
@@ -517,9 +517,9 @@
 						</div>
 						<div class='KL_OM_Order_Wrap'>
 							<div class='remodal-open' onmouseover='OMConditionMouseOver(this)' onmouseout='OMConditionMouseOut(this)'
-							onmousedown='OMConditionMouseDown(this)'></div> 
+							onclick='OMConditionMouseDown(this)'></div> 
 							<div class='remodal-open' onmouseover='OMOrderMouseOver(this)' onmouseout='OMOrderMouseOut(this)'
-							onmousedown='OMOrderMouseDown(this)'></div>
+							onclick='OMOrderMouseDown(this)'></div>
 						</div>
 					</div>
 				</div>
@@ -686,10 +686,40 @@
 	
 	<!--模态弹出框-->
 	<div class="remodal" data-remodal-id="modal" role="dialog" aria-labelledby="modal1Title" aria-describedby="modal1Desc">
-	  <div class='remodal-title'></div>
+	  <div class='remodal-title'>下单提示</div>
 	  <div data-remodal-action="close" class='remodal-close'></div>
 	  <div class='remodal-content'>
-	  	   
+	  	   <div class='remodal-condition-order-wrap'>
+	  	   	   <div>当行情满足以下条件时:</div>
+	  	   	   <div>
+	  	   	   		<font>当最新价</font>
+	  	   	   		<select>
+		  	   	   		<option value='dayu'>&gt;</option>
+		  	   	   		<option value='dayudengyu'>&gt;=</option>
+		  	   	   		<option value='xiaoyu'>&lt;</option>
+		  	   	   		<option value='xiaoyudengyu'>&lt;=</option>
+		  	   	   </select>
+		  	   	   <div class='remodal-condition-price'>
+		  	   	   		<input>
+		  	   	   		<div>
+		  	   	   			<div onclick="remodalConditionPriceClick(this,'up')" onmouseover="remodalConditionPriceOver(this,'up')" onmouseout="remodalConditionPriceOut(this,'up')"></div>
+		  	   	   			<div onclick="remodalConditionPriceClick(this,'down')" onmouseover="remodalConditionPriceOver(this,'down')" onmouseout="remodalConditionPriceOut(this,'down')"></div>
+		  	   	   		</div>
+		  	   	   </div>
+		  	   	   <font>时</font>
+	  	   	   </div>
+	  	   	    <div>
+	  	   	    	<span>按</span>
+	  	   	    	<span value='price'>1927</span>
+	  	   	    	<span>价格</span>
+	  	   	    	<span>,</span>
+	  	   	    	<span value='dir'>卖</span>
+	  	   	    	<span value='iid'>MA605</span>
+	  	   	    	<span value='co'>平仓</span>
+	  	   	    	<span value='vol'>38</span>
+	  	   	    	<span>手</span>
+	  	   	    </div>
+	  	   </div>
 	  </div>
 	  <span data-remodal-action="cancel" class="remodal-confirm"></span>
 	  <span data-remodal-action="confirm" class="remodal-cancel"></span>
@@ -705,7 +735,11 @@
 		<span>手</span>
 		<span value='time'>11:26:20</span>
 	</div> -->
-	
+	<div class='remodal-open'>测试弹出框</div>
+	<!-- <div class='order-dashed-wrap-123456'>
+		<span></span>
+		<span>价格</span>
+	</div> -->
 	<script src='js/globalField.js'></script>
     <script src='js/jquery.1.11.3.min.js'></script>
     <script src="js/stomp.js"></script>
@@ -730,30 +764,6 @@
     <script src="js/k_line.js"></script>
     <script src='js/accountManager.js'></script>
     <script src='js/orderManager.js'></script>
-    <script>
-    function add_room_deal_query(oper){
-	    re_oper = oper;
-	    //alert(oper);
-	    $('#room_deal_query').append('<div style="position:absolute; left:590px; top:130px;"><img width="32" height="32" src="/img/loading.gif"></div>');
-	    $.get("http://jyw.zlw.com/ajax/get_order?r=" + Math.random(), "oper="+oper+"&rid=1553&aid=3179&rmc=4928", function(t){                 
-	        $('#room_deal_query').html(t);
-	    }, "text"); 
-	}
-	var is_refresh = false;
-	function add_room_deal_query_refresh(value){
-	    if(!is_refresh){
-	        re_oper = value;
-	        add_room_deal_query(value);            
-	        is_refresh = true;
-	    }else{
-	        alert("不能连续刷新，请过会再试");                     
-	        setTimeout(function() {
-	            is_refresh = false;
-	        }, 60000);
-	        return false;
-	    }              
-	}
-    </script>
     <script src='js/initHandler.js'></script>
   </body>
 </html>

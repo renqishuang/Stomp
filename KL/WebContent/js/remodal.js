@@ -595,6 +595,7 @@
 
     // Check if the animation was completed
     if (remodal.state === STATES.OPENING || remodal.state === STATES.CLOSING) {
+    	console.log('正在关闭或打开------');
       return;
     }
 
@@ -725,6 +726,7 @@
 
       if ($elem.data(PLUGIN_NAME) == null) {
         instance = new Remodal($elem, opts);
+        window.RemodalInstance = instance;
         $elem.data(PLUGIN_NAME, instance.index);
 
         if (

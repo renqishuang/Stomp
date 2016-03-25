@@ -28,7 +28,13 @@ function KLDataDecimalHandler(dt){
 	    openchg:Number(dt.openchg),
 		highchg:Number(dt.highchg),
 		lowchg:Number(dt.lowchg),
-		closechg:Number(dt.closechg)
+		closechg:Number(dt.closechg),
+		pricechg:Number(dt.pricechg),
+		pricechgrate:dt.pricechgrate,
+		volume:Number(dt.volume),
+		volumechg:Number(dt.volumechg),
+		openinterest:Number(dt.openinterest),
+		openinterestchg:Number(dt.openinterestchg)
 	};
 	return item;
 }
@@ -42,6 +48,7 @@ function KLSubscribeHandler(dt){
 		CurrentDataTime = time;
 		CurrentKLObj.addCandleToKL(item);//收到订阅数据后, 先添加第一条数据
 		//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;//临时修改最后一条数据
+		this.lastUpdateDt = item;
 		drawKL();//重新画图
 		CurrentKLObj.updateKLOnCandle(item);
 	}else{
@@ -49,7 +56,7 @@ function KLSubscribeHandler(dt){
 		if(CurrentDataTime == time){
 			//修改一条数据
 			//console.log("修改一条数据");
-			this.lastUpdateDt = dt;
+			this.lastUpdateDt = item;
 			//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;//临时修改最后一条数据
 			//CurrentKLObj.addCandleToKL(item);
 			//drawKL();
@@ -92,7 +99,13 @@ function originalDataHandleSplice(data){
 		    openchg:Number(dt.openchg),
 			highchg:Number(dt.highchg),
 			lowchg:Number(dt.lowchg),
-			closechg:Number(dt.closechg)
+			closechg:Number(dt.closechg),
+			pricechg:Number(dt.pricechg),
+			pricechgrate:dt.pricechgrate,
+			volume:Number(dt.volume),
+			volumechg:Number(dt.volumechg),
+			openinterest:Number(dt.openinterest),
+			openinterestchg:Number(dt.openinterestchg)
 		};
 		GlobalKLData.ks.splice(0,0,item);
 	}
@@ -124,7 +137,13 @@ function originalDataHandle(data){
 		    openchg:Number(dt.openchg),
 			highchg:Number(dt.highchg),
 			lowchg:Number(dt.lowchg),
-			closechg:Number(dt.closechg)
+			closechg:Number(dt.closechg),
+			pricechg:Number(dt.pricechg),
+			pricechgrate:dt.pricechgrate,
+			volume:Number(dt.volume),
+			volumechg:Number(dt.volumechg),
+			openinterest:Number(dt.openinterest),
+			openinterestchg:Number(dt.openinterestchg)
 		};
 		GlobalKLData.ks.splice(0,0,item);
 	}

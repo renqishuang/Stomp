@@ -90,9 +90,11 @@ function getAccountInfo(){
 					//console.log(tempData);
 					//{"co":0,"dir":0,"aid":3179,"tvol":1,"dvol":1,"volfcls":0,"ds":1,"status":1,"otype":0,"comment":0,"frozen":20108,"iid":"TF1606","rid":"1553","price":0,"dprice":100.54,"user":3018,"vol":1,"action":1,"did":3179092621545,"dtime":1458609981546,"com":1,"returncode":0,"datatype":33,"actiontype":6}
 					//设置资金信息
-					var actionType = tempData.actiontype;
-					var returnCode = tempData.returncode;
-					var status = tempData.status;
+					var actionType = tempData.actiontype,
+						returnCode = tempData.returncode,
+						status = tempData.status,
+						com = tempData.com,
+						datatype = tempData.datatype;
 					
 					if(actionType == 6){
 						if(returnCode == 0){

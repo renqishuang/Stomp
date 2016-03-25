@@ -9,8 +9,8 @@
 
 .remodal-overlay.remodal-is-opening,
 .remodal-overlay.remodal-is-closing {
-  -webkit-animation-duration: 0.3s;
-  animation-duration: 0.3s;
+  -webkit-animation-duration: 0.01s;
+  animation-duration: 0.01s;
   -webkit-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
 }
@@ -52,8 +52,8 @@
 
 .remodal.remodal-is-opening,
 .remodal.remodal-is-closing {
-  -webkit-animation-duration: 0.3s;
-  animation-duration: 0.3s;
+  -webkit-animation-duration: 0.01s;
+  animation-duration: 0.01s;
   -webkit-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
 }
