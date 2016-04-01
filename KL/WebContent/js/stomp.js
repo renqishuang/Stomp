@@ -167,7 +167,10 @@
             this.debug("remaining = " + out.length);
           }
         } else {
-          return this.ws.send(out);
+        	var me = this;
+        	if(this.ws.readyState === WebSocket.OPEN){
+        		return this.ws.send(out);
+        	}
         }
       }
     };
@@ -250,6 +253,7 @@
       headers = out[0], this.connectCallback = out[1], errorCallback = out[2];
       if (typeof this.debug === "function") {
         this.debug("Opening Web Socket...");
+        console.log('opening web socket...');
       }
       this.ws.onmessage = (function(_this) {
         return function(evt) {
@@ -339,6 +343,7 @@
         return function() {
           if (typeof _this.debug === "function") {
             _this.debug('Web Socket Opened...');
+            console.log('Web Socket Opened.....');
           }
           headers["accept-version"] = Stomp.VERSIONS.supportedVersions();
           headers["heart-beat"] = [_this.heartbeat.outgoing, _this.heartbeat.incoming].join(',');

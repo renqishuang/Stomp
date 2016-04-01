@@ -1,167 +1,770 @@
-<!--
-  Licensed to the Apache Software Foundation (ASF) under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The ASF licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Chat Example Using STOMP Over WebSockets</title>
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap.min.responsive.css" rel="stylesheet">
-    <style type="text/css">
-      body { padding-top: 40px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <title>K线图控制</title>
+    <link href="css/css.css" rel="stylesheet">
+    <link href="css/remodal.css" rel="stylesheet">
+    <link href="css/kline_style.css" rel="stylesheet">
   </head>
-
   <body>
-    
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" href="#">ActiveMQ STOMP WebSocket Chat Example</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span6">
-          <div id="connect">
-            <div class="page-header">
-              <h2>Server Login</h2>
-            </div>
-            <form class="form-horizontal" id='connect_form'>
-              <fieldset>
-                <div class="control-group">
-                  <label>WebSocket URL</label>
-                  <div class="controls">
-                    <input name=url id='connect_url' value='ws://192.168.1.188:61610' type="text">
-                  </div>
-                </div>
-                <div class="control-group">
-                  <label>User</label>
-                  <div class="controls">
-                    <input id='connect_login' placeholder="User Login" value="admin" type="text">
-                  </div>
-                </div>
-                <div class="control-group">
-                  <label>Password</label>
-                  <div class="controls">
-                    <input id='connect_passcode' placeholder="User Password" value="password" type="password">
-                  </div>
-                </div>
-                <div class="control-group">
-                  <label>Destination</label>
-                  <div class="controls">
-                    <input id='destination' placeholder="Destination" value="/topic/IF1603_60" type="text">
-                  </div>
-                </div>
-                <div class="form-actions">
-                  <button id='connect_submit' type="submit" class="btn btn-large btn-primary">Connect</button>
-                </div>
-              </fieldset>
-            </form>
-          </div>
-          <div id="connected" style="display:none">
-            <div class="page-header">
-              <h2>Chat Room</h2>
-            </div>
-            <div id="messages">
-            </div>
-            <form class="well form-search" id='send_form'>
-              <button class="btn" type="button" id='disconnect' style="float:right">Disconnect</button>
-              <input class="input-medium" id='send_form_input' placeholder="Type your message here" class="span6"/>
-              <button class="btn" type="submit">Send</button>
-            </form>
-          </div>
-        </div>
-        <div class="span4">
-          <div class="page-header">
-            <h2>Debug Log</h2>
-          </div>
-          <pre id="debug"></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Scripts placed at the end of the document so the pages load faster -->
-    <script src='js/jquery-1.7.2.min.js'></script>
-    <script src="js/stomp.js"></script>
-    <script>//<![CDATA[
-    $(document).ready(function() {
-      if(window.WebSocket) {
-        var client, destination;
-        $('#connect_form').submit(function() {
-          var url = $("#connect_url").val();
-          var login = $("#connect_login").val();
-          var passcode = $("#connect_passcode").val();
-          destination = $("#destination").val();
-
-          client = Stomp.client(url);
-
-          // this allows to display debug logs directly on the web page
-          client.debug = function(str) {
-            $("#debug").append(document.createTextNode(str + "\n"));
-          };
-          
-          // the client is notified when it is connected to the server.
-          client.connect(login, passcode, function(frame) {
-            client.debug("connected to Stomp");
-            $('#connect').fadeOut({ duration: 'fast' });
-            $('#connected').fadeIn();
-            client.subscribe(destination, function(message) {
-              var p = document.createElement("p");
-              p.appendChild(document.createTextNode(message.body));
-              $("#messages").append(p);
-            });
-          });
-          return false;
-        });
-  
-        $('#disconnect').click(function() {
-          client.disconnect(function() {
-            $('#connected').fadeOut({ duration: 'fast' });
-            $('#connect').fadeIn();
-            $("#messages").html("")
-          });
-          return false;
-        });
-   
-        $('#send_form').submit(function() {
-          var text = $('#send_form_input').val();
-          if (text) {
-            client.send(destination, {}, text);
-            $('#send_form_input').val("");
-          }
-          return false;
-        });
-      } else {
-        $("#connect").html("\
-            <h1>Get a new Web Browser!</h1>\
-            <p>\
-            Your browser does not support WebSockets. This example will not work properly.<br>\
-            Please use a Web Browser with WebSockets support (WebKit or Google Chrome).\
-            </p>\
-        ");
-      }
-    });
-    //]]></script>
-
+     <div class='KL_Wrap_Div'>
+     	<!--合约选择区域  height:90px;--> 
+     	<div class='KL_Instrument_Wrap'></div>
+     	<!--K线主区域   #191F26-->
+		<section class='KL_MainView_Wrap'>
+			<div class="KL_TimeShareChart_Interval">
+				<ul>
+					<li value="60">1</li>
+					<li value="180">3</li>
+					<li value="300">5</li>
+					<li value="600">10</li>
+					<li value="900">15</li>
+					<li value="1800">30</li>
+					<li value="86400">日</li>
+				</ul>
+			</div>
+			<canvas class='KL_Canvas' width='925' height="284" id="canvasKL">
+	   			<p>hey,您的浏览器不支持html5，换个浏览器吧，比如google chrome，firefox</p>
+			</canvas>
+			<div class='KL_Canvas_Move_Wrap'></div>
+			<!--下单器区域-->
+			<div class='KL_OrderManger_Wrap' id='KL_OrderManager'>
+				<!--表格区域-->
+				<!-- <div id='room_deal_query'></div> -->
+				<div class='KL_OrderManager_FirstWrap'>
+					<div>
+						<span name='convenience'>快捷</span>
+						<span name='delegation'>当日委托</span>
+						<span name='bargain'>当日成交</span>
+						<span name='position'>持仓信息</span>
+						<span name='condition'>条件单</span>
+					</div>
+					<div hidden="true" class='Order_Manager_TB_Convenience'>
+						<span></span>
+						<span></span>
+						<table trLen=0 class='TradeInfoPendingDepute' border="1" cellspacing='0' cellpadding='1'>
+							<tr>
+								<th>合约</th>
+								<th>买卖</th>
+								<th>开平</th>
+								<th>未成交手数</th>
+								<th>报单价格</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+						<table class='TradeInfo_MP' border="1" cellspacing='0' cellpadding='1'>
+							<tr>
+								<th>合约</th>
+								<th>买卖</th>
+								<th>持仓</th>
+								<th>可平</th>
+								<th>持仓均价</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+					
+					<!-- 当日委托  -->
+					<div hidden='true' class='Order_Manager_TB_Delegation'>
+						<table trLen = 5 border="1" cellspacing='0' cellpadding='1'>
+							<tr>
+								<th>合约</th>
+								<th>买卖</th>
+								<th>开平</th>
+								<th>挂单状态</th>
+								<th>报单价格</th>
+								<th>报单时间</th>
+								<th>撤单时间</th>
+								<th>报单手数</th>
+								<th>成交手数</th>
+								<th>成交时间</th>
+								<th>未成交手数</th>
+								<th>报单编号</th>
+								<th>详细状态</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+					
+					<!-- 当日成交  -->
+					<div hidden='true' class='Order_Manager_TB_Bargain'>
+						<table trLen=5 border="1" cellspacing='0' cellpadding='1'>
+							<tr>
+								<th>合约</th>
+								<th>买卖</th>
+								<th>开平</th>
+								<th>成交价格</th>
+								<th>成交手数</th>
+								<th>成交时间</th>
+								<th>成交编号</th>
+								<th>报单编号</th>
+								<th>报单时间</th>
+								<th>报单价格</th>
+								<th>手续费</th>
+								<th>备注</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+					
+					<!-- 持仓信息  -->
+					<div hidden='true' class='Order_Manager_TB_Position'>
+						<table border="1" cellspacing='0' cellpadding='1'>
+							<tr>
+								<th>合约</th>
+								<th>买卖</th>
+								<th>总持仓</th>
+								<th>可平量</th>
+								<th>持仓均价</th>
+								<th>持仓盈亏</th>
+								<th>占用保证金</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+					
+					<!-- 条件单 -->
+					<div hidden='true' class='Order_Manager_TB_Condition'>
+						<table border='1' cellspacing='0' cellpadding='1'>
+							<tr>
+								<th>类型</th>
+								<th>状态</th>
+								<th>触发条件</th>
+								<th>合约</th>
+								<th>买卖</th>
+								<th>开平</th>
+								<th>报单价格</th>
+								<th>报单手数</th>
+								<th>预埋时间</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<!--下单器-->
+				<div class='KL_OrderManager_SecondWrap'>
+					<div>
+						<span>合约</span>
+						<select class='Order_Instrument_Select'>
+						    <!-- <option value="i1609">i1609</option>
+						    <option value="TF1606">TF1606</option>
+						    <option value="IF1603">IF1603</option> -->
+						</select>
+					</div>
+					<div>
+						<span>买卖</span>
+						<div value='0' isClick = 'true' onmouseover="OMBuySellOpenCloseMouseOver(this,'buy')" 
+						onmouseout="OMBuySellOpenCloseMouseOut(this,'buy')" onclick="OMBuySellOpenCloseMouseDown(this,'buy')">
+							<span></span>
+							<span value='0'>买</span>
+						</div>
+						<div value='1' isClick = 'false' onclick="OMBuySellOpenCloseMouseDown(this,'sell')" onmouseover="OMBuySellOpenCloseMouseOver(this,'sell')" 
+						onmouseout="OMBuySellOpenCloseMouseOut(this,'sell')">
+							<span></span>
+							<span value='1'>卖</span>				
+						</div>
+					</div>
+					<div>
+						<span>开平</span>
+						<div value='0' isClick = 'true' onmouseover="OMBuySellOpenCloseMouseOver(this,'open')" 
+						onmouseout="OMBuySellOpenCloseMouseOut(this,'open')" onclick="OMBuySellOpenCloseMouseDown(this,'open')">
+							<span></span>
+							<span value='0'>开仓</span>
+						</div>
+						<div value='1' isClick = 'false' onmouseover="OMBuySellOpenCloseMouseOver(this,'close')" 
+						onmouseout="OMBuySellOpenCloseMouseOut(this,'close')" onclick="OMBuySellOpenCloseMouseDown(this,'close')">
+							<span></span>
+							<span value='1'>平仓</span>						
+						</div>
+					</div>
+					<div>
+						<span isClick='false' onclick='OMPriceTypeMouseDown(this)'></span>
+						<div class='KL_OM_Price_Number'>
+							<input type="text">
+							<div>
+								<div onclick='OMPriceNumberUpClick(this)' onmouseover="OMPriceNumberUpMouseOver(this)" onmouseout="OMPriceNumberUpMouseOut(this)"></div>								
+								<div onclick='OMPriceNumberDownClick(this)' onmouseover="OMPriceNumberDownMouseOver(this)" onmouseout="OMPriceNumberDownMouseOut(this)"></div>
+								<span></span>
+							</div>
+						</div>
+					</div>
+					<div>
+						<span>手数</span>
+						<span name='kl_om_vol_wrap'></span>
+						<div class='KL_OM_Volume_Number'>
+							<input type="text">
+							<span></span>
+							<div>
+								<div onclick='OMVolumeUpClick(this)' onmouseover="OMVolumeUpMouseOver(this)" onmouseout="OMVolumeUpMouseOut(this)"></div>
+								<div onclick='OMVolumeDownClick(this)' onmouseover="OMVolumeDownMouseOver(this)" onmouseout="OMVolumeDownMouseOut(this)"></div>
+								<span></span>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class='KL_OM_Set_Wrap'>
+							<div onclick='OMSetClick()' class='remodal-open' onmouseover='OMSetMouseOver(this)' onmouseout='OMSetMouseOut(this)'></div>
+						</div>
+						<div class='KL_OM_Order_Wrap'>
+							<div class='remodal-open' onmouseover='OMConditionMouseOver(this)' onmouseout='OMConditionMouseOut(this)'
+							onclick='OMConditionMouseDown(this)'></div> 
+							<div class='remodal-open' onmouseover='OMOrderMouseOver(this)' onmouseout='OMOrderMouseOut(this)'
+							onclick='OMOrderMouseDown(this)'></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!--K线侧区域  -->
+		<aside class='KL_TapeViewer_Wrap'>
+			<div class='Tape_Sub_Viewer_One'>
+				<div class='Sell_Tape_Sub_Viewer_One'>卖出<span>--</span><span>--</span></div>
+				<div class='Buy_Tape_Sub_Viewer_One'>买入<span>--</span><span>--</span></div>
+			</div>
+			<div class='Tape_Sub_Viewer_Two'>
+				<ul>
+					<li value='lastprice'>最新<span>--</span></li>
+					<li value='presettlement'>昨结<span>--</span></li>
+					<li value='daychange'>涨跌<span>--</span></li>
+					<li value='daychangerate'>幅度<span>--</span></li>
+					<li value='volume'>成交<span>--</span></li>
+					<li value='dayopen'>开盘<span>--</span></li>
+					<li value='openinterest'>持仓<span>--</span></li>
+					<li value='highest'>最高<span>--</span></li>
+					<li value='openinterestchg'>日增<span>--</span></li>
+					<li value='lowest'>最低<span>--</span></li>
+					<li value='upperlimit'>涨停<span>--</span></li>
+					<li value='averageprice'>均价<span>--</span></li>
+					<li value='lowerlimit'>跌停<span>--</span></li>
+					<li value='preclose'>昨收<span>--</span></li>
+				</ul>
+			</div>
+			<div class='Tape_Sub_Viewer_Three'>
+				<ul>
+					<li>
+						<div>时间</div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</li>
+					<li><div>价位</div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</li>
+					<li><div>现手</div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</li>
+					<li><div>增仓</div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</li>
+					<li><div>开平</div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</li>
+				</ul>
+			</div>
+			<div class='Tape_Sub_Viewer_Trade'>
+				<ul>
+					<li value='longtimes'>
+						<div>多开</div>
+						<span>-</span>
+						<span>次</span>
+					</li>
+					<li value='shorttimes'>
+						<div>空开</div>
+						<span>-</span>
+						<span>次</span>
+					</li>
+					<li value='wintimes'>
+						<div>盈利</div>
+						<span>-</span>
+						<span>次</span>
+					</li>
+					<li value='losstimes'>
+						<div>亏损</div>
+						<span>-</span>
+						<span>次</span>
+					</li>
+					<li value='winrate'>
+						<div>正确率</div>
+						<span>--</span>
+						<span></span>
+					</li>
+				</ul>
+			</div>
+			<div class='Tape_Sub_Viewer_Trade_Profit'>
+				<div></div>
+				<div>逐笔</div>
+				<div>逐笔</div>
+				<ul>
+					<li value='offsetprofit'>
+						<div>平仓盈亏</div>
+						<span>-</span>
+						<span>元</span>
+					</li>
+					<li value='floatprofit'>
+						<div>浮动盈亏</div>
+						<span>-</span>
+						<span>元</span>
+					</li>
+				</ul>
+			</div>
+		</aside>
+		<!--底部区域  -->
+		<div class='KL_FooterRegion'>
+			<ul>
+				<li value='balance'>
+					<div>静态权益</div>
+					<div>--</div>
+				</li>
+				<li value='floatbalance'>
+					<div>动态权益</div>
+					<div>--</div>
+				</li>
+				<li value='floatprofit'>
+					<div>盯市持仓盈亏</div>
+					<div>--</div>
+				</li>
+				<li value='closeprofit'>
+					<div>盯市平仓盈亏</div>
+					<div>--</div>
+				</li>
+				<li value='tfee'>
+					<div>手续费</div>
+					<div>--</div>
+				</li>
+				<li value='deposit'>
+					<div>占用保证金</div>
+					<div>--</div>
+				</li>
+				<li value='frozen'>
+					<div>下单冻结</div>
+					<div>0</div>
+				</li>
+				<li value='available'>
+					<div>可用资金</div>
+					<div>--</div>
+				</li>
+				<li value='risk'>
+					<div>风险度</div>
+					<div>--</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	
+	<!--模态弹出框-->
+	<div class="remodal" data-remodal-id="modal" role="dialog" aria-labelledby="modal1Title" aria-describedby="modal1Desc">
+	  <div class='remodal-title'>下单提示</div>
+	  <div data-remodal-action="close" class='remodal-close'></div>
+	  <div class='remodal-content'>
+	  	   <div class='remodal-condition-order-wrap'>
+	  	   	   <div>当行情满足以下条件时:</div>
+	  	   	   <div>
+	  	   	   		<font>当最新价</font>
+	  	   	   		<select>
+		  	   	   		<option value='dayu'>&gt;</option>
+		  	   	   		<option value='dayudengyu'>&gt;=</option>
+		  	   	   		<option value='xiaoyu'>&lt;</option>
+		  	   	   		<option value='xiaoyudengyu'>&lt;=</option>
+		  	   	   </select>
+		  	   	   <div class='remodal-condition-price'>
+		  	   	   		<input>
+		  	   	   		<div>
+		  	   	   			<div onclick="remodalConditionPriceClick(this,'up')" onmouseover="remodalConditionPriceOver(this,'up')" onmouseout="remodalConditionPriceOut(this,'up')"></div>
+		  	   	   			<div onclick="remodalConditionPriceClick(this,'down')" onmouseover="remodalConditionPriceOver(this,'down')" onmouseout="remodalConditionPriceOut(this,'down')"></div>
+		  	   	   		</div>
+		  	   	   </div>
+		  	   	   <font>时</font>
+	  	   	   </div>
+	  	   	    <div>
+	  	   	    	<span>按</span>
+	  	   	    	<span value='price'>1927</span>
+	  	   	    	<span>价格</span>
+	  	   	    	<span>,</span>
+	  	   	    	<span value='dir'>卖</span>
+	  	   	    	<span value='iid'>MA605</span>
+	  	   	    	<span value='co'>平仓</span>
+	  	   	    	<span value='vol'>38</span>
+	  	   	    	<span>手</span>
+	  	   	    </div>
+	  	   </div>
+	  </div>
+	  <span data-remodal-action="cancel" class="remodal-confirm"></span>
+	  <span data-remodal-action="confirm" class="remodal-cancel"></span>
+	</div>
+	
+	<!-- <div class='order_notify_wrap'>
+		<span value='iid'>i1609</span>
+		<span value='img'></span>
+		<span value='dir'>多</span>
+		<span value='co'>开</span>
+		<span value='price'>430</span>
+		<span value='vol'>1</span>
+		<span>手</span>
+		<span value='time'>11:26:20</span>
+	</div> -->
+	<!-- <div class='remodal-open'>测试弹出框</div> -->
+	<!-- <div class='order-dashed-wrap-123456'>
+		<span name='codir'></span>
+		<span name='price'></span>
+	</div> -->
+	<script src="js/stomp.js"></script>
+	<script src='js/globalField1.js'></script>
+    <script src='js/jquery.1.11.3.min.js'></script>
+    <script src='js/commonTool.js'></script>
+    <script src="libs/loading.js" ></script>
+    <script src="libs/util.js" ></script>
+    <script src="js/remodal.js"></script>
+    <script src='js/remodalEventHandler.js'></script>
+    <script src="libs/absPainter.js" ></script>
+    <script src="libs/ajax.js"  ></script>
+    <script src="libs/crossLines.js"  ></script>
+    <script src="libs/axis-x.js"  ></script>
+    <script src="libs/tip.js"  ></script>
+    <script src="libs/linepainter.js"  ></script>
+    <script src="libs/volumePainter.js"  ></script>
+    <script src="libs/axis-y.js"  ></script>
+    <script src="libs/chartEventHelper.js?abc"  ></script>
+    <script src="libs/controller.js" ></script>
+    <script src='js/room.js'></script>
+    <script src='js/tapeManage.js'></script>
+    <script src="js/klineManager.js"></script>
+    <script src="js/k_line.js"></script>
+    <script src='js/accountManager.js'></script>
+    <script src='js/orderManager.js'></script>
+    <script src='js/initHandler.js'></script>
   </body>
 </html>

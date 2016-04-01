@@ -37,68 +37,7 @@ $('.remodal-confirm').click(function(){
 			co = remodalOrderWrap.attr('co'),
 			price = remodalOrderWrap.attr('price'),
 			vol = remodalOrderWrap.attr('volume');
-		//下单
-		var method = 'trade';//方法
-		var data = {
-			"vol":Number(vol),
-			"otype":0,
-			"lc":CurrentLC,
-			"rmc":CurrentRMC,
-			"rid":CurrentRoomID,
-			"iid":iid,
-			"aid":CurrentAccountID,
-			/*"user":CurrentUserId,*/
-			"dir":Number(dir),
-			"action":1,
-			"co":Number(co),
-			"uid":CurrentUserId,
-			"dprice":price,
-			"pricetype":0
-		};
-		var param = JSON.stringify(data);
-		console.log(data);
-		$.ajax({
-			url:WebServiceTransferUrl+'/call_ws/output',
-			type:'post',
-			dataType:"json",
-			//async:false,//同步请求
-			data:{
-				ws_url:WebServiceTradeUrl,
-				ws_func:method,
-				ws_param:param
-			},
-			timeout:AjaxTimeOut, //设置超时5秒钟
-			success:function(data){
-				var state = data.rc;
-				console.log('trade order');
-				console.log(data);
-				if(state == 0){
-					var res = data.res,
-					returncode = res.returncode;
-					if(returncode == 99){//非交易时间, 下单失败
-						RemodalInstance.open();
-						var remodalWrap = $('.remodal');
-						var titleWrap = remodalWrap.children('.remodal-title');
-						titleWrap.html('下单提示');
-						var contentWrap = remodalWrap.children('.remodal-content');
-						contentWrap.attr('remodalConType','order');
-						contentWrap.empty();
-						var htmlFrag = "<div class='remodal-order-fail'>非交易时间， 无法下单"+
-							"</div>";
-						contentWrap.append($(htmlFrag));
-					}
-				}
-				//添加页面提示
-				//confirmOrderNotify();
-			},
-			error:function(xhr,state){
-				console.log("get data error");
-				//alert("请求服务器出错");
-			},
-			complete:function(xhr,state){
-				//console.log('get data complete');
-			}
-		});
+		OMOrderService(iid,dir,co,price,vol);
 	}
 });
 $('.remodal-order>div:last-child>span').click(function(){

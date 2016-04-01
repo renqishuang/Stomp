@@ -16,17 +16,8 @@ function afterInitSysInfo(){
 	//条件单查询
 	getTradeInfoConOrder();*/
 }
+
 $(document).ready(function() {
-	window.KLWSClient = null;
-	window.KLWSSubscribe = null;
-	window.KLMQMessageMonitor = false;
-	window.TradeWSClient = null;
-	window.CurrentDataTime = null;
-	window.LoadKLineDataFinish = false;
-	window.LoadTapeFinish = false;
-	window.CurrentInstrumentDigits = 0;
-	/*console.log(Math.round(499.9));
-	console.log(Number(-300));*/
 	if(window.WebSocket) {
 	    var destination;
 	    //订阅KL数据

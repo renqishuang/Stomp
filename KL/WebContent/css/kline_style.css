@@ -42,8 +42,16 @@ a:focus { outline: none; }
 	margin:0 auto;
 }
 .KL_Instrument_Wrap{
-	height:0px;
-	background-color:#D0D0D0;
+	height:90px;
+}
+.KL_Instrument_Wrap li{
+	width: 300px;
+    height: 46px;
+    float: left;
+    background-image:url(../images/zengjiaheyue.png);
+    background-repeat:no-repeat;
+    background-size:100% 100%;
+    cursor:pointer;
 }
 .KL_MainView_Wrap{
 	float:left;
@@ -274,6 +282,7 @@ a:focus { outline: none; }
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100% 100%;
+    cursor: pointer;
 }
 .KL_OM_Order_Wrap div:last-child{
 	margin-left: -1px;
@@ -284,6 +293,7 @@ a:focus { outline: none; }
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100% 100%;
+    cursor: pointer;
 }
 .KL_OrderManager_FirstWrap table{
 	border:none;
@@ -875,19 +885,25 @@ a:focus { outline: none; }
 .order_notify_wrap span[value=iid]{
 	color:#0060E4;
 }
-.order_notify_wrap span[value=dir],
-.order_notify_wrap span[value=co],
+.order_notify_wrap span[value=codir],
 .order_notify_wrap span[value=price]{
 	color:#FF0000;
 }
-.order_notify_wrap span[value=co]{
+.order_notify_wrap span[value=price]{
+	margin-right:6px;
+}
+.order_notify_wrap span[value=vol]{
+	margin-right:10px;
+}
+.order_notify_wrap span[value=codir]{
 	margin-right:10px;
 }
 .order_notify_wrap span[value=img]{
-	margin-right: 6px;
+	margin-left: 8px;
+    margin-right: 12px;
 	display: inline-block;
-    width: 14px;
-    height: 14px;
+    width: 15px;
+    height: 15px;
     /* background-image: url(../images/trade-pointer-duokai.png); */
     background-size: 100% 100%;
     background-repeat:no-repeat;
@@ -897,14 +913,29 @@ div[class^=order-dashed-wrap]{
 	position: absolute;
     height: 1px;
     border-top: 1px dashed #FFCA00;
+    pointer-events: none;
     /* width: 800px;
     top: 50%; */
 }
-div[class^=order-dashed-wrap]>span:first-child{
+div[class^=order-dashed-wrap] span[name=codir]{
 	width: 51px;
     height: 18px;
     display: inline-block;
-    background-image: url(../images/maiduokai.png);
+    /* background-image: url(../images/maiduokai.png); */
+    background-repeat:no-repeat;
+    background-size:100% 100%;
+    position: absolute;
+}
+div[class^=order-dashed-wrap] span[name=price]{
+	display: inline-block;
+    position: absolute;
+    right: -52px;
+    background-color: #FFCA00;
+    width: 50px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
 }
 div[class^=trade-pointer-wrap]{
 	width: 10px;
@@ -913,6 +944,7 @@ div[class^=trade-pointer-wrap]{
     background-repeat:no-repeat;
   	background-position:center;
     position: absolute;
+    pointer-events: none;
 }
 .KL_Tip_Wrap{
 	padding-left: 6px;
@@ -950,13 +982,18 @@ div[class^=trade-pointer-wrap]{
     font-size: 18px;
     color: white;
 }
-div[class^=KL_Y_Axis_Price_Tip]{
+div[class^=KL_Y_Axis_Price_Tip],
+div[class^=KL_Y_Axis_Last_Price_Tip]{
 	position:absolute;
 	width:50px;
 	height:18px;
 	background-color:#0079FE;
 	color:white;
 	text-align:center;
+}
+div[class^=KL_Y_Axis_Last_Price_Tip]{
+	background-color:transparent;
+	color:black;
 }
 .remodal-condition-order-wrap select{
 	width:122px;
@@ -1034,4 +1071,52 @@ div[class^=KL_Y_Axis_Price_Tip]{
 }
 .remodal-condition-price > div > div:nth-child(2){
 	background-image: url(../images/NumericStepperxup.png);
+}
+.KL_Canvas_Move_Wrap{
+	display: inline-block;
+    height: 284px;
+    width: 50px;
+    vertical-align: bottom;
+    background-color: #191F26;
+}
+div[class^=KL_Trade_Tip_Wrap]{
+	background-image:url('../images/trade_tip_bg.png');
+	width:152px;
+	height:38px;
+	background-repeat:no-repeat;
+	background-size:100% 100%;
+	position: absolute;
+    color: white;
+    z-index: 100;
+    pointer-events:none;
+}
+div[class^=KL_Trade_Tip_Wrap] > span:first-child{
+	vertical-align: top;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    /* background-image: url(../images/trade-pointer-duokai.png); */
+    background-size: 100% 100%;
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+div[class^=KL_Trade_Tip_Wrap] > div{
+	display: inline-block;
+	margin-top: 3px;
+}
+div[class^=KL_Trade_Tip_Wrap] > span:last-child{
+	color:#FFFF99;
+	vertical-align: top;
+    margin-top: 3px;
+    display: inline-block;
+}
+div[class^=KL_Trade_Tip_Wrap] span[value=price]{
+	display: inline-block;
+    width: 50px;
+    text-align: center;
+}
+div[class^=KL_Trade_Tip_Wrap] div[value=otime]{
+	color: #A6A7A9;
+	margin-top: -2px;
 }

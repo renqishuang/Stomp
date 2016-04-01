@@ -80,42 +80,61 @@ function getAccountInfo(){
 			console.log("get account info data");
 			console.log(data);
 			if(state === 0){
+				//设置账户信息
 				setInitAccountInfo(data.res);
+				//获取房间合约信息
+				getRoomInstrumentInfo();
 				//监听资金数据
 				if(!TradeWSClient) return;
 				//console.log("添加 资金数据监听--------->");
-				var MQAccountSub = TradeWSClient.subscribe('/topic/'+CurrentAccountID,function(message){
+				AccountWSSubscribe = TradeWSClient.subscribe('/topic/'+CurrentAccountID,function(message){
 					var tempData = JSON.parse(message.body);
-					//console.log('topic aid --- ');
-					//console.log(tempData);
-					//{"co":0,"dir":0,"aid":3179,"tvol":1,"dvol":1,"volfcls":0,"ds":1,"status":1,"otype":0,"comment":0,"frozen":20108,"iid":"TF1606","rid":"1553","price":0,"dprice":100.54,"user":3018,"vol":1,"action":1,"did":3179092621545,"dtime":1458609981546,"com":1,"returncode":0,"datatype":33,"actiontype":6}
+					if(tempData.iid != CurrentInstrumentID) return;
 					//设置资金信息
 					var actionType = tempData.actiontype,
 						returnCode = tempData.returncode,
 						status = tempData.status,
 						com = tempData.com,
-						datatype = tempData.datatype;
-					
+						datatype = tempData.datatype,
+						did = tempData.did;
 					if(actionType == 6){
 						if(returnCode == 0){
-							tradeInfoPDMQHandler(tempData);
+							getTradeInfoPendingDepute();//重新获取委托单数据
 						}
-						if(status == 3){//把委托单变成成交单
-							pendingDeputeConvertToOrder(tempData);
-						}else if(status == 2){//撤单
-							MQRepealPendingDepute(tempData);
+						if(datatype == 33 && com == 2){
+							if(status == 3){
+								console.log('转成交单');
+								//刷新委托挂单,持仓信息
+								getTradeInfoMP();
+								getTradeInfoPendingDepute();
+							}else if(status == 2){//撤单
+								getTradeInfoPendingDepute(tempData);
+							}
 						}
 					}else if(actionType == 4){
 						setInitAccountInfo(tempData);
 					}else if(actionType == 9){//合约持仓盈亏、平仓盈亏 订信息 
 						//设置交易信息
-						setTradeInfo(tempData);
+						if(tempData.iid == CurrentInstrumentID){
+							setTradeInfo(tempData);
+						}
 					}else if(actionType == 1){//下单成功
+						if(returnCode == 6){
+							alert('持仓不足');
+							return;
+						}
+						console.log('下单成功');
 						addTradePointer(tempData);
+						//pendingDeputeConvertToOrder(tempData);//添加成交提示
+						pdConvertToOrderTip(tempData);
+					}else if(actionType == 10){
+						if(returnCode == 1){
+							accountCapitalNotEnough();
+						}else if(returnCode == 11){
+							alert('下单价格超过价格变动幅度限制');
+						}
 					}
 				});
-				//获取房间合约信息
-				getRoomInstrumentInfo();
 			}
 		},
 		error:function(xhr,state){

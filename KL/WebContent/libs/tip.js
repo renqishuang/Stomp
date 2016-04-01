@@ -29,25 +29,32 @@ Tip.prototype = {
         if (position.x) tipX = position.x;
         else {
             if (otip) {
+            	var tradePointWidth = 0;
+            	//判断是否有交易点
+            	if(KLHasTradePointer){
+            		var tradePointerOp = this.tradePointerOp,
+            			tradeTipWidth=tradePointerOp.tipWidth,
+            			tradeTipOffset = tradePointerOp.tipOffset;
+            		tradePointWidth += tradeTipOffset+tradeTipWidth;
+            	}
             	//console.log("otip.style.left->"+otip.style.left);
                 var currentX = 0;
                 //console.log("currentX->"+currentX+"--x:"+x);
                 if(otip.currentOffsetDirect === 'right'){
-                	var leftTopPointX = x + offset;
+                	var leftTopPointX = x + offset + tradePointWidth;
                 	if(leftTopPointX > this._getRightLimit()-size.width){
-                    	currentX = x - offset - size.width - offset;
+                    	currentX = x - offset - size.width - tradePointWidth;
                     	otip.currentOffsetDirect = "left";
                     }else{
                     	currentX = leftTopPointX;
                     }
                 }else{
-                	var leftTopPointX= x-offset-size.width;
-                	//console.log(leftTopPointX);
+                	var leftTopPointX= x-offset-size.width - tradePointWidth;
                 	if(leftTopPointX < this._getLeftLimit()){
-                		currentX = x + offset;
+                		currentX = x + offset + tradePointWidth;
                 		otip.currentOffsetDirect = "right";
                 	}else{
-                		currentX = leftTopPointX-offset;
+                		currentX = leftTopPointX;
                 	}
                 }
                 
@@ -81,7 +88,8 @@ Tip.prototype = {
             }
         }
 
-        tipY = position.y;
+        //tipY = position.y;
+        tipY=canvasPosition.y;
         /*if (position.y) tipY = position.y;
         else {
             if (otip) {
@@ -120,7 +128,8 @@ Tip.prototype = {
             otip.style.cssText = '-moz-opacity:.' + opacity + '; filter:alpha(opacity='
                 + opacity + '); opacity:' + (opacity / 100) + ';pointer-events:none;line-height:18px;font-family:Arial,"����";font-size:9pt;';
             otip.style.position = 'absolute';
-            otip.style.zIndex = 4 + (this.canvas.style.zIndex || 1);
+            //otip.style.zIndex = 4 + (this.canvas.style.zIndex || 1);
+            otip.style.zIndex = 100;
             otip.style.color="white";
             otip.style.backgroundColor = 'transparent';
             otip.style.border = '1px solid white';
@@ -132,7 +141,6 @@ Tip.prototype = {
         }
         
         tipX = canvasPosition.x + tipX;
-        tipY = canvasPosition.y + tipY;
         //console.log("Tip left : "+tipX+"--canvas position->"+canvasPosition.x);
         otip.style.left = tipX + 'px';
         otip.style.top = tipY + 'px';
@@ -141,6 +149,10 @@ Tip.prototype = {
         otip.currentTipY = tipY;
         otip.innerHTML = this.innerHTML;
         otip.isShow = true;
+        
+        //展示交易点Tip界面
+        this.showTradePointerTip(x,otip.currentOffsetDirect);
+        
         //otip.currentOffsetDirect= currentOffsetDirect;
     },
     hide: function () {
@@ -149,6 +161,7 @@ Tip.prototype = {
         if (o) o.style.display = 'none';
         if(o.isShow) o.isShow = false;
         this.hideYPriceTip();
+        this.hideTradePointerTip();
     },
     update: function (relativePoint, html) {
     	//如果交叉点的坐标不变, 不需要移动Tip

@@ -1,13 +1,5 @@
 window.WebServiceTransferUrl = 'http://jyw.zlw.com';
-window.KLWSClient = null;//K线WS客户端
-window.KLWSSubscribe = null;//K线数据订阅者
-window.AccountWSSubscribe = null;//账户数据订阅者
-window.TapWSSubscribe=null;//盘口数据订阅者
-window.KLMQMessageMonitor = false;//K线消息监听标记
-window.TradeWSClient = null; //交易WS客户端
-window.CurrentDataTime = null;//当前更新K线开盘时间
-window.LoadKLineDataFinish = false;//K线数据是否加载完成
-window.LoadTapeFinish = false;//盘口是否加载完成
+window.CurrentInstrumentID = 'TF1606';//当前合约
 
 window.KLWebSocketUrl = 'ws://192.168.1.188:61610';
 window.TradeWebSocketUrl = 'ws://192.168.1.188:61625';
@@ -23,15 +15,14 @@ window.KLWebSocketUrl='ws://mq1.zlw.com:61634';
 window.TradeWebSocketUrl='ws://mq1.zlw.com:61633';
 window.WebServiceStrageUrl = 'http://kline1.zlw.com:8080/axis2/services/StrategyEngine?wsdl';
 window.WebServiceTradeUrl = 'http://simtradesvc.zlw.com:8888/axis2/services/SimTrade?wsdl';
-window.CurrentAccountID = 18349;
-window.CurrentRoomID=17384;
-window.CurrentUserId=348517;
-window.CurrentLC='4eed4aa58024f9c608cc72ff8d37d4bf';
-window.CurrentRMC=68300;
+window.CurrentAccountID = 18940;
+window.CurrentRoomID=17975;
+window.CurrentUserId=356890;
+window.CurrentLC='ee70dbdcc44dddea51ad165b71cba347';
+window.CurrentRMC=93005;
 
-window.CurrentInstrumentID = 'TF1606';//当前合约
-window.CurrentInstrumentDigits = 0;//价格后保留小数位数
-window.RoomInstrumentListInfo = {};
+window.CurrentInstrumentDigits = 1;//价格后保留小数位数
+window.CurrentInstrumentInfo={};//合约信息(包括价格小数点位数等)
 window.AjaxTimeOut = 90000;//ajax请求超时时间
 window.AvalibleAmount = 0;//可用资金
 window.CanvasPagePosition={};//canvas相对坐标

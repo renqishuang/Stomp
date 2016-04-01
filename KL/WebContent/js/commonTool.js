@@ -100,3 +100,15 @@ function getCurrentYMD(){
 	day = day < 9? '0'+day:day;
 	return year+'-'+month+'-'+'-'+day;
 }
+
+//数组中包含元素的个数
+Array.prototype.containEleCount=function(el){
+	var count = 0;
+	for(var i=0;i<this.length;i++){
+		var str = this[i];
+		if(str == el){
+			count +=1;
+		}
+	}
+	return count;
+}

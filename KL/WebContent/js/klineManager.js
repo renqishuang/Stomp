@@ -14,6 +14,7 @@ function KLDataDecimalHandler(dt){
 	var date = new Date(time);
 	var dateNumber =converDateStrByDate(date);
 	var item = {
+		iid:dt.iid,
 		//开盘时间
 		openTime:time,
 		//收盘时间
@@ -24,7 +25,7 @@ function KLDataDecimalHandler(dt){
 	    low: parseFloat(dt.low),
 	    close: parseFloat(dt.close),
 	    volume: parseFloat(dt.volume),
-	    amount: 2939,
+	    //amount: 2939,
 	    openchg:Number(dt.openchg),
 		highchg:Number(dt.highchg),
 		lowchg:Number(dt.lowchg),
@@ -34,7 +35,8 @@ function KLDataDecimalHandler(dt){
 		volume:Number(dt.volume),
 		volumechg:Number(dt.volumechg),
 		openinterest:Number(dt.openinterest),
-		openinterestchg:Number(dt.openinterestchg)
+		openinterestchg:Number(dt.openinterestchg),
+		tradeDt:[]//存放交易点
 	};
 	return item;
 }
@@ -43,7 +45,24 @@ function KLSubscribeHandler(dt){
 	if(!CurrentKLObj) return;
 	//对订阅数据的小数位数进行判断
 	var item = KLDataDecimalHandler(dt);		
+	//及时更新当前合约的价格
+	var digits = RoomInstrumentListInfo[CurrentInstrumentID].digits;
+	RoomInstrumentListInfo[CurrentInstrumentID].price = item.close;
+	if(item.iid == CurrentInstrumentID){
+		//更新下单器里面的价格
+		var priceWrap = $('.KL_OM_Price_Number'),
+			inputEl = priceWrap.find('input');
+		inputEl.val((item.close).toFixed(digits));
+	}
 	var time=dt.datetime;
+	//判当前K线的开盘时间是否与MQ推送的数据开盘时间一样
+	var currentKLLen = GlobalKLData.ks.length;
+	if(currentKLLen == 0) return;
+	var lastKL = GlobalKLData.ks[currentKLLen - 1];
+	
+	if(time == lastKL.openTime){//推送数据的时间与当前最后一条数据吻合
+		CurrentDataTime = time;
+	}
 	if(!CurrentDataTime){
 		CurrentDataTime = time;
 		CurrentKLObj.addCandleToKL(item);//收到订阅数据后, 先添加第一条数据
@@ -63,14 +82,18 @@ function KLSubscribeHandler(dt){
 			CurrentKLObj.updateKLOnCandle(item);
 		}else{
 			//添加一条数据
-			var lastItem = KLDataDecimalHandler(this.lastUpdateDt);
-			CurrentKLObj.updateGlobalKLLastDt(lastItem);//更新最后一条数据
+			//var lastItem = KLDataDecimalHandler(this.lastUpdateDt);
+			CurrentKLObj.updateGlobalKLLastDt(this.lastUpdateDt);//更新最后一条数据
 			//drawKL();
 			//CurrentKLObj.addCandleToKL(lastItem); //添加最后更新的数据 
 			CurrentKLObj.addCandleToKL(item);//添加新数据
+			//清空交易点
+			$('div[class^=trade-pointer-wrap]').remove();
 			drawKL();
+			//重画交易点
+			//hisTradeDataSet(HisTradePointerData,false);
 			//调取交易历史数据
-			getHisTradeInfo();
+			//getHisTradeInfo(); -------------------
 			CurrentDataTime = time;
 		}
 	}
@@ -95,7 +118,7 @@ function originalDataHandleSplice(data){
 		    low: parseFloat(dt.low),
 		    close: parseFloat(dt.close),
 		    volume: parseFloat(dt.volume),
-		    amount: 2939,
+		    //amount: 2939,
 		    openchg:Number(dt.openchg),
 			highchg:Number(dt.highchg),
 			lowchg:Number(dt.lowchg),
@@ -105,7 +128,8 @@ function originalDataHandleSplice(data){
 			volume:Number(dt.volume),
 			volumechg:Number(dt.volumechg),
 			openinterest:Number(dt.openinterest),
-			openinterestchg:Number(dt.openinterestchg)
+			openinterestchg:Number(dt.openinterestchg),
+			tradeDt:[]
 		};
 		GlobalKLData.ks.splice(0,0,item);
 	}
@@ -133,7 +157,7 @@ function originalDataHandle(data){
 		    low: parseFloat(dt.low),
 		    close: parseFloat(dt.close),
 		    volume: parseFloat(dt.volume),
-		    amount: 2939,
+		    //amount: 2939,
 		    openchg:Number(dt.openchg),
 			highchg:Number(dt.highchg),
 			lowchg:Number(dt.lowchg),
@@ -143,11 +167,13 @@ function originalDataHandle(data){
 			volume:Number(dt.volume),
 			volumechg:Number(dt.volumechg),
 			openinterest:Number(dt.openinterest),
-			openinterestchg:Number(dt.openinterestchg)
+			openinterestchg:Number(dt.openinterestchg),
+			tradeDt:[]
 		};
 		GlobalKLData.ks.splice(0,0,item);
 	}
 }
+
 //画K线
 function drawKLHandler(interval){
 	LoadKLineDataFinish = true;//标识数据加载完成
@@ -155,13 +181,17 @@ function drawKLHandler(interval){
 	drawKL();//画图
 	//调取交易历史数据
 	getHisTradeInfo();
+	if(!PendingDeputeInitFinish){
+		//获取委托单,持仓数据
+		$('.KL_OrderManager_FirstWrap').find('div:first-child span').eq(0).trigger('click');
+	}
 	var destination = "/topic/"+CurrentInstrumentID+"_"+interval; 
 	if(!KLWSClient) return;
 	//console.log("添加监听");
 	KLWSSubscribe = KLWSClient.subscribe(destination,function(message){
 		if(!LoadKLineDataFinish)return;
-		var tempData = message.body;
-		KLSubscribeHandler(JSON.parse(tempData));//实时K线变化
+		var tempData = JSON.parse(message.body);
+		KLSubscribeHandler(tempData);//实时K线变化
 	});
 }
 
@@ -201,7 +231,7 @@ function getCurrentDateKLines(interval){
 				var obj = data.res.data;
 				if(obj.length == 0){
 					//如果当天没有数据,请求历史数据
-					getHisKLines(interval,getCurrentTimes,CurrentMaxKLShowCount,'not');
+					getHisKLines(interval,getCurrentTimes(),CurrentMaxKLShowCount,'not');
 				}else{
 					originalDataHandle(obj);
 					//判断是否加载历史数据

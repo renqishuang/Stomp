@@ -24,25 +24,24 @@ function roomInstrumentListInfo(iidArr){
 		timeout:AjaxTimeOut, //设置超时5秒钟
 		success:function(data){
 			var state = data.rc;
+			console.log('room instrument list info');
+			console.log(data);
 			if(state === 0){
-				console.log('sysInfo');
 				var res = data.res,dt = res.data,len = dt.length;
 				console.log(dt);
 				for(var i=0;i<len;i++){
 					var tempDt = dt[i];
 					var digits = tempDt.digits;
-					var tempObj = {
-						digits: digits	
-					};
-					//存储合约对应的Digits
-					CurrentInstrumentInfo[tempDt.instrumentid]=tempObj;
-					CurrentInstrumentDigits = digits;
+					var iid = tempDt.instrumentid;
+					RoomInstrumentListInfo[iid].digits=digits;
+					if(i == 0){
+						CurrentInstrumentDigits = digits;
+					}
 				}
-				console.log(CurrentInstrumentInfo);
 				var KLTimeShareDiv = $('div.KL_TimeShareChart_Interval');
 				var KLTimeShareList = KLTimeShareDiv.find("li");
 				//默认触发1分钟K线图
-				$(KLTimeShareList[0]).trigger('mousedown');
+				KLTimeShareList.eq(0).trigger('mousedown');
 				afterInitSysInfo();
 			}
 		},
@@ -66,17 +65,27 @@ function roomInstrumentSet(dt){
 	for(var i=0;i<len;i++){
 		var iid = dt[i].iid;
 		var htmlFrag='';
-		if(iid == 'IF1603') continue;
+		/*if(iid == 'IF1603') continue;*/
 		iidArr.push(iid);
-		if(i == 2){
+		var price = dt[i].price,
+			step = dt[i].step,
+			volmul = dt[i].volmul,//合约乘数
+			deprate = dt[i].deprate;//保证金率
+			step = dt[i].step;
+		var tempObj = {
+			iid:iid,
+			volmul:volmul,
+			deprate:deprate,
+			price:price,
+			step:step
+		};
+		RoomInstrumentListInfo[iid]=tempObj;
+		if(i == 0){
 			CurrentInstrumentID = iid;
 			htmlFrag = "<option selected='true' value='"+iid+"'>"+iid+"</option>";
 			//下单器设置
-			var price = dt[i].price;
+			
 			wrap.find('div.KL_OM_Price_Number input[type=text]').val(price);
-			var step = dt[i].step;
-			var volmul = dt[i].volmul;//合约乘数
-			var deprate = dt[i].deprate;//保证金率
 			var volumeWrap = wrap.find('div.KL_OM_Volume_Number');
 			var maxVol = 0;
 			//最大手数=可用/(价格*合约乘数*保证金率)
@@ -129,7 +138,7 @@ function getRoomInstrumentInfo(){
 		timeout:AjaxTimeOut, //设置超时5秒钟
 		success:function(data){
 			var state = data.rc;
-			console.log('room instrument');
+			console.log('room instrument list');
 			console.log(data);
 			if(state === 0){
 				var res = data.res,dt = res.inst,len = dt.length;

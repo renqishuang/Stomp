@@ -26,6 +26,9 @@ function OMVolumeDownMouseOut(div){
 
 function OMPriceNumberUpClick(div){
 	var input = $(div).parent().prev();
+	//CurrentInstrumentID
+	/*var instruInfoLen = RoomInstrumentListInfo.length;
+	for(var i=0;i<)*/
 	input.val(Number(input.val())+1);
 }
 function OMPriceNumberDownClick(div){
@@ -59,6 +62,7 @@ function OMConditionMouseDown(div){
 	var titleWrap = remodalWrap.children('.remodal-title');
 	titleWrap.html('条件单设置');
 	var contentWrap = remodalWrap.children('.remodal-content');
+	contentWrap.attr('remodalConType','condition');
 	contentWrap.empty();
 	//remodalConditionPriceClick
 	//remodalConditionPriceOver
@@ -98,7 +102,7 @@ function OMConditionMouseDown(div){
 	var conditionOrderWrap = $('.remodal-condition-order-wrap');
 	var priceWrap = $('.remodal-condition-price'),
 		upDiv=priceWrap.find('div[value=up]'),
-		downDiv=priceWrap.find('div[value=up]');
+		downDiv=priceWrap.find('div[value=down]');
 	//priceWrap.find('div[value=up]')
 	upDiv.bind('click',function(){
 		remodalConditionPriceClick($(this),'up');
@@ -141,9 +145,75 @@ function OMOrderMouseOver(div){
 function OMOrderMouseOut(div){
 	$(div).css('background-image','url(images/maxiadan1.png)');
 }
-//下单
-function OMOrderMouseDown(div){
-	$(div).css('background-image','url(images/maxiadan1.png)');
+//下单接口调用
+function OMOrderService(iid,dir,co,price,vol){
+	//下单
+	var method = 'trade';//方法
+	var data = {
+		"vol":Number(vol),
+		"otype":0,
+		"lc":CurrentLC,
+		"rmc":CurrentRMC,
+		"rid":CurrentRoomID,
+		"iid":iid,
+		"aid":CurrentAccountID,
+		/*"user":CurrentUserId,*/
+		"dir":Number(dir),
+		"action":1,
+		"co":Number(co),
+		"uid":CurrentUserId,
+		"dprice":price,
+		"pricetype":0
+	};
+	var param = JSON.stringify(data);
+	console.log(data);
+	$.ajax({
+		url:WebServiceTransferUrl+'/call_ws/output',
+		type:'post',
+		dataType:"json",
+		//async:false,//同步请求
+		data:{
+			ws_url:WebServiceTradeUrl,
+			ws_func:method,
+			ws_param:param
+		},
+		timeout:AjaxTimeOut, //设置超时5秒钟
+		success:function(data){
+			var state = data.rc;
+			console.log('trade order');
+			console.log(data);
+			if(state == 0){
+				var res = data.res,
+				returncode = res.returncode;
+				if(returncode == 99){//非交易时间, 下单失败
+					RemodalInstance.open();
+					var remodalWrap = $('.remodal');
+					var titleWrap = remodalWrap.children('.remodal-title');
+					titleWrap.html('下单提示');
+					var contentWrap = remodalWrap.children('.remodal-content');
+					contentWrap.attr('remodalConType','invalid');
+					contentWrap.empty();
+					var htmlFrag = "<div class='remodal-order-fail'>非交易时间， 无法下单"+
+						"</div>";
+					contentWrap.append($(htmlFrag));
+				}
+			}
+			//添加页面提示
+			//confirmOrderNotify();
+		},
+		error:function(xhr,state){
+			console.log("get data error");
+			//alert("请求服务器出错");
+		},
+		complete:function(xhr,state){
+			//console.log('get data complete');
+		}
+	});
+}
+
+//弹出下单页面
+function OMOrderMouseDown(){
+	//$(div).css('background-image','url(images/maxiadan1.png)');
 	var remodalWrap = $('.remodal');
 	if(remodalWrap.length == 0 ) return;
 	var titleWrap = remodalWrap.children('.remodal-title');
@@ -156,11 +226,23 @@ function OMOrderMouseDown(div){
 			  	   			"按<span></span>价格, <span></span>"+
 			  	   		"<span></span><span></span><span></span>手"+
 			  	   		"</div>"+
-			  	   		"<div isClick='false'>"+
+			  	   		"<div name='checkbox-wrap' isClick='false'>"+
 			  	   			"<span></span>不显示下单提示页"+
 			  	   		"</div>"+
 			  	   "</div>";
 	contentWrap.append($(htmlFrag));
+	var checkBoxWrap =contentWrap.find('div[name=checkbox-wrap]');
+	checkBoxWrap.css('cursor','pointer');
+	checkBoxWrap.bind('click',function(){
+		var isClick = $(this).attr('isClick');
+		if(isClick === 'true'){
+			$(this).attr('isClick',false);
+			$(this).find('span:first-child').css('background-image','url(images/ordertipcb_normal.png)');
+		}else{
+			$(this).attr('isClick',true);
+			$(this).find('span:first-child').css('background-image','url(images/ordertipcb_selected.png)');
+		}
+	});
 	var orderWrap = $('.KL_OrderManager_SecondWrap');
 	if(orderWrap.length == 0) return;
 	//合约
@@ -210,24 +292,68 @@ function OMSetClick(){
 	var titleWrap = remodal.children('.remodal-title');
 	titleWrap.html('系统提示');
 	var contentWrap = remodal.children('.remodal-content');
+	contentWrap.attr('remodalConType','set');
 	contentWrap.empty();
 	var htmlFrag = "<ul class='order_set'>"+
-			  	      "<li><span isClick='false'></span><span>不显示下单提示页</span></li>"+
-			  	      "<li><span isClick='false'></span><span>不显示双击平仓提示</span></li>"+
-			  	      "<li><span isClick='false'></span><span>不显示开屏弹幕提示</span></li>"+
+			  	      "<li><div isClick='false'><span></span><span>不显示下单提示页</span></div></li>"+
+			  	      "<li><div isClick='false'><span></span><span>不显示双击平仓提示</span></div></li>"+
+			  	      "<li><div isClick='false'><span></span><span>不显示开屏弹幕提示</span></div></li>"+
 			  	   "</ul>";
 	$(htmlFrag).appendTo(contentWrap);
-	contentWrap.find('span:nth-child(1)').click(function(){
+	contentWrap.find('div').css('cursor','pointer');
+	contentWrap.find('div').click(function(){
 		var isClick = $(this).attr('isClick');
 		if(isClick === 'true'){
 			$(this).attr('isClick',false);
-			$(this).css('background-image','url(images/ordertipcb_normal.png)');
+			$(this).find('span:first-child').css('background-image','url(images/ordertipcb_normal.png)');
 		}else{
 			$(this).attr('isClick',true);
-			$(this).css('background-image','url(images/ordertipcb_selected.png)');
+			$(this).find('span:first-child').css('background-image','url(images/ordertipcb_selected.png)');
 		}
 	});
 }
+//计算持仓手数
+function calcMPVol(div,dir){
+	//计算手数
+	var parent = $(div).parent(),
+		parentNext = parent.next(),
+		coDiv = parentNext.find('div[isClick=true]'),
+		coVal = coDiv.attr('value'),
+		volWrap = $('.KL_OM_Volume_Number'),
+		spanVolWrap = volWrap.prev();
+	if(coVal == 1){
+		var table = $('.TradeInfo_MP'),
+		trList = table.find('tr:not(:first-child)'),
+		trLen = trList.length;
+		for(var i=0;i<trLen;i++){
+			var tr = trList.eq(i);
+			var trDt = tr.attr('trDt');
+			if(!trDt) continue;
+			trDt = JSON.parse(trDt);
+			if(trDt.iid == CurrentInstrumentID && trDt.dir == dir){
+				var vol = trDt.vol;
+				volWrap.find('input').val(vol);
+				spanVolWrap.html(vol);
+			}
+		}
+	}
+}
+//计算开仓手数
+function calcOpenVolumeFn(){
+	var instruInfo = RoomInstrumentListInfo[CurrentInstrumentID];
+	var price = instruInfo.price,
+		volmul = instruInfo.volmul,
+		deprate = instruInfo.deprate;
+	var priceWrap = $('.KL_OM_Price_Number'),
+		price = priceWrap.find('input').val();
+	var maxVol = parseInt(AvalibleAmount / (price*volmul*deprate));
+	var volWrap = $('.KL_OM_Volume_Number');
+	var spanVolWrap = volWrap.prev();
+	spanVolWrap.html(maxVol);
+	volWrap.find('input').val(maxVol);
+}
+
+//买卖开平事件
 function OMBuySellOpenCloseMouseDown(div,type){
 	var isClick = $(div).attr('isClick');
 	if(isClick == 'true') return;
@@ -240,6 +366,7 @@ function OMBuySellOpenCloseMouseDown(div,type){
 		nextSibling.find('span:last-child').css('background-image','none');
 		$(div).attr('isClick',true);
 		nextSibling.attr('isClick',false);
+		calcMPVol(div,1);
 		break;
 	case 'sell':
 		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_green.png)');
@@ -249,6 +376,7 @@ function OMBuySellOpenCloseMouseDown(div,type){
 		prevSibling.find('span:last-child').css('background-image','none');
 		$(div).attr('isClick',true);
 		prevSibling.attr('isClick',false);
+		calcMPVol(div,0);
 		break;
 	case 'open':
 		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_yellow.png)');
@@ -258,6 +386,8 @@ function OMBuySellOpenCloseMouseDown(div,type){
 		nextSibling.find('span:last-child').css('background-image','none');
 		$(div).attr('isClick',true);
 		nextSibling.attr('isClick',false);
+		//计算手数
+		calcOpenVolumeFn();
 		break;
 	case 'close':
 		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_yellow.png)');
@@ -267,6 +397,27 @@ function OMBuySellOpenCloseMouseDown(div,type){
 		prevSibling.find('span:last-child').css('background-image','none');
 		$(div).attr('isClick',true);
 		prevSibling.attr('isClick',false);
+		//计算手数
+		var table = $('.TradeInfo_MP'),
+			trList = table.find('tr:not(:first-child)'),
+			trLen = trList.length,
+			parent = $(div).parent(),
+			parentPrev = parent.prev();
+		var dirVal = parentPrev.find('div[isClick=true]').attr('value');
+		dirVal = dirVal==0?1:0;
+		var volWrap = $('.KL_OM_Volume_Number');
+		var spanVolWrap = volWrap.prev();
+		for(var i=0;i<trLen;i++){
+			var tr = trList.eq(i);
+			var trDt = tr.attr('trDt');
+			if(!trDt) continue;
+			trDt = JSON.parse(trDt);
+			if(trDt.iid == CurrentInstrumentID && trDt.dir == dirVal){
+				var vol = trDt.vol;
+				volWrap.find('input').val(vol);
+				spanVolWrap.html(vol);
+			}
+		}
 		break;	
 	default:
 		break;
@@ -387,8 +538,6 @@ function orderManagerLeftRegion(wrap){
 			}
 		});
 	}
-	//默认触发 快捷 按钮
-	$(navs[0]).trigger('click');
 }
 
 //下单器右边区域事件设置
@@ -474,27 +623,96 @@ function orderManagerRightRegion(wrap){
 		}
 	}
 }
+function tradeInfoMPTrDBLHandler(tr){
+	console.log('dblclick');
+	RemodalInstance.open();
+	//调用下单界面
+	OMOrderMouseDown();
+	//OMOrderService(iid,dir,co,price,vol)
+}
+
+function tradeInfoMPTrHandler(tr){
+	var trDt = JSON.parse(tr.attr('trDt'));
+	console.log('click');
+	var wrap = $('.KL_OrderManager_SecondWrap');
+	if(wrap.length == 0) return;
+	//触发买卖
+	var dir = trDt.dir,
+		dirValue = dir==0?'1':'0',
+		dirStr = dir==0?'sell':'buy',
+		dirDiv = wrap.find('>div:nth-child(2)').find('div[value='+dirValue+']');
+	OMBuySellOpenCloseMouseDown(dirDiv[0],dirStr);
+	var coDiv = wrap.find('>div:nth-child(3)').find('div[value=1]');
+	//触发开平
+	OMBuySellOpenCloseMouseDown(coDiv[0],'close');
+	//手数
+	var volWrap = wrap.find('span[name=kl_om_vol_wrap]');
+	volWrap.html(trDt.vol);
+	var volInputWrap = $('.KL_OM_Volume_Number');
+	volInputWrap.find('input').val(trDt.vol);
+	//
+}
+
 function tradeInfoMPHandler(data){
 	var shortCutWrap = $('.TradeInfo_MP');
 	var mpWrap = $('.Order_Manager_TB_Position');
+	//清空快捷页里面持仓所有数据及事件
+	var shortCutTrList = shortCutWrap.find('tr:not(:first-child)'),
+	shortCutTrLen = shortCutTrList.length;
+	for(var i=0;i<shortCutTrLen;i++){
+		var shortCutTr = shortCutTrList.eq(i);
+		shortCutTr.css('background-color','white');
+		shortCutTr.unbind('mouseover');
+		shortCutTr.unbind('mouseout');
+		shortCutTr.unbind('dblclick');
+		shortCutTr.unbind('click');
+		shortCutTr.find('td').html('');
+		shortCutTr.attr('isClick',false);
+	}
+	//清空持仓Tab页里面的所有数据及事件
+	var mpTrList = mpWrap.find('table').find('tr:not(:first-child)'),mpTrLen=mpTrList.length;
+	for(var i=0;i<mpTrLen;i++){
+		var mpTr = mpTrList.eq(i);
+		mpTr.css('background-color','white');
+		mpTr.unbind('mouseover');
+		mpTr.unbind('mouseout');
+		mpTr.unbind('dblclick');
+		mpTr.unbind('click');
+		mpTr.find('td').html('');
+		mpTr.attr('isClick',false);
+	}
+	
 	if(shortCutWrap.length == 0 || mpWrap.length == 0) return;
 	var len = data.length;
+	
 	for(var i=0;i<len;i++){
 		var dt = data[i];
-		var shortTr =shortCutWrap.find('tr').eq(i+1); 
+		var shortTr =shortCutWrap.find('tr').eq(i+1);
 		//var avgprice = dt.avgprice;
 		shortTr.bind('mouseover',function(){
 			$(this).css('background-color','#E9EBEE');
 		});
 		shortTr.bind('mouseout',function(){
 			$(this).css('background-color','#FFE7E7');
+			$(this).attr('isClick',false);
 		});
 		shortTr.bind('dblclick',function(){
-			//repealPendingDepute(dt);
+			tradeInfoMPTrDBLHandler($(this));
 		});
+		shortTr.bind('click',function(){
+			var isClick = $(this).attr('isClick');
+			if(isClick == 'false'){
+				$(this).attr('isClick',true);
+				tradeInfoMPTrHandler($(this));
+			}
+		});
+		shortTr.attr('trDt',JSON.stringify(dt));
 		shortTr.css('cursor','pointer');
 		shortTr.css('background-color','#FFE7E7');
-		shortTr.find('td:last-child').html(dt.avgprice);
+		
+		var instru = RoomInstrumentListInfo[dt.iid];
+		var digits = instru.digits;
+		shortTr.find('td:last-child').html((dt.avgprice).toFixed(digits));
 		shortTr.find('td:nth-last-child(2)').html(dt.volfcls);
 		shortTr.find('td:first-child').html(dt.iid);
 		shortTr.find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
@@ -508,15 +726,19 @@ function tradeInfoMPHandler(data){
 			$(this).css('background-color','#FFE7E7');
 		});
 		mpTr.bind('dblclick',function(){
-			//repealPendingDepute(dt);
+			tradeInfoMPTrDBLHandler($(this));
 		});
+		mpTr.bind('click',function(){
+			tradeInfoMPTrHandler($(this));
+		});
+		mpTr.attr('trDt',JSON.stringify(dt));
 		mpTr.css('background-color','#FFE7E7');
 		mpTr.css('cursor','pointer');
 		mpTr.find('td:first-child').html(dt.iid);
 		mpTr.find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
 		mpTr.find('td:nth-child(3)').html(dt.vol);
 		mpTr.find('td:nth-child(4)').html(dt.volfcls);
-		mpTr.find('td:nth-child(5)').html((dt.avgprice).toFixed(CurrentInstrumentDigits));
+		mpTr.find('td:nth-child(5)').html((dt.avgprice).toFixed(digits));
 		mpTr.find('td:nth-child(6)').html(Math.round(dt.floatprofit));
 		mpTr.find('td:nth-child(7)').html((dt.deposit).toFixed(2));//占用保证金 固定2位小数
 	}
@@ -567,40 +789,67 @@ function getTradeInfoMP(){
 }
 //委托单变成成交单的提示
 function pdConvertToOrderTip(dt){
-	var dir = dt.dir==0?'多':'空';
-	var co = dt.co==0?'开':'平';
-	var htmlFrag = "<div class='order_notify_wrap'>"+
-		"<span value='iid'>"+dt.iid+"</span>"+
+	console.log('成交提示---------------');
+	var dir,co,vol = dt.vol,tempDir,tempCo,iid=dt.iid,
+		price=dt.price,otime = msecondConvertToDate(dt.otime);
+	/*var otime = tempDt.otime,
+	dir = tempDt.dir,
+	co = tempDt.co,
+	vol = tempDt.vol,
+	iid = tempDt.iid,
+	price = tempDt.price;*/
+	if(dt.co == 1){//平仓
+		tempCo=1;
+		co = '平';
+		dir = dt.dir==0?'空':'多';
+		tempDir = dt.dir==0?1:0;
+		color = dt.dir==0?'#06E65A':'#E60302';
+	}else{//开仓
+		tempCo=0;
+		co = '开';
+		dir = dt.dir==0?'多':'空';
+		tempDir = dt.dir==0?0:1;
+		color = dt.dir==0?'#E60302':'#06E65A';
+	}
+	var	htmlFrag = "<div class='order_notify_wrap'>"+
+		"<span value='iid'></span>"+
 		"<span value='img'></span>"+
-		"<span value='dir'>"+dir+"</span>"+
-		"<span value='co'>"+co+"</span>"+
-		"<span value='price'>"+dt.dprice+"</span>"+
-		"<span value='vol'>1</span>"+
-		"<span>手</span>"+
-		"<span value='time'>"+getCurrentHMS()+"</span>"+
+		"<span value='codir'></span>"+
+		"<span value='price'></span>"+
+		"<span value='vol'></span>"+
+		"<span value='time'></span>"+
 	"</div>";
-	$('body').append($(htmlFrag));
+	if($('.order_notify_wrap').length == 0) $('body').append($(htmlFrag));
+	$('.order_notify_wrap').show();
+	$('.order_notify_wrap span[value=iid]').html(iid);
+	$('.order_notify_wrap span[value=codir]').html(dir+co);
+	$('.order_notify_wrap span[value=price]').html(price);
+	$('.order_notify_wrap span[value=vol]').html(vol+'手');
+	$('.order_notify_wrap span[value=time]').html(otime);
+	
 	var image;
-	if(dt.dir == 0){
-		if(dt.co == 0){
+	if(tempDir == 0){
+		if(tempCo == 0){
 			image = 'url(images/trade-pointer-duokai.png)';
 		}else{
 			image = 'url(images/trade-pointer-duoping.png)';
 		}
 	}else{
-		if(dt.co == 0){
+		if(tempCo == 0){
 			image = 'url(images/trade-pointer-kongkai.png)';
 		}else{
 			image = 'url(images/trade-pointer-kongping.png)';
 		}
 	}
+	$('.order_notify_wrap span[value=codir]').css('color',color);
+	$('.order_notify_wrap span[value=price]').css('color',color);
 	$('.order_notify_wrap span[value=img]').css('background-image',image);
 	setTimeout(function(){
-		$('.order_notify_wrap').remove();
-	},3000);
+		$('.order_notify_wrap').hide();
+	},2000);
 }
 //历史交易数据设置
-function hisTradeDataSet(dt){
+function hisTradeDataSet(dt,isInit){
 	var len = dt.length;
 	console.log(CurrentKLStartIndex);
 	console.log(CurrentKLEndIndex);
@@ -661,6 +910,9 @@ function hisTradeDataSet(dt){
 			        $('.'+tradeCOPointer).css('top',tempY);
 			        $('.'+tradeCOPointer).css('left',x);
 		        }
+		        if(isInit == true){
+		        	GlobalKLData.ks[j].tradeDt.push(tempDt);
+		        }
 			}
 		}
 	}
@@ -678,6 +930,7 @@ function addTradePointer(tempDt){
 		if(!klDt) return;
 		if(otime < klDt.closeTime && otime > klDt.openTime){
 			console.log('find trade pointer');
+			GlobalKLData.ks[j].tradeDt.push(tempDt);//及时更新每根K线对应的交易点
 			//console.log(klDt);
 			var KLIndex = klDt.KLIndex;
 			//获取X坐标
@@ -761,7 +1014,21 @@ function getHisTradeInfo(){
 			if(state === 0){
 				var res=data.res,dt=res.data;
 				if(!dt || dt.length == 0) return;
-				hisTradeDataSet(dt);
+				//HisTradePointerData=dt;
+				//先进行数据过滤
+				var tempTradeArr = [];
+				for(var i=0;i<dt.length;i++){
+					var tempDt = dt[i];
+					var otime = tempDt.otime;
+					for(var j=CurrentKLStartIndex;j<=CurrentKLEndIndex;j++){
+						var klDt = GlobalKLData.ks[j];
+						if(!klDt) return;
+						if(otime < klDt.closeTime && otime > klDt.openTime){
+							tempTradeArr.push(tempDt);
+						}
+					}
+				}
+				hisTradeDataSet(tempTradeArr,true);
 			}
 		},
 		error:function(xhr,state){
@@ -777,7 +1044,6 @@ function getHisTradeInfo(){
 function pendingDeputeConvertToOrder(dt){
 	var did = dt.did;
 	var wrap = $('.TradeInfoPendingDepute');
-	if(wrap.length == 0) return;
 	var trList = wrap.find('tr'),trLen = trList.length;
 	for(var i=1;i<trLen;i++){
 		var tr = trList[i];
@@ -785,67 +1051,14 @@ function pendingDeputeConvertToOrder(dt){
 		if(!trDtStr) continue;
 		var trDt = JSON.parse(trDtStr);
 		if(trDt.did == did){
-			$(tr).css('cursor','default');
-			$(tr).css('background-color','white');
-			$(tr).unbind('mouseover');
-			$(tr).unbind('mouseout');
-			$(tr).unbind('dblclick');
-			wrap.attr('trLen',wrap.attr('trLen')-1);
-			//删除挂单虚线
-			var wrap = $('.order-dashed-wrap-'+did);
-			wrap.remove();
-			//添加提示
 			pdConvertToOrderTip(trDt);
-			$(tr).attr('orderData','');
-			var tds = $(tr).find('td'),tdLen = tds.length;
-			for(var j=0;j<tdLen;j++){
-				var td = tds[j];
-				$(td).html('');
-			}
 		}
 	}
-	//在成交单表格中添加一行数据
-	/*var bargainWrap = $('.Order_Manager_TB_Bargain');
-	if(bargainWrap.length == 0) return;
-	var bargainTB = bargainWrap.find('table');
-	var htmlFrage = "<tr>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-		"</tr>";
-	bargainTB.append(htmlFrage);
-	var trList = bargainTB.find('tr');
-	var tr = trList.eq(trList.length-1);
-	tr.css('background-color','#FFE7E7');
-	tr.find('td:first-child').html(dt.iid);
-	tr.find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
-	tr.find('td:nth-child(3)').html(dt.co==0?'仓':'仓');
-	tr.find('td:nth-child(4)').html((dt.price).toFixed(CurrentInstrumentDigits));
-	tr.find('td:nth-child(5)').html(dt.vol);
-	if(dt.vol > 0){
-		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(msecondConvertToDate(dt.otime));
-	}else{
-		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html();
-	}
-	tr.find('td:nth-child(7)').html(dt.oid);//成交编号没找到
-	tr.find('td:nth-child(8)').html(dt.did);
-	tr.find('td:nth-child(9)').html(msecondConvertToDate(dt.dtime));
-	tr.find('td:nth-child(10)').html((dt.dprice).toFixed(CurrentInstrumentDigits));
-	tr.find('td:nth-child(11)').html((dt.tfee).toFixed(2));//手续费固定保留两位
-	tr.find('td:nth-child(12)').html();*/
 }
 
 //委托挂单表格数据设置
 function tradeInfoPDDataSet(wrap, index, dt){
+	return;
 	var dtStr = JSON.stringify(dt);
 	var tr = wrap.find('tr').eq(index); 
 	tr.css('cursor','pointer');
@@ -869,77 +1082,50 @@ function tradeInfoPDDataSet(wrap, index, dt){
 	tr.find('td:nth-last-child(2)').html(dt.dvol);
 	tr.find('td:last-child').html(dt.dprice);
 }
-//委托挂单通知
-function pendingDeputeOrderNotify(price,did){
+//添加黄色虚线
+function pendingDeputeOrderNotify(dt,priceCount){
+	if(CurrentInstrumentID != dt.iid) return;
+	var price = dt.dprice,did=dt.did,image,dir=dt.dir,co=dt.co,offset=5;
 	if(!GlobalKLOptionObj) return;
-	var pendingDeputeFrag = "<div class='order-dashed-wrap-"+did+"'></div>";
-	//CanvasPagePosition
-	$('body').append($(pendingDeputeFrag));
+	var dashClass = 'order-dashed-wrap-'+did;
+	var pendingDeputeFrag = "<div class="+dashClass+">"+
+								"<span name='codir'></span>"+
+								"<span name='price'>"+price.toFixed(CurrentInstrumentDigits)+"</span>"+
+							"</div>";
+	if($('.'+dashClass).length == 0){
+		$('body').append($(pendingDeputeFrag));
+	}
+	$('.'+dashClass).css('display','block');
+	if(co == 1){//平仓
+		if(dir == 0){//
+			image = 'kongping';
+		}else{
+			image = 'duoping';
+		}
+	}else{//开仓
+		if(dir == 0){//买
+			image = 'duokai';		
+		}else{//卖
+			image = 'kongkai';
+		}
+	}
+	$('.'+dashClass).find('span[name=codir]').css('background-image','url(images/mai'+image+'.png)');
 	var wrap = $('.order-dashed-wrap-'+did);
 	var width = CanvasPagePosition.width-GlobalKLOptionObj.region.x;
 	wrap.css('width',width);
 	var left = CanvasPagePosition.x+GlobalKLOptionObj.region.x;
 	wrap.css('left',left);
+	//图片偏移量设置
+	wrap.find('span[name=codir]').css('left',priceCount*(51+offset));
 	var top = CanvasPagePosition.y+CurrentKLObj.getYCoordByPrice(price);
 	wrap.css('top',top);
 }
-//监听MQ, 获取委托挂单
-function tradeInfoPDMQHandler(dt){
-	var wrap = $('.TradeInfoPendingDepute');
-	if(wrap.length == 0) return;
-	var trLen = Number(wrap.attr('trLen'));
-	var index = trLen +1;
-	if(trLen <= 5){
-		tradeInfoPDDataSet(wrap,index,dt);
-	}else{
-		var htmlFrage = "<tr>"+
-				"<td></td>"+
-				"<td></td>"+
-				"<td></td>"+
-				"<td></td>"+
-				"<td></td>"+
-			"</tr>";
-		wrap.append($(htmlFrage));
-		tradeInfoPDDataSet(wrap,index,dt);
-	}
-	wrap.attr('trLen',index);
-	pendingDeputeOrderNotify(dt.dprice,dt.did);
-}
 
-//收到MQ通知, 委托单撤单成功
-function MQRepealPendingDepute(dt){
-	var did = dt.did;
-	var wrap = $('.TradeInfoPendingDepute');
-	if(wrap.length == 0) return;
-	var trList = wrap.find('tr'),trLen = trList.length;
-	for(var i=1;i<trLen;i++){
-		var tr = trList[i];
-		var trDtStr = $(tr).attr('orderData');
-		if(!trDtStr) continue;
-		var trDt = JSON.parse(trDtStr);
-		if(trDt.did == did){
-			$(tr).css('cursor','default');
-			$(tr).css('background-color','white');
-			$(tr).unbind('mouseover');
-			$(tr).unbind('mouseout');
-			$(tr).unbind('dblclick');
-			wrap.attr('trLen',wrap.attr('trLen')-1);
-			//删除挂单虚线
-			var wrap = $('.order-dashed-wrap-'+did);
-			wrap.remove();
-			/*//添加提示
-			pdConvertToOrderTip(trDt);*/
-			$(tr).attr('orderData','');
-			var tds = $(tr).find('td'),tdLen = tds.length;
-			for(var j=0;j<tdLen;j++){
-				var td = tds[j];
-				$(td).html('');
-			}
-		}
-	}
-}
 //撤销委托挂单
 function repealPendingDepute(dt){
+	/*console.log(dt.did);
+	return;*/
+	dt = JSON.parse(dt);
 	var method = 'trade';//方法
 	var data = {
 		"uid":CurrentUserId,
@@ -981,11 +1167,27 @@ function repealPendingDepute(dt){
 	});
 }
 
-//获取历史数据设置挂单
+//获取历史挂单数据
 function tradeInfoPDHandler(data){
 	var wrap = $('.TradeInfoPendingDepute');
 	if(wrap.length == 0) return;
+	var trLen = wrap.attr('trLen');
+	//清空所有内容
+	for(var i=0;i<trLen;i++){
+		var tr = wrap.find('tr').eq(i+1);
+		tr.find('td').html('');
+		tr.unbind('mouseover');
+		tr.unbind('mouseout');
+		tr.unbind('dblclick');
+		tr.css('background-color','white');
+		tr.css('cursor','default');
+	}
+	//隐藏所有黄色虚线
+	$("div[class^=order-dashed-wrap-]").css('display','none');
+	//清空报单价格数组
+	PendingDeputePriceArr.length = 0;
 	var len = data.length;
+	if(len == 0) return;
 	wrap.attr('trLen',len);
 	if(len > 5){//大于5行
 		var htmlFrage = "<tr>"+
@@ -1000,10 +1202,11 @@ function tradeInfoPDHandler(data){
 			wrap.append($(htmlFrage));
 		}
 	}
+	var priceCount = 0;
 	for(var i=0;i<len;i++){
 		var dt=data[i];
+		var price = dt.dprice;
 		var tr = wrap.find('tr').eq(i+1);
-		tr.css('cursor','pointer');
 		tr.bind('mouseover',function(){
 			$(this).css('background-color','#E9EBEE');
 		});
@@ -1013,8 +1216,20 @@ function tradeInfoPDHandler(data){
 		tr.bind('dblclick',function(){
 			repealPendingDepute($(this).attr('orderData'));
 		})
+		//if(i != 0) offset +=5;
+		if(PendingDeputePriceArr.length == 0){
+			PendingDeputePriceArr.push(price);
+		}else{
+			//判断是否已经有此价格
+			priceCount = PendingDeputePriceArr.containEleCount(price);
+			PendingDeputePriceArr.push(price);
+		}
+		//添加黄色虚线
+		pendingDeputeOrderNotify(dt,priceCount);
+		//console.log(dt.did);
 		tr.attr('orderData',JSON.stringify(dt));
 		tr.css('background-color','#FFE7E7');
+		tr.css('cursor','pointer');
 		tr.find('td:first-child').html(dt.iid);
 		tr.find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
 		tr.find('td:nth-child(3)').html(dt.co==0?'开':'平');
@@ -1050,9 +1265,10 @@ function getTradeInfoPendingDepute(){
 			var state = data.rc;
 			console.log('get pending depute');
 			console.log(data);
+			PendingDeputeInitFinish=true;
 			if(state === 0){
 				var res=data.res,dt=res.data;
-				if(!dt || dt.length == 0) return;
+				if(!dt) return;
 				tradeInfoPDHandler(dt);
 			}
 		},
@@ -1340,4 +1556,66 @@ function remodalConditionPriceClick(div,type){
 	}else if(type == 'down'){
 		input.val(Number(input.val())-1);
 	}
+}
+function refreshTradeMPHandler(dt){
+	var shortCutWrap = $('.TradeInfo_MP');
+	var trList = shortCutWrap.find('tr'),trLen=trList.length;
+	for(var i=1;i<trLen;i++){
+		var tr=trList.eq(i);
+		var trDt = tr.attr('trDt');
+		if(!trDt) continue;
+		trDt = JSON.parse(trDt);
+		//if(trDt.iid == dt.iid && )
+	}
+}
+
+//账户资金不足
+function accountCapitalNotEnough(){
+	alert("账户资金不足");
+}
+//切换合约
+function orderInstrumentSwitch(select){
+	console.log(select.value);
+	//设置当前合约
+	CurrentInstrumentID = select.value;
+	//停止K线和盘口数据的订阅
+	KLWSSubscribe.unsubscribe();
+	TapWSSubscribe.unsubscribe();
+	//下单器界面设置
+	var instru = RoomInstrumentListInfo[CurrentInstrumentID];
+	var price = instru.price;
+	//价格
+	var priceWrap = $('.KL_OM_Price_Number');
+	priceWrap.find('input').val(price);
+	//买卖						
+	var orderMangerWrap = $('.KL_OrderManager_SecondWrap');
+	var dirDivs = orderMangerWrap.find('div[name=order_mana_dir]');
+	for(var i=0;i<dirDivs.length;i++){
+		var dirDiv = dirDivs.eq(i);
+		if(dirDiv.attr('value') == 0){
+			OMBuySellOpenCloseMouseDown(dirDiv[0],'buy')
+		}
+	}
+	//开平
+	var coDivs = orderMangerWrap.find('div[name=order_mana_co]');
+	for(var i=0;i<coDivs.length;i++){
+		var coDiv = coDivs.eq(i);
+		if(coDiv.attr('value') == 0){
+			OMBuySellOpenCloseMouseDown(coDiv[0],'open')
+		}
+	}
+	//手数
+	calcOpenVolumeFn();
+	//隐藏实时K线价格提示框
+	$('div[class^=KL_Y_Axis_Last_Price_Tip]').hide();
+	
+	//加载K线数据
+	loadHisKLineData(CurrentKLInterval);
+	//获取盘口数据
+	getTapeInfo();
+	//加载委托挂单, 持仓数据
+	//委托挂单
+	getTradeInfoPendingDepute();
+/*	//持仓信息
+	getTradeInfoMP();*/
 }

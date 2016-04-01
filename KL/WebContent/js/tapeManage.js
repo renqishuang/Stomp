@@ -174,9 +174,9 @@ function setTradeInfo(data){
 			$(li).find('span:nth-last-child(2)').html(data.offsetprofit);
 		}else if(value == 'floatprofit'){
 			if(data.floatprofit >= 0){
-				$(li).find('span:nth-last-child(2)').css('color','red');
+				$(li).find('span:nth-last-child(2)').css('color','#E60302');
 			}else{
-				$(li).find('span:nth-last-child(2)').css('color','green');
+				$(li).find('span:nth-last-child(2)').css('color','#06E65A');
 			}
 			$(li).find('span:nth-last-child(2)').html(data.floatprofit);
 		}
@@ -255,9 +255,9 @@ function getTapeInfo() {
 		timeout : AjaxTimeOut, // 设置超时5秒钟
 		success : function(data) {
 			var state = data.rc;
+			console.log("get Tage data");
+			console.log(data);
 			if(state === 0){
-				//console.log("get Tage data");
-				//console.log(data.res);
 				var res = data.res;
 				//标识昨结价
 				window.CurrentPresettlement= res.presettlement;
@@ -265,15 +265,16 @@ function getTapeInfo() {
 				//console.log(CurrentPresettlement);
 				//LoadTapeFinish = true;//标识历史数据加载完成
 				setTapeInfo(res);
+				if(TapWSSubscribe) TapWSSubscribe.unsubscribe();
 				//监听盘口数据
-				var MQTapeSub = KLWSClient.subscribe('/topic/'+CurrentInstrumentID+'_TAPE',function(message){
+				TapWSSubscribe = KLWSClient.subscribe('/topic/'+CurrentInstrumentID+'_TAPE',function(message){
 					//console.log("盘口数据");
-					var tempData = message.body;
-					//return;
-					//console.log(JSON.parse(tempData));
-					TapeOneViewerHandler(JSON.parse(tempData));
-					TapeTwoViewerHandler(JSON.parse(tempData));
-					TapeThreeViewerHandler(JSON.parse(tempData));
+					var tempData = JSON.parse(message.body);
+					if(tempData.instrumentid == CurrentInstrumentID){
+						TapeOneViewerHandler(tempData);
+						TapeTwoViewerHandler(tempData);
+						TapeThreeViewerHandler(tempData);
+					}
 				});
 			}
 		},

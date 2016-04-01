@@ -69,6 +69,7 @@ crossLines.prototype = {
             hLine = document.createElement('DIV');
             hLine.id = horizontalDivId;
         }
+        hLine.style.cssText='pointer-events:none;';
         hLine.style.display = 'block';
         hLine.style.position = 'absolute';
         hLine.style.width = Math.round(horizontalRange.x2 - horizontalRange.x1) + 'px';
@@ -98,8 +99,8 @@ crossLines.prototype = {
             vLine = document.createElement('DIV');
             vLine.id = verticalDivId;
         }
-
-
+        
+        vLine.style.cssText='pointer-events:none;';
         vLine.style.display = 'block';
         vLine.style.position = 'absolute';
         vLine.style.height = Math.round(vertialRange.y2 - vertialRange.y1) + 'px';

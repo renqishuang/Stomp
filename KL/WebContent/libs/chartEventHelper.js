@@ -79,6 +79,7 @@ crossLinesAndTipMgr.prototype._onMouseOrTouchMove = function (ev) {
             var translatedEv = { offsetX: evHLine.offsetX + range.x, offsetY: parseInt(me.clsMgr.getHLine().style.top) - canvasPosition.y };
             var point = options.getCrossPoint(translatedEv);
             clsMgr.updateCrossPoint(point);
+            //console.log('ssssssssssss');
             if (me.tip) {
                 me.tip.update(point, options.tipOptions.getTipHtml(translatedEv));
             }
@@ -112,7 +113,11 @@ crossLinesAndTipMgr.prototype._onMouseOrTouchMove = function (ev) {
                 canvas: canvas,
                 canvasRange: options.triggerEventRanges,
                 innerHTML: tipOp.getTipHtml(ev),
-                hideYPriceTip: tipOp.hideYPriceTip
+                hideYPriceTip: tipOp.hideYPriceTip,
+                hideTradePointerTip:tipOp.hideTradePointerTip,
+                hasTradePointerFn:tipOp.hasTradePointerFn,
+                tradePointerOp:tipOp.tradePointerOp,
+                showTradePointerTip:tipOp.showTradePointerTip
             });
             me.tip = tip;
         }

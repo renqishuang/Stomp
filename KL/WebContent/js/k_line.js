@@ -40,6 +40,7 @@ function kLine(options) {
 kLine.prototype = {
     initialize: function (painter) {
     	this.candleMinHeight = 3;//蜡烛的默认最小高度
+    	this.currentTradePoint = [];
         painter.klOptions = this.options;
         painter.implement = this;
     },
@@ -55,6 +56,11 @@ kLine.prototype = {
     		decimalNum = 2;
     	}
     },
+    //获取KL Tip对象
+    getKLTipObj:function(){
+    	var klTipObj = $("#canvasKL_tip");
+    	return klTipObj;
+    },
     
     //添加一跟K线图
     addCandleToKL:function(item){
@@ -66,7 +72,7 @@ kLine.prototype = {
     //修改全局KL数据的最后一条数据
     updateGlobalKLLastDt:function(item){
     	for(var s in GlobalKLData.ks[GlobalKLData.ks.length-1]){
-    		if(s == 'KLIndex') continue;
+    		if(s == 'KLIndex' || s == 'tradeDt') continue;
     		GlobalKLData.ks[GlobalKLData.ks.length-1][s] = item[s];
     	}
     	//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;
@@ -112,6 +118,72 @@ kLine.prototype = {
     	$('.KL_Y_Axis_Price_Tip_Right').hide();
     },
     
+    //展示交易点提示框
+    showTradePointerTip:function(x,direct){
+    	var data = this.currentTradePoint;
+    	if(data.length ==0 ) return;
+    	var option = this.options;
+    	var tradePointer = option.tradePointer;
+    	var tipWidth = tradePointer.tipWidth;
+    	var tipOffset = tradePointer.tipOffset;
+    	var len = data.length;
+    	var yOffset = CanvasPagePosition.y+20;
+    	for(var i=0;i<len;i++){
+    		var top = yOffset+i*50;
+    		var dt=data[i];
+    		var co=dt.co,dir=dt.dir,price=dt.price,otime=dt.otime,vol=dt.vol,did=dt.did;
+        	var tradeTipClass='KL_Trade_Tip_Wrap'+did;
+        	var offset = 6;
+        	var htmlFrag = "<div class='"+tradeTipClass+"'>"+
+    							"<span value='img'></span>"+
+    							"<div>"+
+    								"<span value='codir'></span>"+
+    								"<span value='price'></span>"+
+    								"<div value='otime'></div>"+
+    							"</div>"+
+    							"<span value='vol'></span>"+
+    						"</div>";
+        	var tradeTip = $('.'+tradeTipClass);
+        	if(tradeTip.length == 0){
+        		$('body').append($(htmlFrag));
+        	}
+        	tradeTip.show();
+        	tradeTip.css('top',top);
+        	var xOffset = CanvasPagePosition.x+this.getX(x)+tipOffset;
+        	if(direct == 'left'){
+        		xOffset = CanvasPagePosition.x+this.getX(x)-tipOffset-tipWidth;
+        	}
+        	tradeTip.css('left',xOffset);
+        	//设置数据
+        	var color,dirStr,image;
+        	var coStr = co==0?'开':'平';
+        	var dirStr = dir==0?'多':'空';
+        	if(dir == 0){//买
+        		color='#E60302';
+        		dirStr = '多';
+        		image = 'url(images/trade-pointer-duokai.png)';
+        		if(co == 1) image = 'url(images/trade-pointer-duoping.png)';
+        	}else{
+        		color='#06E65A';
+        		dirStr = '空';
+        		image = 'url(images/trade-pointer-kongkai.png)';
+        		if(co == 1) image = 'url(images/trade-pointer-kongping.png)';
+        	}
+        	tradeTip.find('span[value=img]').css('background-image',image);
+        	tradeTip.find('span[value=codir]').css('color',color);
+        	tradeTip.find('span[value=codir]').html(dirStr+coStr);
+        	tradeTip.find('span[value=price]').css('color',color);
+        	tradeTip.find('span[value=price]').html(price);
+        	tradeTip.find('span[value=vol]').html(vol+'手');
+        	tradeTip.find('div[value=otime]').html(msecondConvertToDate(otime));
+    	}
+    },
+    
+    //隐藏交易点图标
+    hideTradePointerTip:function(){
+    	$('div[class^=KL_Trade_Tip_Wrap]').hide();
+    },
+    
     //根据X坐标获取蜡烛的索引,并获取数据, 显示到Tip里面
     getTipHtml: function(x,y){
     	var yPrice = this.getPriceByYCoord(y).toFixed(CurrentInstrumentDigits);
@@ -123,6 +195,25 @@ kLine.prototype = {
         if (index < 0) index = 0;
         var ki = data.ks[index];
         if(!ki) return;
+        //判断当前K线
+        if(!CurrentKLXIndex){
+        	CurrentKLXIndex = this.getIndex(x);
+        }else{
+        	if(CurrentKLXIndex != this.getIndex(x)){
+        		this.hideTradePointerTip();
+        		CurrentKLXIndex = this.getIndex(x);
+        	}
+        }
+        this.currentTradePoint = ki.tradeDt
+        //判断是否有交易点
+        if(ki.tradeDt.length != 0){
+        	//console.log('交易点个数: '+ki.tradeDt.length);
+        	KLHasTradePointer = true;
+        	//this.showTradePointerTip(ki.tradeDt,x);
+        }else{
+        	KLHasTradePointer = false;
+        	this.hideTradePointerTip();
+        }
         var redImage = 'images/hongseshangjiantou.png';
         var greenImage = 'images/lvsexiajiantou.png';
         var priceSrc,volumeSrc,openinterestSrc,
@@ -280,6 +371,45 @@ kLine.prototype = {
     	//console.log("offset x for x: "+result);
         return result;
     },
+    showLastPriceTip:function(item){
+    	var color='#06E65A';
+    	var closechg = item.closechg;
+    	if(closechg > 0) color='#E60302';
+    	var yPrice = item.close.toFixed(CurrentInstrumentDigits);
+    	var y = this.getYCoordByPriceForUp(yPrice);
+    	//getYCoordByPriceForUp
+    	var leftClass = 'KL_Y_Axis_Last_Price_Tip_Left';
+    	var rightClass = 'KL_Y_Axis_Last_Price_Tip_Right';
+    	var leftFrag = '<div class="'+leftClass+'"></div>';
+    	var rightFrag = '<div class="'+rightClass+'"></div>';
+    	var leftWrap = $('.'+leftClass);
+    	var rightWrap = $('.'+rightClass);
+    	if(leftWrap.length == 0){
+    		$('body').append($(leftFrag));
+    	}
+    	if(rightWrap.length == 0){
+    		$('body').append($(rightFrag));
+    	}
+    	if(leftWrap.is(':hidden')){
+    		leftWrap.show();
+    	}
+    	if(rightWrap.is(':hidden')){
+    		rightWrap.show();
+    	}
+    	leftWrap.css('top',CanvasPagePosition.y+y);
+    	leftWrap.css('left',
+    			CanvasPagePosition.x);
+    	
+    	rightWrap.css('top',CanvasPagePosition.y+y);
+    	rightWrap.css('left',
+    			CanvasPagePosition.x+GlobalKLOptionObj.region.width+GlobalKLOptionObj.region.x);
+    	
+    	leftWrap.css('background-color',color);
+    	rightWrap.css('background-color',color);
+    	leftWrap.html(yPrice);
+    	rightWrap.html(yPrice);
+    },
+    
     //更新一跟K线图
     updateKLOnCandle:function(item,updateType){
     	if(!LoadKLineDataFinish) return;
@@ -294,6 +424,8 @@ kLine.prototype = {
     	var region = options.region;
 		var candleIndex = this.getIndexForLastCandle();
 		//console.log("最后的索引"+candleIndex);
+		//显示最新价格
+		this.showLastPriceTip(item);
 		this.drawCandleHandler(item,candleIndex,updateType);
 		//如果Tip正在当前蜡烛上面显示,更新Tip显示内容
 		var tip = document.getElementById("canvasKL_tip");
@@ -482,13 +614,20 @@ kLine.prototype = {
                 position:{x:false,y:region.y}, //position中的值是相对于canvas的左上角的
                 opacity:80,
                 cssClass:'',
-                offsetToPoint:10,
+                offsetToPoint:4,
                 hideYPriceTip:function(){
                 	me.hideKLPriceTip();
+                },
+                hideTradePointerTip:function(){
+                	me.hideTradePointerTip();
+                },
+                tradePointerOp:options.tradePointer,
+                showTradePointerTip:function(x,direct){
+                	me.showTradePointerTip(x,direct);
                 }
             },
             crossLineOptions: {
-                color: 'white'
+                color: '#7F7C77'
             }
         };
         if(!me.crossLineAndTipMgrInstance){//创建交叉线及Tip实例对象
@@ -685,6 +824,56 @@ kLine.prototype = {
             ctx.moveTo(lineX, topY);
             ctx.lineTo(lineX, bottomY);
             ctx.stroke();
+        }
+        //画交易点
+        var dt = ki.tradeDt,tradeLen=dt.length;
+        if(tradeLen != 0){
+        	for(var i=0;i<tradeLen;i++){
+        		var tempDt = dt[i];
+        		var otime = tempDt.otime,
+        		dir = tempDt.dir,
+        		co = tempDt.co,
+        		vol = tempDt.vol,
+        		iid = tempDt.iid,
+        		price = tempDt.price;
+        		var x = lineX+CanvasPagePosition.x+region.x-5;
+        		var y = this.getYCoordByPrice(price)+CanvasPagePosition.y-5;
+				var topY = this.getYCoordByPrice(ki.high)+CanvasPagePosition.y-5;
+		        var bottomY = this.getYCoordByPrice(ki.low)+CanvasPagePosition.y-5;
+		        var tradeDefaultPointer = 'trade-pointer-wrap-'+otime;
+		        var defaultFrag = "<div class='"+tradeDefaultPointer+"'></div>";
+		        if($('.'+tradeDefaultPointer).length == 0) $('body').append($(defaultFrag));
+		        //console.log($('.'+tradeDefaultPointer));
+		        $('.'+tradeDefaultPointer).css('background-image','url(images/xinhaodianheise.png)');
+		        $('.'+tradeDefaultPointer).css('top',y);
+		        $('.'+tradeDefaultPointer).css('left',x);
+		        var tradeCOPointer = 'trade-pointer-wrap-'+otime+co;
+		        var COPointerFrag = "<div class='"+tradeCOPointer+"'></div>";
+		        if($('.'+tradeCOPointer).length == 0) $('body').append($(COPointerFrag));
+		        if(co == 0){//开仓
+		        	//多开空平在下
+		        	var openPointerImage = 'url(images/trade-pointer-duokai.png)';
+		        	var tempY = bottomY;
+		        	if(dir == 1) {
+		        		openPointerImage = 'url(images/trade-pointer-kongkai.png)';
+		        		tempY = topY;
+		        	}
+		        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
+			        $('.'+tradeCOPointer).css('top',tempY);
+			        $('.'+tradeCOPointer).css('left',x);
+		        }else if(co == 1){//平仓
+		        	//空开多平在上
+		        	var closePointerImage = 'url(images/trade-pointer-duoping.png)';
+		        	var tempY = topY
+		        	if(dir == 1){
+		        		openPointerImage = 'url(images/trade-pointer-kongping.png)';
+		        		tempY = bottomY;
+		        	} 
+		        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
+			        $('.'+tradeCOPointer).css('top',tempY);
+			        $('.'+tradeCOPointer).css('left',x);
+		        }
+        	}
         }
     },
     
@@ -1123,7 +1312,7 @@ function drawKL(height) {
 	        priceSameHeight:1,//高开低收价格一样时的高度
 	        //主图区域的边距
 	        chartMargin:{left:45,top:5,right:0},
-	        region: { x: 55, y: 5, width: initialWidth - 55 - 55, height: ht},
+	        region: { x: 55, y: 5, width: initialWidth - 55, height: ht},
 	        barWidth: CurrentBarWidth, spaceWidth: CurrentSpaceWidth, horizontalLineCount: 10, verticalLineCount: 7, lineStyle: 'solid', borderColor: 'gray', splitLineColor: '#252A31', lineWidth: 1,
 	        MAs: [
 	            { color: '#0063CD', daysCount: 5 },
@@ -1145,6 +1334,10 @@ function drawKL(height) {
 	            fontHeight: 8,
 	            textBaseline: 'top',
 	            scalerCount: 9
+	        },
+	        tradePointer:{
+	        	tipWidth:152, //交易点Tip宽度
+	        	tipOffset:4 //交易点Tip与Y线的偏移量
 	        },
 	        volume: {
 	            region: { x: 45.5, y: 290.5, height: 80, width: initialWidth - 45.5 - 20.5 },
