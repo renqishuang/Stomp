@@ -345,10 +345,16 @@ function calcOpenVolumeFn(){
 		volmul = instruInfo.volmul,
 		deprate = instruInfo.deprate;
 	var priceWrap = $('.KL_OM_Price_Number'),
-		price = priceWrap.find('input').val();
-	var maxVol = parseInt(AvalibleAmount / (price*volmul*deprate));
+		price = Number(priceWrap.find('input').val());
+	var divisor = price*volmul*deprate;
 	var volWrap = $('.KL_OM_Volume_Number');
 	var spanVolWrap = volWrap.prev();
+	if(divisor == 0){
+		spanVolWrap.html(0);
+		volWrap.find('input').val(0);
+		return;
+	}
+	var maxVol = parseInt(AvalibleAmount / divisor);
 	spanVolWrap.html(maxVol);
 	volWrap.find('input').val(maxVol);
 }
@@ -636,11 +642,16 @@ function tradeInfoMPTrHandler(tr){
 	console.log('click');
 	var wrap = $('.KL_OrderManager_SecondWrap');
 	if(wrap.length == 0) return;
-	//触发买卖
 	var dir = trDt.dir,
-		dirValue = dir==0?'1':'0',
-		dirStr = dir==0?'sell':'buy',
-		dirDiv = wrap.find('>div:nth-child(2)').find('div[value='+dirValue+']');
+	dirValue = dir==0?'1':'0',
+	dirStr = dir==0?'sell':'buy',
+	dirDiv = wrap.find('>div:nth-child(2)').find('div[value='+dirValue+']'),
+	iid = trDt.iid;
+	//设置合约
+	var selectWrap = wrap.find('select');
+	selectWrap.val(iid);
+	orderInstrumentSwitch(selectWrap[0])
+	//触发买卖
 	OMBuySellOpenCloseMouseDown(dirDiv[0],dirStr);
 	var coDiv = wrap.find('>div:nth-child(3)').find('div[value=1]');
 	//触发开平
@@ -1095,7 +1106,7 @@ function pendingDeputeOrderNotify(dt,priceCount){
 	if($('.'+dashClass).length == 0){
 		$('body').append($(pendingDeputeFrag));
 	}
-	$('.'+dashClass).css('display','block');
+	$('.'+dashClass).show();
 	if(co == 1){//平仓
 		if(dir == 0){//
 			image = 'kongping';
@@ -1183,7 +1194,7 @@ function tradeInfoPDHandler(data){
 		tr.css('cursor','default');
 	}
 	//隐藏所有黄色虚线
-	$("div[class^=order-dashed-wrap-]").css('display','none');
+	$("div[class^=order-dashed-wrap-]").hide();
 	//清空报单价格数组
 	PendingDeputePriceArr.length = 0;
 	var len = data.length;
@@ -1584,6 +1595,7 @@ function orderInstrumentSwitch(select){
 	//下单器界面设置
 	var instru = RoomInstrumentListInfo[CurrentInstrumentID];
 	var price = instru.price;
+	CurrentInstrumentDigits = instru.digits;
 	//价格
 	var priceWrap = $('.KL_OM_Price_Number');
 	priceWrap.find('input').val(price);
@@ -1608,14 +1620,10 @@ function orderInstrumentSwitch(select){
 	calcOpenVolumeFn();
 	//隐藏实时K线价格提示框
 	$('div[class^=KL_Y_Axis_Last_Price_Tip]').hide();
-	
+	//设置切换合约加载K线标记为true
+	SwitchInstruLoadKL = true;
 	//加载K线数据
 	loadHisKLineData(CurrentKLInterval);
 	//获取盘口数据
 	getTapeInfo();
-	//加载委托挂单, 持仓数据
-	//委托挂单
-	getTradeInfoPendingDepute();
-/*	//持仓信息
-	getTradeInfoMP();*/
 }

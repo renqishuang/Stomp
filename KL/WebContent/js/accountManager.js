@@ -133,6 +133,18 @@ function getAccountInfo(){
 						}else if(returnCode == 11){
 							alert('下单价格超过价格变动幅度限制');
 						}
+					}else if(actionType == 7){//添加合约
+						console.log('添加合约成功');
+						console.log(tempData);
+						var iid = tempData.iid,
+							iname = tempData.iname,
+							step = tempData.step,
+							price = tempData.price,
+							volmul = tempData.volmul,
+							deprate = tempData.deprate;
+					}else if(actionType == 8){//删除合约
+						console.log('删除合约成功');
+						console.log(tempData);
 					}
 				});
 			}

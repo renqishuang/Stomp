@@ -19,7 +19,7 @@ window.CurrentUserId=12583;
 window.CurrentLC='ea46bff33476133b71a17210bcd2b28e';
 window.CurrentRMC=8514;
 
-window.KLWebSocketUrl='ws://mq1.zlw.com:61634';
+/*window.KLWebSocketUrl='ws://mq1.zlw.com:61634';
 window.TradeWebSocketUrl='ws://mq1.zlw.com:61633';
 window.WebServiceStrageUrl = 'http://kline1.zlw.com:8080/axis2/services/StrategyEngine?wsdl';
 window.WebServiceTradeUrl = 'http://simtradesvc.zlw.com:8888/axis2/services/SimTrade?wsdl';
@@ -27,7 +27,7 @@ window.CurrentAccountID = 18349;
 window.CurrentRoomID=17384;
 window.CurrentUserId=348517;
 window.CurrentLC='4eed4aa58024f9c608cc72ff8d37d4bf';
-window.CurrentRMC=68300;
+window.CurrentRMC=68300;*/
 
 window.CurrentInstrumentID = 'TF1606';//当前合约
 window.CurrentInstrumentDigits = 0;//价格后保留小数位数
@@ -54,3 +54,5 @@ window.KLHasTradePointer = false;//当前K线是否有交易点
 window.CurrentKLXIndex=null;//标记当前鼠标所在K线的X索引(在整个屏幕K线范围内 0 ~ 屏幕显示K线最大值)
 window.PendingDeputeInitFinish = false;//标识委托单是否初始化完成
 window.PendingDeputePriceArr=[];//存储委托挂单的报单价格
+window.SwitchInstruLoadKL= false; //是否是切换合约, 加载K线数据
+window.MarketInfoObj={};//存储市场行情

@@ -64,6 +64,7 @@ function roomInstrumentSet(dt){
 	var iidArr = [];
 	for(var i=0;i<len;i++){
 		var iid = dt[i].iid;
+		var iname = dt[i].iname;
 		var htmlFrag='';
 		/*if(iid == 'IF1603') continue;*/
 		iidArr.push(iid);
@@ -105,6 +106,31 @@ function roomInstrumentSet(dt){
 			htmlFrag = "<option value='"+iid+"'>"+iid+"</option>";
 		}
 		selectObj.append($(htmlFrag));
+		//在添加合约界面显示所有合约
+		var addInstruWrap = $('.KL_Instrument_Wrap');
+		var addInstruBg = 'url(images/dingbumorenjiaoyi.png)';
+		var isSelect = false;
+		var pricecolor = '#06E65A';
+		var li = addInstruWrap.find('li').eq(i);
+		if(i == 0) {
+			addInstruBg = 'url(images/dingbuxuanzhongjiaoyi.png)';
+			isSelect = true;
+			pricecolor='#E60302';
+			var textWrap = li.find('span[name=instru_text_bg]');
+			textWrap.css('background-image','url(images/heyueItemtxt_bg.png)');
+			textWrap.css('color','white');
+		}
+		var inameSpan = li.find('span[name=instru_name]');
+		inameSpan.html(iname);
+		var iidSpan = li.find('span[name=instru_id]');
+		iidSpan.html(iid);
+		li.css('background-image',addInstruBg);
+		li.attr('hasInstru',true);
+		li.attr('isSelect',isSelect);
+		li.attr('value',iid);
+		var priceSpan = li.find('span[name=instru_price]');
+		priceSpan.html(price);
+		priceSpan.css('color',pricecolor);
 	}
 	if(iidArr.length != 0){
 		//房-间合约集合信息

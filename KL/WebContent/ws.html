@@ -69,7 +69,7 @@
                 <div class="control-group">
                   <label>Destination</label>
                   <div class="controls">
-                    <input id='destination' placeholder="Destination" value="/topic/18940" type="text">
+                    <input id='destination' placeholder="Destination" value="/topic/18349" type="text">
                   </div>
                 </div>
                 <div class="form-actions">
@@ -112,7 +112,13 @@
           var login = $("#connect_login").val();
           var passcode = $("#connect_passcode").val();
           destination = $("#destination").val();
-
+		  
+          //url='ws://192.168.1.188:61610';
+          url ='ws://192.168.1.188:61625';
+          //url ='ws://mq1.zlw.com:61633';
+          destination='3179';
+          //destination='MA605_60';
+          //destination='18940';
           client = Stomp.client(url);
 
           // this allows to display debug logs directly on the web page

@@ -52,6 +52,42 @@ a:focus { outline: none; }
     background-repeat:no-repeat;
     background-size:100% 100%;
     cursor:pointer;
+    position:relative;
+}
+.KL_Instrument_Wrap span[name=instru_name],
+.KL_Instrument_Wrap span[name=instru_id]{
+	
+}
+.KL_Instrument_Wrap span[name=instru_text_bg]{
+	font-size: 15px;
+    margin-top: 18px;
+    display: inline-block;
+    margin-left: 25px;
+    font-weight: bold;
+	background-repeat:no-repeat;
+	background-size: 100% 100%;
+	background-position:center;
+    padding: 2px 10px 2px 10px;
+}
+.KL_Instrument_Wrap span[name=instru_id]{
+	margin-left: 6px;
+}
+.KL_Instrument_Wrap span[name=instru_price]{
+	font-size: 15px;
+	display: inline-block;
+	font-weight: bold;
+	top:18px;
+	right:8px;
+	position:absolute;
+}
+.KL_Instrument_Wrap span[name=instru_del]{
+	position:absolute;
+	width:7px;
+	height:8px;
+	top:6px;
+	right:6px;
+	display:none;
+	background-image:url(../images/close_btn.png);
 }
 .KL_MainView_Wrap{
 	float:left;
@@ -982,6 +1018,12 @@ div[class^=trade-pointer-wrap]{
     font-size: 18px;
     color: white;
 }
+.remodal-notification{
+	height: 100%;
+    line-height: 147px;
+    font-size: 18px;
+    color: white;
+}
 div[class^=KL_Y_Axis_Price_Tip],
 div[class^=KL_Y_Axis_Last_Price_Tip]{
 	position:absolute;
@@ -1119,4 +1161,51 @@ div[class^=KL_Trade_Tip_Wrap] span[value=price]{
 div[class^=KL_Trade_Tip_Wrap] div[value=otime]{
 	color: #A6A7A9;
 	margin-top: -2px;
+}
+.remodal-add-instru-wrap{
+	text-align:center;
+	height: 100%;
+	padding-top: 15px;
+}
+.remodal-add-instru-wrap span[name=exchange],
+.remodal-add-instru-wrap span[name=product],
+.remodal-add-instru-wrap span[name=instrument]{
+	display:inline-block;
+	width:104px;
+	height:29px;
+	background-image:url(../images/contractsel_bg.png);
+	background-repeat:no-repeat;
+	background-size:100% 100%;
+	position:relative;
+	color:#507BE7;
+	line-height: 29px;
+	text-align: left;
+    padding-left: 6px;
+    margin-right: 5px;
+    cursor:pointer
+}
+.remodal-add-instru-wrap span[name=combox-btn]{
+	width:13px;
+	height:7px;
+	background-image:url(../images/indicatrixComboxBtn_normal.png);
+	display:inline-block;
+	background-repeat:no-repeat;
+	position:absolute;
+	top: 10px;
+    right: 11px;
+}
+div[class^=remodal-add-instru-select] li{
+	width: 100px;
+    height: 36px;
+    line-height: 36px;
+    padding-left: 10px;
+    border-bottom: 1px solid #74808E;
+    background-color: #4E5358;
+    color: white;
+    font-weight: bold;
+}
+div[class^=remodal-add-instru-select]{
+	position:absolute;
+	top:30px;
+	left:0px;
 }

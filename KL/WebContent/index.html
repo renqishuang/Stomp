@@ -13,14 +13,14 @@
      	<!--合约选择区域  height:90px;--> 
      	<div class='KL_Instrument_Wrap'>
      		<ul>
-     			<li onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"></li>
-     			<li onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"></li>
-     			<li onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"></li>
-     			<li onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"></li>
-     			<li onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"></li>
-     			<li onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"></li>
-     			<li onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"></li>
-     			<li onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"></li>
+     			<li value='' name='addInstrumentOne' onclick="KLAddInstruMouseDown(this)" onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>
+     			<li value='' name='addInstrumentOne' onclick="KLAddInstruMouseDown(this)" onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>
+     			<li value='' name='addInstrumentOne' onclick="KLAddInstruMouseDown(this)" onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>
+     			<li value='' name='addInstrumentOne' onclick="KLAddInstruMouseDown(this)" onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>
+     			<li value='' name='addInstrumentOne' onclick="KLAddInstruMouseDown(this)" onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>
+     			<li value='' name='addInstrumentOne' onclick="KLAddInstruMouseDown(this)" onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>
+     			<li value='' name='addInstrumentOne' onclick="KLAddInstruMouseDown(this)" onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>
+     			<li value='' name='addInstrumentOne' onclick="KLAddInstruMouseDown(this)" onmouseover="KLAddInstruMouseOver(this)" onmouseout="KLAddInstruMouseOut(this)"><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>
      		</ul>
      	</div>
      	<!--K线主区域   #191F26-->
@@ -701,36 +701,10 @@
 	  <div class='remodal-title'>下单提示</div>
 	  <div data-remodal-action="close" class='remodal-close'></div>
 	  <div class='remodal-content'>
-	  	   <div class='remodal-condition-order-wrap'>
-	  	   	   <div>当行情满足以下条件时:</div>
-	  	   	   <div>
-	  	   	   		<font>当最新价</font>
-	  	   	   		<select>
-		  	   	   		<option value='dayu'>&gt;</option>
-		  	   	   		<option value='dayudengyu'>&gt;=</option>
-		  	   	   		<option value='xiaoyu'>&lt;</option>
-		  	   	   		<option value='xiaoyudengyu'>&lt;=</option>
-		  	   	   </select>
-		  	   	   <div class='remodal-condition-price'>
-		  	   	   		<input>
-		  	   	   		<div>
-		  	   	   			<div onclick="remodalConditionPriceClick(this,'up')" onmouseover="remodalConditionPriceOver(this,'up')" onmouseout="remodalConditionPriceOut(this,'up')"></div>
-		  	   	   			<div onclick="remodalConditionPriceClick(this,'down')" onmouseover="remodalConditionPriceOver(this,'down')" onmouseout="remodalConditionPriceOut(this,'down')"></div>
-		  	   	   		</div>
-		  	   	   </div>
-		  	   	   <font>时</font>
-	  	   	   </div>
-	  	   	    <div>
-	  	   	    	<span>按</span>
-	  	   	    	<span value='price'>1927</span>
-	  	   	    	<span>价格</span>
-	  	   	    	<span>,</span>
-	  	   	    	<span value='dir'>卖</span>
-	  	   	    	<span value='iid'>MA605</span>
-	  	   	    	<span value='co'>平仓</span>
-	  	   	    	<span value='vol'>38</span>
-	  	   	    	<span>手</span>
-	  	   	    </div>
+	  	   <div class='remodal-add-instru-wrap'>
+	  	   	   <span name='exchange'><span name='combox-btn'></span></span>
+	  	   	   <span name='product'><span name='combox-btn'></span></span>
+	  	   	   <span name='instrument'><span name='combox-btn'></span></span>
 	  	   </div>
 	  </div>
 	  <span data-remodal-action="cancel" class="remodal-confirm"></span>
@@ -747,7 +721,15 @@
 		<span>手</span>
 		<span value='time'>11:26:20</span>
 	</div> -->
-	<!-- <div class='remodal-open'>测试弹出框</div> -->
+	<div onclick="" class='remodal-open'>测试弹出框</div>
+	<!-- <div class='remodal-add-instru-select-exchange'>
+		<ul>
+			<li onmouseover='selectExchangeMouseOver(this)' onmouseout='selectExchangeMouseOut(this)'>郑州</li>
+			<li onmouseover='selectExchangeMouseOver(this)' onmouseout='selectExchangeMouseOut(this)'>上海</li>
+			<li onmouseover='selectExchangeMouseOver(this)' onmouseout='selectExchangeMouseOut(this)'>中金所</li>
+			<li onmouseover='selectExchangeMouseOver(this)' onmouseout='selectExchangeMouseOut(this)'>大连</li>
+		</ul>
+	</div> -->
 	<!-- <div class='order-dashed-wrap-123456'>
 		<span name='codir'></span>
 		<span name='price'></span>
@@ -758,8 +740,6 @@
     <script src='js/commonTool.js'></script>
     <script src="libs/loading.js" ></script>
     <script src="libs/util.js" ></script>
-    <script src="js/remodal.js"></script>
-    <script src='js/remodalEventHandler.js'></script>
     <script src="libs/absPainter.js" ></script>
     <script src="libs/ajax.js"  ></script>
     <script src="libs/crossLines.js"  ></script>
@@ -777,6 +757,8 @@
     <script src='js/accountManager.js'></script>
     <script src='js/orderManager.js'></script>
     <script src='js/instrument.js'></script>
+    <script src="js/remodal.js"></script>
+    <script src='js/remodalEventHandler.js'></script>
     <script src='js/initHandler.js'></script>
   </body>
 </html>

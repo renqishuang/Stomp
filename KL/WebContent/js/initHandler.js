@@ -1,20 +1,8 @@
 function afterInitSysInfo(){
-	/*//委托挂单
-	getTradeInfoPendingDepute();
-	//持仓信息
-	getTradeInfoMP();*/
-	
 	//获取盘口数据
 	getTapeInfo();
 	//获取交易数据
 	getTradeInfoInstStat();
-	
-	/*//当日委托
-	getTradeInfoAllDepute();
-	//当日成交
-	getTradeInfoAllOrder();
-	//条件单查询
-	getTradeInfoConOrder();*/
 }
 
 $(document).ready(function() {

@@ -54,6 +54,10 @@ function KLSubscribeHandler(dt){
 			inputEl = priceWrap.find('input');
 		inputEl.val((item.close).toFixed(digits));
 	}
+	//更新添加合约界面,对应合约的价格
+	var addInstruWrap = $('.KL_Instrument_Wrap');
+	var priceWrap = addInstruWrap.find('li[value='+item.iid+']').find('span[name=instru_price]');
+	priceWrap.html((item.close).toFixed(digits));
 	var time=dt.datetime;
 	//判当前K线的开盘时间是否与MQ推送的数据开盘时间一样
 	var currentKLLen = GlobalKLData.ks.length;
@@ -184,6 +188,15 @@ function drawKLHandler(interval){
 	if(!PendingDeputeInitFinish){
 		//获取委托单,持仓数据
 		$('.KL_OrderManager_FirstWrap').find('div:first-child span').eq(0).trigger('click');
+//		//获取行情-产品
+//		getMarketInfo();
+		//获取行情-合约
+		getMarketInstruInfo();
+	}
+	if(SwitchInstruLoadKL){//切换合约后, 重新加载委托挂单数据
+		SwitchInstruLoadKL = false;
+		//委托挂单
+		getTradeInfoPendingDepute();
 	}
 	var destination = "/topic/"+CurrentInstrumentID+"_"+interval; 
 	if(!KLWSClient) return;
