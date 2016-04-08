@@ -45,7 +45,8 @@ crossLines.prototype = {
         var horizontalDivId = canvasId + '_crossLines_H';
         var verticalDivId = canvasId + '_crossLines_V';
         var vertialRange = this.verticalRange || { y1: 0, y2: canvas.height };
-        var horizontalRange = this.horizontalRange || { x1: 0, x2: canvas.width };
+        var horizontalRange = { x1: 0, x2: canvas.clientWidth };
+        this.horizontalRange = { x1: 0, x2: canvas.clientWidth };
         var canvasPosition = this.canvasPosition;
 
         if (this.crossPoint.x < horizontalRange.x1

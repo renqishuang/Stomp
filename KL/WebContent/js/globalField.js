@@ -29,13 +29,14 @@ window.CurrentUserId=348517;
 window.CurrentLC='4eed4aa58024f9c608cc72ff8d37d4bf';
 window.CurrentRMC=68300;*/
 
-window.CurrentInstrumentID = 'TF1606';//当前合约
+window.CurrentInstrumentID = '';//当前合约
 window.CurrentInstrumentDigits = 0;//价格后保留小数位数
 window.RoomInstrumentListInfo = {};
 window.AjaxTimeOut = 90000;//ajax请求超时时间
 window.AvalibleAmount = 0;//可用资金
 window.CanvasPagePosition={};//canvas相对坐标
 window.GlobalKLOptionObj = null;//canvas配置
+window.GlobalKLYAxisObj = null;
 window.KLPainter=null;//画家对象
 window.CurrentKLObj = null;//全局KL对象
 window.CurrentDataTime = null;//接受MQ数据时,判断是否是一个时间段的K线

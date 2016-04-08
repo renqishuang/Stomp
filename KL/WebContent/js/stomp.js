@@ -159,6 +159,22 @@
       if (typeof this.debug === "function") {
         this.debug(">>> " + out);
       }
+      console.log('transmit----------------');
+      /*var me = this;
+      window.StompTransmitInterval = setInterval(function(){
+    	  if (out.length > me.maxWebSocketFrameSize) {
+              this.ws.send(out.substring(0, me.maxWebSocketFrameSize));
+              out = out.substring(me.maxWebSocketFrameSize);
+              if (typeof me.debug === "function") {
+                me.debug("remaining = " + out.length);
+              }
+            } else {
+            	if(me.ws.readyState === WebSocket.OPEN){
+            		clearInterval(StompTransmitInterval);
+            		return me.ws.send(out);
+            	}
+            }
+      },100);*/
       while (true) {
         if (out.length > this.maxWebSocketFrameSize) {
           this.ws.send(out.substring(0, this.maxWebSocketFrameSize));

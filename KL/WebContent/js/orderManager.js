@@ -648,9 +648,11 @@ function tradeInfoMPTrHandler(tr){
 	dirDiv = wrap.find('>div:nth-child(2)').find('div[value='+dirValue+']'),
 	iid = trDt.iid;
 	//设置合约
-	var selectWrap = wrap.find('select');
-	selectWrap.val(iid);
-	orderInstrumentSwitch(selectWrap[0])
+	if(iid != CurrentInstrumentID){
+		var selectWrap = wrap.find('select');
+		selectWrap.val(iid);
+		orderInstrumentSwitch(selectWrap[0])
+	}
 	//触发买卖
 	OMBuySellOpenCloseMouseDown(dirDiv[0],dirStr);
 	var coDiv = wrap.find('>div:nth-child(3)').find('div[value=1]');
@@ -864,6 +866,9 @@ function hisTradeDataSet(dt,isInit){
 	var len = dt.length;
 	console.log(CurrentKLStartIndex);
 	console.log(CurrentKLEndIndex);
+	var canvasRegion = $('.KL_Canvas'),
+		canvasCtx = canvasRegion[0].getContext('2d');
+		canvasCoord =getPageCoord(canvasRegion[0]);
 	//GlobalKLData
 	for(var i=0;i<len;i++){
 		var tempDt = dt[i];
@@ -877,27 +882,65 @@ function hisTradeDataSet(dt,isInit){
 			var klDt = GlobalKLData.ks[j];
 			if(!klDt) return;
 			if(otime < klDt.closeTime && otime > klDt.openTime){
-				console.log('find trade pointer');
+				//console.log('find trade pointer');
+				//console.log(tempDt);
+				//console.log(klDt);
+				var KLIndex = klDt.KLIndex;
+				//获取X坐标
+				var x = CurrentKLObj.getCandleXByIndex(KLIndex)-CurrentBarWidth/2;
+				//获取Y坐标
+				var y = CurrentKLObj.getYCoordByPrice(price)-CurrentBarWidth/2;
+				var topY = CurrentKLObj.getYCoordByPrice(klDt.high)-CurrentBarWidth/2;
+		        var bottomY = CurrentKLObj.getYCoordByPrice(klDt.low)-CurrentBarWidth/2;
+		        var img = document.getElementById('tradePointDefault');
+	        	canvasCtx.drawImage(img,x,y);
+		        if(co == 0){//开仓
+		        	//多开空平在下
+		        	var imgId = 'tradePointDuoKai';
+		        	var tempY = bottomY;
+		        	if(dir == 1) {
+		        		imgId = 'tradePointKongKai';
+		        		tempY = topY;
+		        	}
+		        	var img = document.getElementById(imgId);
+		        	canvasCtx.drawImage(img,x,tempY);
+		        }else if(co == 1){//平仓
+		        	//空开多平在上
+		        	var imgId = 'tradePointDuoPing';
+		        	var tempY = topY
+		        	if(dir == 1){
+		        		imgId = 'tradePointKongPing';
+		        		tempY = bottomY;
+		        	}
+		        	var img = document.getElementById(imgId);
+		        	canvasCtx.drawImage(img,x,tempY);
+		        }
+		        if(isInit == true){
+		        	GlobalKLData.ks[j].tradeDt.push(tempDt);
+		        }
+				/*console.log('find trade pointer');
 				//console.log(klDt);
 				var KLIndex = klDt.KLIndex;
 				//获取X坐标
 				var x = CurrentKLObj.getCandleXByIndex(KLIndex)+
-				CanvasPagePosition.x+GlobalKLOptionObj.region.x-5;
+				canvasCoord.x+GlobalKLOptionObj.region.x-CurrentBarWidth/2;
 				//获取Y坐标
-				var y = CurrentKLObj.getYCoordByPrice(price)+CanvasPagePosition.y-5;
-				var topY = CurrentKLObj.getYCoordByPrice(klDt.high)+CanvasPagePosition.y-5;
-		        var bottomY = CurrentKLObj.getYCoordByPrice(klDt.low)+CanvasPagePosition.y-5;
+				var y = CurrentKLObj.getYCoordByPrice(price)+CanvasPagePosition.y-CurrentBarWidth/2;
+				var topY = CurrentKLObj.getYCoordByPrice(klDt.high)+CanvasPagePosition.y-CurrentBarWidth/2;
+		        var bottomY = CurrentKLObj.getYCoordByPrice(klDt.low)+CanvasPagePosition.y-CurrentBarWidth/2;
 		        //console.log("x - topY - bottomY: "+x+'-'+topY+'-'+bottomY);
 		        var tradeDefaultPointer = 'trade-pointer-wrap-'+otime;
 		        var defaultFrag = "<div class='"+tradeDefaultPointer+"'></div>";
-		        $('body').append($(defaultFrag));
+		        //$('body').append($(defaultFrag));
 		        //console.log($('.'+tradeDefaultPointer));
 		        $('.'+tradeDefaultPointer).css('background-image','url(images/xinhaodianheise.png)');
 		        $('.'+tradeDefaultPointer).css('top',y);
 		        $('.'+tradeDefaultPointer).css('left',x);
+		        $('.'+tradeDefaultPointer).attr('candleIndex',KLIndex);
 		        var tradeCOPointer = 'trade-pointer-wrap-'+otime+co;
 		        var COPointerFrag = "<div class='"+tradeCOPointer+"'></div>";
-		        $('body').append($(COPointerFrag));
+		        //$('body').append($(COPointerFrag));
+		        $('.'+tradeCOPointer).attr('candleIndex',KLIndex);
 		        if(co == 0){//开仓
 		        	//多开空平在下
 		        	var openPointerImage = 'url(images/trade-pointer-duokai.png)';
@@ -923,7 +966,7 @@ function hisTradeDataSet(dt,isInit){
 		        }
 		        if(isInit == true){
 		        	GlobalKLData.ks[j].tradeDt.push(tempDt);
-		        }
+		        }*/
 			}
 		}
 	}
@@ -1120,11 +1163,13 @@ function pendingDeputeOrderNotify(dt,priceCount){
 			image = 'kongkai';
 		}
 	}
+	var canvasObj = $('.KL_Canvas');
+	var canvasCoord =getPageCoord(canvasObj[0]);
 	$('.'+dashClass).find('span[name=codir]').css('background-image','url(images/mai'+image+'.png)');
 	var wrap = $('.order-dashed-wrap-'+did);
-	var width = CanvasPagePosition.width-GlobalKLOptionObj.region.x;
+	var width = canvasObj.width()-GlobalKLOptionObj.region.x;
 	wrap.css('width',width);
-	var left = CanvasPagePosition.x+GlobalKLOptionObj.region.x;
+	var left = canvasCoord.x+GlobalKLOptionObj.region.x;
 	wrap.css('left',left);
 	//图片偏移量设置
 	wrap.find('span[name=codir]').css('left',priceCount*(51+offset));
@@ -1590,8 +1635,38 @@ function orderInstrumentSwitch(select){
 	//设置当前合约
 	CurrentInstrumentID = select.value;
 	//停止K线和盘口数据的订阅
-	KLWSSubscribe.unsubscribe();
-	TapWSSubscribe.unsubscribe();
+	if(KLWSSubscribe) KLWSSubscribe.unsubscribe();
+	if(TapWSSubscribe) TapWSSubscribe.unsubscribe();
+	//顶部添加合约设置
+	var instruWrap = $('.KL_Instrument_Wrap'),
+	liList = instruWrap.find('li'),liLen = liList.length;
+	for(var i=0;i<liLen;i++){
+		var li = liList.eq(i),isSelect = li.attr('isSelect'),iid=li.attr('value');
+		if(isSelect == 'true'){
+			if(iid != select.value){
+				//取消选中样式
+				li.attr('isSelect',false);
+				li.css('background-image','url(images/dingbumorenjiaoyi.png)');
+				var textWrap = li.find('span[name=instru_text_bg]');
+				textWrap.css('background-image','');
+				textWrap.css('color','black');
+				var priceSpan = li.find('span[name=instru_price]');
+				priceSpan.css('color','#06E65A');
+			}
+		}else{
+			if(iid == select.value){
+				//设置选中样式
+				var textWrap = li.find('span[name=instru_text_bg]');
+				textWrap.css('background-image','url(images/heyueItemtxt_bg.png)');
+				textWrap.css('color','white');
+				var priceSpan = li.find('span[name=instru_price]');
+				priceSpan.css('color','#E60302');
+				li.attr('isSelect',true);
+				li.css('background-image','url(images/dingbuxuanzhongjiaoyi.png)');
+			}
+		}
+	}
+	
 	//下单器界面设置
 	var instru = RoomInstrumentListInfo[CurrentInstrumentID];
 	var price = instru.price;

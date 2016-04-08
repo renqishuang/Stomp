@@ -1,5 +1,28 @@
 //获取房间合约集合信息
 function roomInstrumentListInfo(iidArr){
+	if(iidArr.length == 0){//无合约
+		//获取委托单,持仓数据
+		$('.KL_OrderManager_FirstWrap').find('div:first-child span').eq(0).trigger('click');
+		//获取行情-合约
+		getMarketInstruInfo();
+		//获取交易数据
+		getTradeInfoInstStat();
+		//监听MQ
+		addMQTopicSubscribe();
+		
+		//红色边框闪烁
+		var firstLi = $('.KL_Instrument_Wrap').find('li:nth-child(1)');
+		var animationFrag = '<div class="addInstrumentAnimate"></div>';
+		firstLi.append($(animationFrag));
+		//添加  '请加入合约' 文字提示
+		var addInstruFrag = '<div class="addInstrumentPrompt">请加入合约</div>';
+		var mainViewWrap =$('.KL_MainView_Wrap'); 
+		mainViewWrap.append($(addInstruFrag));
+		var promptObj = $('.addInstrumentPrompt');
+		promptObj.css('left',mainViewWrap.width()/2-promptObj.width()/2);
+		return;
+	}
+	
 	//获取合约集合信息, 调用合约历史数据前调用
 	var method = 'sysInfo';//方法
 	var data = {
@@ -42,7 +65,9 @@ function roomInstrumentListInfo(iidArr){
 				var KLTimeShareList = KLTimeShareDiv.find("li");
 				//默认触发1分钟K线图
 				KLTimeShareList.eq(0).trigger('mousedown');
-				afterInitSysInfo();
+				setTimeout(function(){
+					afterInitSysInfo();
+				},200);
 			}
 		},
 		error:function(xhr,state){
@@ -132,10 +157,8 @@ function roomInstrumentSet(dt){
 		priceSpan.html(price);
 		priceSpan.css('color',pricecolor);
 	}
-	if(iidArr.length != 0){
-		//房-间合约集合信息
-		roomInstrumentListInfo(iidArr);
-	}
+	//房-间合约集合信息
+	roomInstrumentListInfo(iidArr);
 }
 
 //获取房间合约信息

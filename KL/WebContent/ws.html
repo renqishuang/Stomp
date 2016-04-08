@@ -105,6 +105,7 @@
     <script src="js/stomp.js"></script>
     <script>//<![CDATA[
     $(document).ready(function() {
+    	window.GlobalCount =0;
       if(window.WebSocket) {
         var client, destination;
         $('#connect_form').submit(function() {
@@ -113,17 +114,19 @@
           var passcode = $("#connect_passcode").val();
           destination = $("#destination").val();
 		  
-          //url='ws://192.168.1.188:61610';
+          url='ws://192.168.1.188:61610';
           url ='ws://192.168.1.188:61625';
           //url ='ws://mq1.zlw.com:61633';
-          destination='3179';
+          //url='ws://mq1.zlw.com:61634';
+          destination='/topic/3179';
           //destination='MA605_60';
-          //destination='18940';
+          //destination='/topic/18349';
+          //destination='/topic/SR609';
           client = Stomp.client(url);
 
           // this allows to display debug logs directly on the web page
           client.debug = function(str) {
-            $("#debug").append(document.createTextNode(str + "\n"));
+           // $("#debug").append(document.createTextNode(str + "\n"));
           };
           
           // the client is notified when it is connected to the server.
@@ -134,7 +137,9 @@
             client.subscribe(destination, function(message) {
               var p = document.createElement("p");
               p.appendChild(document.createTextNode(message.body));
-              $("#messages").append(p);
+              //$("#messages").append(p);
+              GlobalCount += 1;
+              console.log(GlobalCount);
             });
           });
           return false;

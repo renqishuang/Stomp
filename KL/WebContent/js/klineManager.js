@@ -1,10 +1,10 @@
 //计算屏幕显示的最多K线个数
 function getMaxKLShowCount(){
-	if(CurrentMaxKLShowCount != 0) return;
 	var canvasObj = $('#canvasKL');
-	var initialWidth = canvasObj[0].clientWidth;
-	var width = initialWidth - 45;
-	CurrentMaxKLShowCount = Math.ceil(width / (CurrentSpaceWidth + CurrentBarWidth))-1;
+	console.log('screen----------------------');
+	console.log(screen);
+	var screenWidth = screen.width;
+	CurrentMaxKLShowCount = Math.ceil(screenWidth / (CurrentSpaceWidth + CurrentBarWidth))-1;
 }
 
 //根据类型转换数据格式
@@ -203,6 +203,7 @@ function drawKLHandler(interval){
 	//console.log("添加监听");
 	KLWSSubscribe = KLWSClient.subscribe(destination,function(message){
 		if(!LoadKLineDataFinish)return;
+		console.log('topic-kl------------------------');
 		var tempData = JSON.parse(message.body);
 		KLSubscribeHandler(tempData);//实时K线变化
 	});

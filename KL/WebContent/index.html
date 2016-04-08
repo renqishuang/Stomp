@@ -25,6 +25,13 @@
      	</div>
      	<!--K线主区域   #191F26-->
 		<section class='KL_MainView_Wrap'>
+			<div class='KL_MainView_Region_Left'>
+				<div class='KL_MainView_Left_Trade'></div>
+				<div isClick='false' class='KL_MainView_Left_Split' onclick='mainViewLeftSplitClick(this)' onmouseout='mainViewSplitMouseOut(this)' onmouseover='mainViewSplitMouseOver(this)'>
+					<span class='KL_Hidden_Region_Btn'></span>
+				</div>
+			</div>
+			<div class='KL_MainView_Region_Center'>
 			<div class="KL_TimeShareChart_Interval">
 				<ul>
 					<li value="60">1</li>
@@ -36,7 +43,9 @@
 					<li value="86400">日</li>
 				</ul>
 			</div>
-			<canvas class='KL_Canvas' width='925' height="284" id="canvasKL">
+			<!--width='890'-->
+			<canvas width='55' height='284' class='KL_Canvas_Y_Axis_Region' id = 'KL_Canvas_Y_Axis_Region'></canvas>
+			<canvas class='KL_Canvas' width='0' height="284" id="canvasKL">
 	   			<p>hey,您的浏览器不支持html5，换个浏览器吧，比如google chrome，firefox</p>
 			</canvas>
 			<div class='KL_Canvas_Move_Wrap'></div>
@@ -536,6 +545,12 @@
 					</div>
 				</div>
 			</div>
+			</div>
+			<div class='KL_MainView_Region_Right'>
+				<div isClick = 'false' class='KL_MainView_Right_Split' onclick='mainViewRightSplitClick(this)' onmouseout='mainViewSplitMouseOut(this)' onmouseover='mainViewSplitMouseOver(this)'>
+					<span class='KL_Hidden_Region_Btn'></span>
+				</div>
+			</div>
 		</section>
 		<!--K线侧区域  -->
 		<aside class='KL_TapeViewer_Wrap'>
@@ -695,7 +710,12 @@
 			</ul>
 		</div>
 	</div>
-	
+	<!--交易点图标  隐藏起来  -->
+	<img id='tradePointDuoKai' alt="" src="images/trade-pointer-duokai.png" hidden='true'>
+	<img id='tradePointDuoPing' alt="" src="images/trade-pointer-duoping.png" hidden='true'>
+	<img id='tradePointKongKai' alt="" src="images/trade-pointer-kongkai.png" hidden='true'>
+	<img id='tradePointKongPing' alt="" src="images/trade-pointer-kongping.png" hidden='true'>
+	<img id='tradePointDefault' alt="" src="images/xinhaodianheise.png" hidden='true'>
 	<!--模态弹出框-->
 	<div class="remodal" data-remodal-id="modal" role="dialog" aria-labelledby="modal1Title" aria-describedby="modal1Desc">
 	  <div class='remodal-title'>下单提示</div>
@@ -721,7 +741,7 @@
 		<span>手</span>
 		<span value='time'>11:26:20</span>
 	</div> -->
-	<div onclick="" class='remodal-open'>测试弹出框</div>
+	<!-- <div onclick="" class='remodal-open'>测试弹出框</div> -->
 	<!-- <div class='remodal-add-instru-select-exchange'>
 		<ul>
 			<li onmouseover='selectExchangeMouseOver(this)' onmouseout='selectExchangeMouseOut(this)'>郑州</li>
@@ -757,6 +777,7 @@
     <script src='js/accountManager.js'></script>
     <script src='js/orderManager.js'></script>
     <script src='js/instrument.js'></script>
+    <script src='js/tradeInfo.js'></script>
     <script src="js/remodal.js"></script>
     <script src='js/remodalEventHandler.js'></script>
     <script src='js/initHandler.js'></script>

@@ -37,6 +37,7 @@ crossLinesAndTipMgr.prototype.updateOptions = function (options) {
 };
 //鼠标移入事件
 crossLinesAndTipMgr.prototype._onMouseOrTouchMove = function (ev) {
+	if(CurrentInstrumentID == '')return;
 	//console.log("move----------");
     ev = ev || event;
     ev = getOffset(ev);//获取光标的偏移量
@@ -73,6 +74,7 @@ crossLinesAndTipMgr.prototype._onMouseOrTouchMove = function (ev) {
     if (!me.clsMgr) {
         var clsMgr = new crossLines(crossLinesOptions);
         clsMgr.setMouseEvents(function (evHLine) {
+        	if(CurrentInstrumentID == '')return;
         	//console.log("触发水平线移动事件");
             evHLine = evHLine || event;
             evHLine = getOffset(evHLine);
@@ -84,6 +86,7 @@ crossLinesAndTipMgr.prototype._onMouseOrTouchMove = function (ev) {
                 me.tip.update(point, options.tipOptions.getTipHtml(translatedEv));
             }
         }, function (evl) {
+        	if(CurrentInstrumentID == '')return;
         	//console.log("触发垂直线移动事件");
             evl = evl || event;
             evl = getOffset(evl);

@@ -82,7 +82,9 @@ kLine.prototype = {
     getShowKLDataCount:function(){
     	var options = this.options;
     	var region = options.region;
-    	var dataCount = Math.ceil(region.width / (options.spaceWidth + options.barWidth))-1;
+    	var canvas = this.canvas,
+    		width = canvas.clientWidth;
+    	var dataCount = Math.ceil(width / (options.spaceWidth + options.barWidth))-1;
     	return dataCount;
     },
     
@@ -101,13 +103,16 @@ kLine.prototype = {
     	if($('.KL_Y_Axis_Price_Tip_Right').is(':hidden')){
     		$('.KL_Y_Axis_Price_Tip_Right').show();
     	}
+    	var klCanvas = $('.KL_Canvas');
+    	var yAxisCanvas = $('.KL_Canvas_Y_Axis_Region');
+    	var yAxisCanvasCoord =getPageCoord(yAxisCanvas[0]);
     	$('.KL_Y_Axis_Price_Tip_Left').css('top',CanvasPagePosition.y+y);
     	$('.KL_Y_Axis_Price_Tip_Left').css('left',
-    			CanvasPagePosition.x);
+    			yAxisCanvasCoord.x);
     	
     	$('.KL_Y_Axis_Price_Tip_Right').css('top',CanvasPagePosition.y+y);
     	$('.KL_Y_Axis_Price_Tip_Right').css('left',
-    			CanvasPagePosition.x+GlobalKLOptionObj.region.width+GlobalKLOptionObj.region.x);
+    			yAxisCanvasCoord.x+klCanvas.width()+yAxisCanvas.width()+5);
     	
     	$('.KL_Y_Axis_Price_Tip_Left').html(yPrice);
     	$('.KL_Y_Axis_Price_Tip_Right').html(yPrice);
@@ -186,6 +191,7 @@ kLine.prototype = {
     
     //根据X坐标获取蜡烛的索引,并获取数据, 显示到Tip里面
     getTipHtml: function(x,y){
+    	if(CurrentInstrumentID == '') return;
     	var yPrice = this.getPriceByYCoord(y).toFixed(CurrentInstrumentDigits);
     	this.showKLPriceTip(y,yPrice);
     	var data = this.getKLStore();
@@ -304,9 +310,7 @@ kLine.prototype = {
     //根据蜡烛的索引获取蜡烛的X坐标  相对于Body坐标   这个方法用于更新单个蜡烛
     getCandleXByIndexForUpdate:function(i){
     	var options = this.options;
-    	var left = options.region.x;
     	var result = i * (options.spaceWidth + options.barWidth) + (options.spaceWidth + options.barWidth) * .5; 
-    	result += left;
     	if (result * 10 % 10 == 0) result += .5;
     	//console.log("蜡烛的X坐标: "+result);
     	return result; 
@@ -365,9 +369,9 @@ kLine.prototype = {
         //console.log("get X index -> "+index);
     	/*var offsetX = region.x + options.spaceWidth * (index + 1) + options.barWidth * index + 
     		options.barWidth * .5;*/
-    	var result = i * (options.spaceWidth + options.barWidth) + (options.spaceWidth + options.barWidth) * .5; 
-    	if (result * 10 % 10 == 0) result += .5;
-    	result +=region.x;
+    	/*var result = i * (options.spaceWidth + options.barWidth) + (options.spaceWidth + options.barWidth) * .5; 
+    	if (result * 10 % 10 == 0) result += .5;*/
+    	var result = this.getCandleXByIndex(i);
     	//console.log("offset x for x: "+result);
         return result;
     },
@@ -396,13 +400,16 @@ kLine.prototype = {
     	if(rightWrap.is(':hidden')){
     		rightWrap.show();
     	}
+    	var klCanvasObj = $('.KL_Canvas');
+    	var yAxisCanvas = $('.KL_Canvas_Y_Axis_Region');
+    	var yAxisCanvasCoord =getPageCoord(yAxisCanvas[0]);
     	leftWrap.css('top',CanvasPagePosition.y+y);
     	leftWrap.css('left',
-    			CanvasPagePosition.x);
+    			yAxisCanvasCoord.x);
     	
     	rightWrap.css('top',CanvasPagePosition.y+y);
     	rightWrap.css('left',
-    			CanvasPagePosition.x+GlobalKLOptionObj.region.width+GlobalKLOptionObj.region.x);
+    			yAxisCanvasCoord.x+klCanvasObj.width()+yAxisCanvas.width()+5);
     	
     	leftWrap.css('background-color',color);
     	rightWrap.css('background-color',color);
@@ -491,7 +498,7 @@ kLine.prototype = {
              var spaceHeight = options.region.height / (options.horizontalLineCount + 1);
              //console.log(spaceHeight);
              for (var j = 1; j <= options.horizontalLineCount; j++) {
-                 var y = spaceHeight * j+options.chartMargin.top;
+                 var y = spaceHeight * j;
                  if (y * 10 % 10 == 0) y += .5;
                  //console.log(y);
                  painter.drawHLine(options.splitLineColor, lineX-options.barWidth/2, y, options.barWidth, 1, options.lineStyle);
@@ -534,6 +541,22 @@ kLine.prototype = {
          }
     },
     
+    //清空画布
+    clearCanvas:function(){
+    	var canvas = this.canvas;
+        var ctx = this.canvas.getContext('2d');
+        var options = this.options;
+        var region = options.region;
+        var clearPart = {width:region.width,height:region.height};
+        ctx.clearRect(0, 0, clearPart.width+region.x, clearPart.height+40);
+        //清空Y轴
+        var yAxisOptions = options.yAxis,
+        	yAxisCanvasId = yAxisOptions.canvasId,
+    		yAxisCanvas = $('#'+yAxisCanvasId),
+    		yAxisCtx = yAxisCanvas[0].getContext('2d');
+        yAxisCtx.clearRect(0,0,yAxisCanvas.width(),yAxisCanvas.height());
+    },
+    
     start: function () {
         //timer.start('start');
         var canvas = this.canvas;
@@ -570,6 +593,8 @@ kLine.prototype = {
         ctx.fillRect(0, 0, options.region.width, options.region.height);
         ctx.stroke();//绘制已定义的路径
         
+        //重置Canvas宽度
+        this.klOptions.region.width = canvas.clientWidth;
         //画水平底纹线
         var spaceHeight = options.region.height / (options.horizontalLineCount + 1);
         for (var i = 1; i <= options.horizontalLineCount; i++) {
@@ -603,9 +628,9 @@ kLine.prototype = {
             	return { x: me.getX(ev.offsetX), y: ev.offsetY };
             },
             //触发事件的范围
-            triggerEventRanges: { x: region.x, y: region.y + 1, width: region.width, 
+            triggerEventRanges: { x: region.x, y: region.y, width: region.width, 
             	//height: volumeRegion.y + volumeRegion.height - region.y 
-            	height: region.y + region.height -20
+            	height: region.y + region.height
             },
             //Tip属性
             tipOptions: {
@@ -827,6 +852,7 @@ kLine.prototype = {
         }
         //画交易点
         var dt = ki.tradeDt,tradeLen=dt.length;
+        var canvasCtx = ctx;
         if(tradeLen != 0){
         	for(var i=0;i<tradeLen;i++){
         		var tempDt = dt[i];
@@ -836,10 +862,38 @@ kLine.prototype = {
         		vol = tempDt.vol,
         		iid = tempDt.iid,
         		price = tempDt.price;
-        		var x = lineX+CanvasPagePosition.x+region.x-5;
-        		var y = this.getYCoordByPrice(price)+CanvasPagePosition.y-5;
-				var topY = this.getYCoordByPrice(ki.high)+CanvasPagePosition.y-5;
-		        var bottomY = this.getYCoordByPrice(ki.low)+CanvasPagePosition.y-5;
+        		var x = lineX-CurrentBarWidth/2;
+				//获取Y坐标
+				var y = CurrentKLObj.getYCoordByPrice(price)-CurrentBarWidth/2;
+				var topY = CurrentKLObj.getYCoordByPrice(ki.high)-CurrentBarWidth/2;
+		        var bottomY = CurrentKLObj.getYCoordByPrice(ki.low)-CurrentBarWidth/2;
+		        var img = document.getElementById('tradePointDefault');
+	        	canvasCtx.drawImage(img,x,y);
+		        if(co == 0){//开仓
+		        	//多开空平在下
+		        	var imgId = 'tradePointDuoKai';
+		        	var tempY = bottomY;
+		        	if(dir == 1) {
+		        		imgId = 'tradePointKongKai';
+		        		tempY = topY;
+		        	}
+		        	var img = document.getElementById(imgId);
+		        	canvasCtx.drawImage(img,x,tempY);
+		        }else if(co == 1){//平仓
+		        	//空开多平在上
+		        	var imgId = 'tradePointDuoPing';
+		        	var tempY = topY
+		        	if(dir == 1){
+		        		imgId = 'tradePointKongPing';
+		        		tempY = bottomY;
+		        	}
+		        	var img = document.getElementById(imgId);
+		        	canvasCtx.drawImage(img,x,tempY);
+		        }
+        		/*var x = lineX+CanvasPagePosition.x+region.x-CurrentBarWidth/2;
+        		var y = this.getYCoordByPrice(price)+CanvasPagePosition.y-CurrentBarWidth/2;
+				var topY = this.getYCoordByPrice(ki.high)+CanvasPagePosition.y-CurrentBarWidth/2;
+		        var bottomY = this.getYCoordByPrice(ki.low)+CanvasPagePosition.y-CurrentBarWidth/2;
 		        var tradeDefaultPointer = 'trade-pointer-wrap-'+otime;
 		        var defaultFrag = "<div class='"+tradeDefaultPointer+"'></div>";
 		        if($('.'+tradeDefaultPointer).length == 0) $('body').append($(defaultFrag));
@@ -847,9 +901,11 @@ kLine.prototype = {
 		        $('.'+tradeDefaultPointer).css('background-image','url(images/xinhaodianheise.png)');
 		        $('.'+tradeDefaultPointer).css('top',y);
 		        $('.'+tradeDefaultPointer).css('left',x);
+		        $('.'+tradeDefaultPointer).attr('candleIndex',KLIndex);
 		        var tradeCOPointer = 'trade-pointer-wrap-'+otime+co;
 		        var COPointerFrag = "<div class='"+tradeCOPointer+"'></div>";
 		        if($('.'+tradeCOPointer).length == 0) $('body').append($(COPointerFrag));
+		        $('.'+tradeCOPointer).attr('candleIndex',KLIndex);
 		        if(co == 0){//开仓
 		        	//多开空平在下
 		        	var openPointerImage = 'url(images/trade-pointer-duokai.png)';
@@ -872,7 +928,7 @@ kLine.prototype = {
 		        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
 			        $('.'+tradeCOPointer).css('top',tempY);
 			        $('.'+tradeCOPointer).css('left',x);
-		        }
+		        }*/
         	}
         }
     },
@@ -889,6 +945,8 @@ kLine.prototype = {
     
     //画K线及移动平均线
     paintItems: function () {
+    	//重置Canvas宽度
+    	this.options.region.width = this.canvas.clientWidth;
     	//return;
     	var me = this;
     	var painter = this.painter;
@@ -967,17 +1025,24 @@ kLine.prototype = {
         //timer.start('paintItems:纵轴');
         
         var yAxisOptions = options.yAxis;
-        yAxisOptions.region = yAxisOptions.region || { x: 0 - region.x, y: 0 - 3, height: region.height, width: region.x - 3 };
+        
+        //yAxisOptions.region = yAxisOptions.region || { x: 0 - region.x, y: 0 - 3, height: region.height, width: region.x - 3 };
+        yAxisOptions.region = yAxisOptions.region;
         //console.log(yAxisOptions.region);
         //画y轴
+        var yAxisCanvasId = yAxisOptions.canvasId,
+        	yAxisCanvas = $('#'+yAxisCanvasId),
+        	yAxisCanvasCtx = yAxisCanvas[0].getContext('2d');
+        yAxisCanvasCtx.clearRect(0,0,yAxisCanvas.width(),yAxisCanvas.height());
         var yAxisImp = new yAxis(yAxisOptions);
-        var yPainter = new Painter(
-        	painter.canvas.id,
+        GlobalKLYAxisObj = new Painter(
+        	//painter.canvas.id,
+        	yAxisCanvasId,
             yAxisImp,
             calcAxisValues(me.high, me.low, (options.horizontalLineCount + 2))
             //calcAxisValues(priceGap.add, priceGap.reduce, (options.horizontalLineCount + 2))
         );
-        yPainter.paint();
+        GlobalKLYAxisObj.paint();
         //timer.stop();
         //timer.start('paintItems:横轴');
         //画X轴
@@ -1290,6 +1355,7 @@ function initAddData(){
 //var initialWidth = screen.width;
 //画K线接口
 function drawKL(height) {
+	if(CurrentInstrumentID == '') return;
 	//return;
 	if(!LoadKLineDataFinish) return;
 	var canvasObj = $('#canvasKL');
@@ -1311,8 +1377,9 @@ function drawKL(height) {
 	        priceSameColor:"gray",//高开低收价格一样时的颜色
 	        priceSameHeight:1,//高开低收价格一样时的高度
 	        //主图区域的边距
-	        chartMargin:{left:45,top:5,right:0},
-	        region: { x: 55, y: 5, width: initialWidth - 55, height: ht},
+	        chartMargin:{left:45,top:0,right:0},
+	        //y: 5
+	        region: { x: 0, y: 0, width: initialWidth, height: ht},
 	        barWidth: CurrentBarWidth, spaceWidth: CurrentSpaceWidth, horizontalLineCount: 10, verticalLineCount: 7, lineStyle: 'solid', borderColor: 'gray', splitLineColor: '#252A31', lineWidth: 1,
 	        MAs: [
 	            { color: '#0063CD', daysCount: 5 },
@@ -1325,7 +1392,14 @@ function drawKL(height) {
 	            color: '#55616E',
 	            align: 'middle',
 	            fontHeight: 8,
-	            textBaseline: 'top'
+	            textBaseline: 'top',
+	            canvasId:'KL_Canvas_Y_Axis_Region',
+	            region:{
+	            	x:0,
+	            	y:0,
+	            	height:ht,
+	            	width:55
+	            }
 	        },
 	        xAxis: {
 	            font: '11px Arial', // region: { },
@@ -1380,11 +1454,13 @@ function drawKL(height) {
     	//initAddData();
         KLPainter = new Painter('canvasKL', CurrentKLObj, GlobalKLData);
         CurrentKLObj.painter=KLPainter;
+        CurrentKLObj.canvas = canvas;
     }
     //KLPainter.data = GlobalKLData;
     //KLPainter.dataRanges = ranges;
    // KLPainter.dataRanges = null;
     //if(GlobalKLData.length == 0) return;
+	//重新赋值KL对象属性
 	
 	//如果高度变化, 重画Y轴
 	if(height && KLPainter.klOptions) KLPainter.klOptions.region.height = height;

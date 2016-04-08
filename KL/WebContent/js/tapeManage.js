@@ -39,6 +39,7 @@ function setTapeThreeViewerData(tapeData,presettlement,isInit){
 		for(var i=length-1;i>=0;i--){
 			if(i >= 6) continue;
 			var data = tapeData[i];
+			if(!data) return;
 			var time = data.updatetime;
 			var price = data.lastprice;
 			var tickvolume = data.tickvolume;
@@ -265,17 +266,6 @@ function getTapeInfo() {
 				//console.log(CurrentPresettlement);
 				//LoadTapeFinish = true;//标识历史数据加载完成
 				setTapeInfo(res);
-				if(TapWSSubscribe) TapWSSubscribe.unsubscribe();
-				//监听盘口数据
-				TapWSSubscribe = KLWSClient.subscribe('/topic/'+CurrentInstrumentID+'_TAPE',function(message){
-					//console.log("盘口数据");
-					var tempData = JSON.parse(message.body);
-					if(tempData.instrumentid == CurrentInstrumentID){
-						TapeOneViewerHandler(tempData);
-						TapeTwoViewerHandler(tempData);
-						TapeThreeViewerHandler(tempData);
-					}
-				});
 			}
 		},
 		error : function(xhr, state) {
