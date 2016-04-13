@@ -1,36 +1,21 @@
 //添加MQ订阅
 function addMQTopicSubscribe(){
-	setTimeout(function(){
-		//监听AID
-		listenerAccountID();
-	},500);
-	setTimeout(function(){
-		if(TapWSSubscribe) TapWSSubscribe.unsubscribe();
-		//监听盘口数据
-		TapWSSubscribe = KLWSClient.subscribe('/topic/'+CurrentInstrumentID+'_TAPE',function(message){
-			//console.log("盘口数据");
-			console.log('topic-tape------------------------');
-			var tempData = JSON.parse(message.body);
-			if(tempData.instrumentid == CurrentInstrumentID){
-				TapeOneViewerHandler(tempData);
-				TapeTwoViewerHandler(tempData);
-				TapeThreeViewerHandler(tempData);
-			}
-		});
-	},500);
+	//监听AID
+	listenerAccountID();
+	//给合约添加K线订阅
+	addAllInstruKLSubscribe();
+	//给合约添加盘口订阅
+	addInstruTapeSubscribe(CurrentInstrumentID);
 }
 
+//系统数据加载完成后调用
 function afterInitSysInfo(){
 	//获取盘口数据
 	getTapeInfo();
-	setTimeout(function(){
-		//获取交易数据
-		getTradeInfoInstStat();
-	},200);
-	setTimeout(function(){
-		//监听MQ
-		addMQTopicSubscribe();
-	},500);
+	//获取交易数据
+	getTradeInfoInstStat();
+	//监听MQ
+	addMQTopicSubscribe();
 }
 
 $(document).ready(function() {
@@ -45,7 +30,20 @@ $(document).ready(function() {
 	var canvas = $id('canvasKL');
 	CanvasPagePosition = getPageCoord(canvas);
 	CanvasPagePosition.width = initWidth;
-	//return;
+	function GetQueryString(name)
+	{
+	     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	     var r = window.location.search.substr(1).match(reg);
+	     if(r!=null)return  unescape(r[2]); return null;
+	}
+	/*console.log('tiao--------------');
+	console.log(CurrentRoomID);
+	console.log(GetQueryString('a'));
+	CurrentRoomID=GetQueryString('a');
+	console.log(CurrentRoomID);
+	console.log('tiao--------------');
+	
+	return;*/
 	if(window.WebSocket) {
 	    var destination;
 	    //订阅KL数据
@@ -63,6 +61,8 @@ $(document).ready(function() {
 	 }
 	//当前屏幕显示的最大K线个数
 	getMaxKLShowCount();
+	//禁用右键菜单事件
+	document.oncontextmenu = function(){return false;}; 
 	
 	 //分时段设置
 	var KLTimeShareDiv = $('div.KL_TimeShareChart_Interval');

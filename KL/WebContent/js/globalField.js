@@ -21,6 +21,7 @@ window.CurrentRMC=8514;
 
 /*window.KLWebSocketUrl='ws://mq1.zlw.com:61634';
 window.TradeWebSocketUrl='ws://mq1.zlw.com:61633';
+//K线内网 192.168.1.157 ,Trade内网: 192.168.1.151
 window.WebServiceStrageUrl = 'http://kline1.zlw.com:8080/axis2/services/StrategyEngine?wsdl';
 window.WebServiceTradeUrl = 'http://simtradesvc.zlw.com:8888/axis2/services/SimTrade?wsdl';
 window.CurrentAccountID = 18349;
@@ -57,3 +58,7 @@ window.PendingDeputeInitFinish = false;//标识委托单是否初始化完成
 window.PendingDeputePriceArr=[];//存储委托挂单的报单价格
 window.SwitchInstruLoadKL= false; //是否是切换合约, 加载K线数据
 window.MarketInfoObj={};//存储市场行情
+window.AllOrderInitFinish = false;
+window.SystemDataLoadFinish = false;
+window.CurrentPresettlement=null; //昨结价
+window.CurrentImagePath='images';

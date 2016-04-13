@@ -31,6 +31,7 @@ function convertDate(val, withWeek) {
 }
 //根据毫秒数获取时分秒
 function msecondConvertToDate(millisecond){
+	if(millisecond == '') return '';
 	var date = new Date(millisecond);
 	var hours = date.getHours(),
 	minutes = date.getMinutes(),
@@ -111,4 +112,11 @@ Array.prototype.containEleCount=function(el){
 		}
 	}
 	return count;
+}
+//根据参数名，获取地址栏参数的值
+function GetQueryString(name)
+{
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)return  unescape(r[2]); return null;
 }

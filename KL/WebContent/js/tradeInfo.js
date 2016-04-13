@@ -1,8 +1,8 @@
 function mainViewSplitMouseOver(div){
-	$(div).css('background-image','url(images/hideTradeInfoBtn.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/hideTradeInfoBtn.png)');
 }
 function mainViewSplitMouseOut(div){
-	$(div).css('background-image','url(images/hideTradeInfoBtn1.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/hideTradeInfoBtn1.png)');
 }
 //右侧分割线点击
 function mainViewRightSplitClick(div){
@@ -19,6 +19,10 @@ function mainViewRightSplitClick(div){
 		orderManWidth = orderManRegion.width(),
 		orderRegion = $('.KL_OrderManger_Wrap'),
 		addInstrumentPrompt = $('.addInstrumentPrompt');
+		
+	var yAxisCanvas = $('.KL_Canvas_Y_Axis_Region');	
+	//最新价格提示框
+	var lastPriceRight = $('.KL_Y_Axis_Last_Price_Tip_Right');
 	//挂单提示黄色虚线
 	var orderDashWraps = $('div[class^=order-dashed-wrap-]'),
 		orderDashLen = orderDashWraps.length;
@@ -38,6 +42,10 @@ function mainViewRightSplitClick(div){
 			addInstrumentPrompt.css('left',mainView.width()/2-addInstrumentPrompt.width()/2);
 		}
 		
+		var yAxisCanvasCoord =getPageCoord(yAxisCanvas[0]);
+		if(!lastPriceRight.is(':hidden')){
+			lastPriceRight.css('left',yAxisCanvasCoord.x+canvasWidth+yAxisCanvas.width()+5);
+		}
 		//重画K线
 		drawKL();
 	}else{
@@ -54,6 +62,11 @@ function mainViewRightSplitClick(div){
 		
 		if(!addInstrumentPrompt.is(':hidden')){
 			addInstrumentPrompt.css('left',mainView.width()/2-addInstrumentPrompt.width()/2);
+		}
+		
+		var yAxisCanvasCoord =getPageCoord(yAxisCanvas[0]);
+		if(!lastPriceRight.is(':hidden')){
+			lastPriceRight.css('left',yAxisCanvasCoord.x+canvasWidth+yAxisCanvas.width()+5);
 		}
 		//重画K线
 		drawKL();

@@ -23,6 +23,38 @@ $('.remodal-confirm').click(function(){
 			return;
 		}
 		AddInstrumentHandler(iid);
+	}else if(remodalType == 'condition'){
+		var priceSelect = remodalContent.find('select[name=lastPrice]'),
+			priceVal = priceSelect.val();
+		var con;
+		if(priceVal == 'dayu'){
+			con = 0;
+		}else if(priceVal == 'dayudengyu'){
+			con = 1;
+		}else if(priceVal == 'xiaoyu'){
+			con = 2;
+		}else if(priceVal == 'xiaoyudengyu'){
+			con = 3;
+		}
+		var dpriceWrap = remodalContent.find('span[name=price]');
+			dprice = dpriceWrap.attr('value');
+		
+		var cpriceInput = remodalContent.find('input[name=price]');
+		var cprice = cpriceInput.val();
+		
+		var dirWrap = remodalContent.find('span[name=dir]');
+		var dir = dirWrap.attr('value');
+		var coWrap = remodalContent.find('span[name=co]')
+		var co = coWrap.attr('value');
+		
+		var volWrap = remodalContent.find('span[name=vol]'),
+			vol = volWrap.attr('value');
+		
+		var iidWrap = remodalContent.find('span[name=iid]'),
+			iid = iidWrap.attr('value');
+		
+		//console.log('co-'+con+',price-'+price+',dir-'+dir+',co-'+co+',vol-'+vol);
+		conditionOrderService(con,dprice,cprice,dir,co,vol,iid);
 	}
 });
 $('.remodal-order>div:last-child>span').click(function(){

@@ -1,39 +1,65 @@
 function OMPriceNumberUpMouseOver(div){
-	$(div).css('background-image','url(images/NumericSteppersdown1.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/NumericSteppersdown1.png)');
 }
 function OMPriceNumberUpMouseOut(div){
-	$(div).css('background-image','url(images/NumericSteppersup.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/NumericSteppersup.png)');
 }
 function OMPriceNumberDownMouseOver(div){
-	$(div).css('background-image','url(images/NumericStepperxdown.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/NumericStepperxdown.png)');
 }
 function OMPriceNumberDownMouseOut(div){
-	$(div).css('background-image','url(images/NumericStepperxup.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/NumericStepperxup.png)');
 }
 
 function OMVolumeUpMouseOver(div){
-	$(div).css('background-image','url(images/NumericSteppersdown1.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/NumericSteppersdown1.png)');
 }
 function OMVolumeUpMouseOut(div){
-	$(div).css('background-image','url(images/NumericSteppersup.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/NumericSteppersup.png)');
 }
 function OMVolumeDownMouseOver(div){
-	$(div).css('background-image','url(images/NumericStepperxdown.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/NumericStepperxdown.png)');
 }
 function OMVolumeDownMouseOut(div){
-	$(div).css('background-image','url(images/NumericStepperxup.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/NumericStepperxup.png)');
 }
 
+function OMPriceKeyDown(input,e){
+	if(e.keyCode < 48 || e.keyCode > 57){
+		e.preventDefault();
+	}
+}
+function OMVolumeKeyPress(input,e){
+	if(e.keyCode != 8 && (e.keyCode < 48 || e.keyCode > 57)){
+		e.preventDefault();
+	}
+	//如果值超过最大手数，return;
+	var vol = Number($(input).val());
+	var maxVol = $('.KL_OM_Volume_Wrap').html();
+	if(vol > maxVol){
+		$(input).val(maxVol);
+		e.preventDefault();
+	}
+}
 function OMPriceNumberUpClick(div){
+	if(CurrentInstrumentID == '') return;
+	var step = RoomInstrumentListInfo[CurrentInstrumentID].step;
 	var input = $(div).parent().prev();
-	//CurrentInstrumentID
-	/*var instruInfoLen = RoomInstrumentListInfo.length;
-	for(var i=0;i<)*/
-	input.val(Number(input.val())+1);
+	input.val(Number(input.val())+step);
+	//设置固定价
+	var priceTypeWrap = $('.KL_OM_Price_Type_Wrap');
+	priceTypeWrap.css('background-image','url('+CurrentImagePath+'/gudingjia.png)');
+	priceTypeWrap.attr('isClick',true);
 }
 function OMPriceNumberDownClick(div){
+	if(CurrentInstrumentID == '') return;
+	var step = RoomInstrumentListInfo[CurrentInstrumentID].step;
 	var input = $(div).parent().prev();
-	input.val(Number(input.val())-1);
+	input.val(Number(input.val())-step);
+	//设置固定价
+	var priceTypeWrap = $('.KL_OM_Price_Type_Wrap');
+	priceTypeWrap.css('background-image','url('+CurrentImagePath+'/gudingjia.png)');
+	priceTypeWrap.attr('isClick',true);
 }
 function OMVolumeUpClick(div){
 	var input = $(div).parents('.KL_OM_Volume_Number').children('input');
@@ -44,19 +70,33 @@ function OMVolumeDownClick(div){
 	input.val(Number(input.val())-1);
 }
 function OMSetMouseOver(div){
-	$(div).css('background-image','url(images/order_manager_set_up.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/order_manager_set_up.png)');
 }
 function OMSetMouseOut(div){
-	$(div).css('background-image','url(images/order_manager_set_down.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/order_manager_set_down.png)');
 }
 function OMConditionMouseOver(div){
-	$(div).css('background-image','url(images/matiaojian0.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/matiaojian0.png)');
 }
 function OMConditionMouseOut(div){
-	$(div).css('background-image','url(images/matiaojian1.png)');
+	$(div).css('background-image','url('+CurrentImagePath+'/matiaojian1.png)');
 }
 function OMConditionMouseDown(div){
-	$(div).css('background-image','url(images/matiaojian1.png)');
+	if(CurrentInstrumentID == ''){
+		RemodalInstance.open();
+		var remodalWrap = $('.remodal');
+		if(remodalWrap.length == 0 ) return;
+		var titleWrap = remodalWrap.children('.remodal-title');
+		titleWrap.html('系统提示');
+		var contentWrap = remodalWrap.children('.remodal-content');
+		contentWrap.attr('remodalConType','invalid');
+		contentWrap.empty();
+		var htmlFrag = "<div class='remodal-notification'>请选择正确合约id"+
+			"</div>";
+		contentWrap.append($(htmlFrag));
+		return;
+	}
+	$(div).css('background-image','url('+CurrentImagePath+'/matiaojian1.png)');
 	var remodalWrap = $('.remodal');
 	if(remodalWrap.length == 0 ) return;
 	var titleWrap = remodalWrap.children('.remodal-title');
@@ -71,7 +111,7 @@ function OMConditionMouseDown(div){
 	  	   	   "<div>当行情满足以下条件时:</div>"+
 	  	   	   "<div>"+
 	  	   	   		"<font>当最新价</font>"+
-	  	   	   		"<select>"+
+	  	   	   		"<select name='lastPrice'>"+
 		  	   	   		"<option value='dayu'>&gt;</option>"+
 		  	   	   		"<option value='dayudengyu'>&gt;=</option>"+
 		  	   	   		"<option value='xiaoyu'>&lt;</option>"+
@@ -88,13 +128,13 @@ function OMConditionMouseDown(div){
 	  	   	   "</div>"+
 	  	   	    "<div>"+
 	  	   	    	"<span>按</span>"+
-	  	   	    	"<span value='price'></span>"+
+	  	   	    	"<span value='' name='price'></span>"+
 	  	   	    	"<span>价格</span>"+
 	  	   	    	"<span>,</span>"+
-	  	   	    	"<span value='dir'></span>"+
-	  	   	    	"<span value='iid'></span>"+
-	  	   	    	"<span value='co'></span>"+
-	  	   	    	"<span value='vol'></span>"+
+	  	   	    	"<span value='' name='dir'></span>"+
+	  	   	    	"<span value='' name='iid'></span>"+
+	  	   	    	"<span value='' name='co'></span>"+
+	  	   	    	"<span value='' name='vol'></span>"+
 	  	   	    	"<span>手</span>"+
 	  	   	    "</div>"+
 	  	   "</div>";
@@ -132,18 +172,33 @@ function OMConditionMouseDown(div){
 		dir=orderWrap.find('div:nth-child(2) div[isClick=true]').attr('value');
 		co=orderWrap.find('div:nth-child(3) div[isClick=true]').attr('value'),
 		vol=orderWrap.find('.KL_OM_Volume_Number input').val();
-	conditionOrderWrap.find('span[value=iid]').html(iidVal);
-	conditionOrderWrap.find('span[value=price]').html(price);
+		
+	conditionOrderWrap.find('span[name=iid]').html(iidVal);
+	conditionOrderWrap.find('span[name=iid]').attr('value',iidVal);
+	
+	conditionOrderWrap.find('span[name=price]').html(price);
+	conditionOrderWrap.find('span[name=price]').attr('value',price);
+	
 	conditionOrderWrap.find('input[name=price]').val(price);
-	conditionOrderWrap.find('span[value=dir]').html(dir==0?'买':'卖');
-	conditionOrderWrap.find('span[value=co]').html(co==0?'开仓':'平仓');
-	conditionOrderWrap.find('span[value=vol]').html(vol);
+	
+	conditionOrderWrap.find('span[name=dir]').html(dir==0?'买':'卖');
+	conditionOrderWrap.find('span[name=dir]').attr('value',dir);
+	
+	conditionOrderWrap.find('span[name=co]').html(co==0?'开仓':'平仓');
+	conditionOrderWrap.find('span[name=co]').attr('value',co);
+	
+	conditionOrderWrap.find('span[name=vol]').html(vol);
+	conditionOrderWrap.find('span[name=vol]').attr('value',vol);
 }
 function OMOrderMouseOver(div){
-	$(div).css('background-image','url(images/maxiadan0.png)');
+	if(CurrentInstrumentID == '') return;
+	$(div).css('cursor','pointer');
+	$(div).css('background-image','url('+CurrentImagePath+'/maxiadan0.png)');
 }
 function OMOrderMouseOut(div){
-	$(div).css('background-image','url(images/maxiadan1.png)');
+	if(CurrentInstrumentID == '') return;
+	$(div).css('cursor','normal');
+	$(div).css('background-image','url('+CurrentImagePath+'/maxiadan1.png)');
 }
 //下单接口调用
 function OMOrderService(iid,dir,co,price,vol){
@@ -213,7 +268,27 @@ function OMOrderService(iid,dir,co,price,vol){
 
 //弹出下单页面
 function OMOrderMouseDown(){
-	//$(div).css('background-image','url(images/maxiadan1.png)');
+	if(CurrentInstrumentID == '') return;
+	var orderWrap = $('.KL_OrderManager_SecondWrap');
+	if(orderWrap.length == 0) return;
+	//手数
+	var volumeInput = orderWrap.find('div.KL_OM_Volume_Number input[type=text]');
+	var volumeVal = volumeInput.val();
+	if(Number(volumeVal) <= 0){
+		RemodalInstance.open();
+		var remodalWrap = $('.remodal');
+		var titleWrap = remodalWrap.children('.remodal-title');
+		titleWrap.html('系统提示');
+		var contentWrap = remodalWrap.children('.remodal-content');
+		contentWrap.attr('remodalConType','invalid');
+		contentWrap.empty();
+		var htmlFrag = "<div class='remodal-order-fail'>请输入正确的开仓手数"+
+			"</div>";
+		contentWrap.append($(htmlFrag));
+		return;
+	}
+	
+	RemodalInstance.open();
 	var remodalWrap = $('.remodal');
 	if(remodalWrap.length == 0 ) return;
 	var titleWrap = remodalWrap.children('.remodal-title');
@@ -237,14 +312,13 @@ function OMOrderMouseDown(){
 		var isClick = $(this).attr('isClick');
 		if(isClick === 'true'){
 			$(this).attr('isClick',false);
-			$(this).find('span:first-child').css('background-image','url(images/ordertipcb_normal.png)');
+			$(this).find('span:first-child').css('background-image','url('+CurrentImagePath+'/ordertipcb_normal.png)');
 		}else{
 			$(this).attr('isClick',true);
-			$(this).find('span:first-child').css('background-image','url(images/ordertipcb_selected.png)');
+			$(this).find('span:first-child').css('background-image','url('+CurrentImagePath+'/ordertipcb_selected.png)');
 		}
 	});
-	var orderWrap = $('.KL_OrderManager_SecondWrap');
-	if(orderWrap.length == 0) return;
+	
 	//合约
 	var instrumentSelect = orderWrap.find('select.Order_Instrument_Select');
 	var instrumentVal = instrumentSelect.val();
@@ -267,9 +341,6 @@ function OMOrderMouseDown(){
 	//价格
 	var priceInput = orderWrap.find('div.KL_OM_Price_Number input[type=text]');
 	var priceVal = priceInput.val();
-	//手数
-	var volumeInput = orderWrap.find('div.KL_OM_Volume_Number input[type=text]');
-	var volumeVal = volumeInput.val();
 	
 	var remodalOrderWrap = contentWrap.find('.remodal-order');
 	var remodalOrderInnerWrap = remodalOrderWrap.find('>div:first-child');
@@ -305,10 +376,10 @@ function OMSetClick(){
 		var isClick = $(this).attr('isClick');
 		if(isClick === 'true'){
 			$(this).attr('isClick',false);
-			$(this).find('span:first-child').css('background-image','url(images/ordertipcb_normal.png)');
+			$(this).find('span:first-child').css('background-image','url('+CurrentImagePath+'/ordertipcb_normal.png)');
 		}else{
 			$(this).attr('isClick',true);
-			$(this).find('span:first-child').css('background-image','url(images/ordertipcb_selected.png)');
+			$(this).find('span:first-child').css('background-image','url('+CurrentImagePath+'/ordertipcb_selected.png)');
 		}
 	});
 }
@@ -365,30 +436,30 @@ function OMBuySellOpenCloseMouseDown(div,type){
 	if(isClick == 'true') return;
 	switch (type) {
 	case 'buy':
-		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_red.png)');
-		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_red.png)');
+		$(div).find('span:first-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_selbk_red.png)');
+		$(div).find('span:last-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_txtbk_red.png)');
 		var nextSibling = $(div).next();
-		nextSibling.find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_grey.png)');
+		nextSibling.find('span:first-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_selbk_grey.png)');
 		nextSibling.find('span:last-child').css('background-image','none');
 		$(div).attr('isClick',true);
 		nextSibling.attr('isClick',false);
 		calcMPVol(div,1);
 		break;
 	case 'sell':
-		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_green.png)');
-		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_green.png)');
+		$(div).find('span:first-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_selbk_green.png)');
+		$(div).find('span:last-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_txtbk_green.png)');
 		var prevSibling = $(div).prev();
-		prevSibling.find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_grey.png)');
+		prevSibling.find('span:first-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_selbk_grey.png)');
 		prevSibling.find('span:last-child').css('background-image','none');
 		$(div).attr('isClick',true);
 		prevSibling.attr('isClick',false);
 		calcMPVol(div,0);
 		break;
 	case 'open':
-		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_yellow.png)');
-		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_yellow.png)');
+		$(div).find('span:first-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_selbk_yellow.png)');
+		$(div).find('span:last-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_txtbk_yellow.png)');
 		var nextSibling = $(div).next();
-		nextSibling.find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_grey.png)');
+		nextSibling.find('span:first-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_selbk_grey.png)');
 		nextSibling.find('span:last-child').css('background-image','none');
 		$(div).attr('isClick',true);
 		nextSibling.attr('isClick',false);
@@ -396,10 +467,10 @@ function OMBuySellOpenCloseMouseDown(div,type){
 		calcOpenVolumeFn();
 		break;
 	case 'close':
-		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_yellow.png)');
-		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_yellow.png)');
+		$(div).find('span:first-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_selbk_yellow.png)');
+		$(div).find('span:last-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_txtbk_yellow.png)');
 		var prevSibling = $(div).prev();
-		prevSibling.find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_grey.png)');
+		prevSibling.find('span:first-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_selbk_grey.png)');
 		prevSibling.find('span:last-child').css('background-image','none');
 		$(div).attr('isClick',true);
 		prevSibling.attr('isClick',false);
@@ -413,16 +484,23 @@ function OMBuySellOpenCloseMouseDown(div,type){
 		dirVal = dirVal==0?1:0;
 		var volWrap = $('.KL_OM_Volume_Number');
 		var spanVolWrap = volWrap.prev();
+		
+		var hasDtTrLen = 0;
 		for(var i=0;i<trLen;i++){
 			var tr = trList.eq(i);
 			var trDt = tr.attr('trDt');
 			if(!trDt) continue;
+			hasDtTrLen += 1;
 			trDt = JSON.parse(trDt);
 			if(trDt.iid == CurrentInstrumentID && trDt.dir == dirVal){
 				var vol = trDt.vol;
 				volWrap.find('input').val(vol);
 				spanVolWrap.html(vol);
 			}
+		}
+		if(hasDtTrLen == 0){//持仓列表为0
+			spanVolWrap.html(0);
+			volWrap.find('input').val(1);
 		}
 		break;	
 	default:
@@ -434,16 +512,16 @@ function OMBuySellOpenCloseMouseOver(div,type){
 	if(isClick == 'true') return;
 	switch (type) {
 	case 'sell':
-		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_green.png)');
-		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_green.png)');
+		$(div).find('span:first-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_selbk_green.png)');
+		$(div).find('span:last-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_txtbk_green.png)');
 		break;
 	case 'buy':
-		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_red.png)');
-		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_red.png)');
+		$(div).find('span:first-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_selbk_red.png)');
+		$(div).find('span:last-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_txtbk_red.png)');
 		break;
 	case 'open':case 'close':
-		$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_yellow.png)');
-		$(div).find('span:last-child').css('background-image','url(images/xd_mmkp_txtbk_yellow.png)');
+		$(div).find('span:first-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_selbk_yellow.png)');
+		$(div).find('span:last-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_txtbk_yellow.png)');
 		break;
 	default:
 		break;
@@ -452,19 +530,29 @@ function OMBuySellOpenCloseMouseOver(div,type){
 function OMBuySellOpenCloseMouseOut(div,type){
 	var isClick = $(div).attr('isClick');
 	if(isClick == 'true') return;
-	$(div).find('span:first-child').css('background-image','url(images/xd_mmkp_selbk_grey.png)');
+	$(div).find('span:first-child').css('background-image','url('+CurrentImagePath+'/xd_mmkp_selbk_grey.png)');
 	$(div).find('span:last-child').css('background-image','none');
 }
 function OMPriceTypeMouseDown(div){
 	var isClick = $(div).attr('isClick');
 	if(isClick === 'false'){
-		$(div).css('background-image','url(images/gudingjia.png)');
+		$(div).css('background-image','url('+CurrentImagePath+'/gudingjia.png)');
 		$(div).attr('isClick',true);
 	}else{
-		$(div).css('background-image','url(images/gensuijia.png)');
+		$(div).css('background-image','url('+CurrentImagePath+'/gensuijia.png)');
 		$(div).attr('isClick',false);
+		if(CurrentInstrumentID != ''){
+			var price = RoomInstrumentListInfo[CurrentInstrumentID].price;
+			var priceWrap = $('.KL_OM_Price_Number');
+			priceWrap.find('input').val(price);
+		}
 	}
-	
+}
+function OMPriceKeyFocus(div){
+	var parent = $(div).parent(),
+		prev = parent.prev();
+	prev.css('background-image','url('+CurrentImagePath+'/gudingjia.png)');
+	prev.attr('isClick',true);
 }
 function orderManagerLeftRegionStyle(wrap){
 	var navs = $(wrap[0]).find('div:first-child span');
@@ -843,15 +931,15 @@ function pdConvertToOrderTip(dt){
 	var image;
 	if(tempDir == 0){
 		if(tempCo == 0){
-			image = 'url(images/trade-pointer-duokai.png)';
+			image = 'url('+CurrentImagePath+'/trade-pointer-duokai.png)';
 		}else{
-			image = 'url(images/trade-pointer-duoping.png)';
+			image = 'url('+CurrentImagePath+'/trade-pointer-duoping.png)';
 		}
 	}else{
 		if(tempCo == 0){
-			image = 'url(images/trade-pointer-kongkai.png)';
+			image = 'url('+CurrentImagePath+'/trade-pointer-kongkai.png)';
 		}else{
-			image = 'url(images/trade-pointer-kongping.png)';
+			image = 'url('+CurrentImagePath+'/trade-pointer-kongping.png)';
 		}
 	}
 	$('.order_notify_wrap span[value=codir]').css('color',color);
@@ -918,55 +1006,6 @@ function hisTradeDataSet(dt,isInit){
 		        if(isInit == true){
 		        	GlobalKLData.ks[j].tradeDt.push(tempDt);
 		        }
-				/*console.log('find trade pointer');
-				//console.log(klDt);
-				var KLIndex = klDt.KLIndex;
-				//获取X坐标
-				var x = CurrentKLObj.getCandleXByIndex(KLIndex)+
-				canvasCoord.x+GlobalKLOptionObj.region.x-CurrentBarWidth/2;
-				//获取Y坐标
-				var y = CurrentKLObj.getYCoordByPrice(price)+CanvasPagePosition.y-CurrentBarWidth/2;
-				var topY = CurrentKLObj.getYCoordByPrice(klDt.high)+CanvasPagePosition.y-CurrentBarWidth/2;
-		        var bottomY = CurrentKLObj.getYCoordByPrice(klDt.low)+CanvasPagePosition.y-CurrentBarWidth/2;
-		        //console.log("x - topY - bottomY: "+x+'-'+topY+'-'+bottomY);
-		        var tradeDefaultPointer = 'trade-pointer-wrap-'+otime;
-		        var defaultFrag = "<div class='"+tradeDefaultPointer+"'></div>";
-		        //$('body').append($(defaultFrag));
-		        //console.log($('.'+tradeDefaultPointer));
-		        $('.'+tradeDefaultPointer).css('background-image','url(images/xinhaodianheise.png)');
-		        $('.'+tradeDefaultPointer).css('top',y);
-		        $('.'+tradeDefaultPointer).css('left',x);
-		        $('.'+tradeDefaultPointer).attr('candleIndex',KLIndex);
-		        var tradeCOPointer = 'trade-pointer-wrap-'+otime+co;
-		        var COPointerFrag = "<div class='"+tradeCOPointer+"'></div>";
-		        //$('body').append($(COPointerFrag));
-		        $('.'+tradeCOPointer).attr('candleIndex',KLIndex);
-		        if(co == 0){//开仓
-		        	//多开空平在下
-		        	var openPointerImage = 'url(images/trade-pointer-duokai.png)';
-		        	var tempY = bottomY;
-		        	if(dir == 1) {
-		        		openPointerImage = 'url(images/trade-pointer-kongkai.png)';
-		        		tempY = topY;
-		        	}
-		        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
-			        $('.'+tradeCOPointer).css('top',tempY);
-			        $('.'+tradeCOPointer).css('left',x);
-		        }else if(co == 1){//平仓
-		        	//空开多平在上
-		        	var closePointerImage = 'url(images/trade-pointer-duoping.png)';
-		        	var tempY = topY
-		        	if(dir == 1){
-		        		openPointerImage = 'url(images/trade-pointer-kongping.png)';
-		        		tempY = bottomY;
-		        	} 
-		        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
-			        $('.'+tradeCOPointer).css('top',tempY);
-			        $('.'+tradeCOPointer).css('left',x);
-		        }
-		        if(isInit == true){
-		        	GlobalKLData.ks[j].tradeDt.push(tempDt);
-		        }*/
 			}
 		}
 	}
@@ -979,6 +1018,7 @@ function addTradePointer(tempDt){
 	vol = tempDt.vol,
 	iid = tempDt.iid,
 	price = tempDt.price;
+	var canvasCtx = CurrentKLObj.ctx;
 	for(var j=CurrentKLStartIndex;j<=CurrentKLEndIndex;j++){
 		var klDt = GlobalKLData.ks[j];
 		if(!klDt) return;
@@ -987,46 +1027,34 @@ function addTradePointer(tempDt){
 			GlobalKLData.ks[j].tradeDt.push(tempDt);//及时更新每根K线对应的交易点
 			//console.log(klDt);
 			var KLIndex = klDt.KLIndex;
-			//获取X坐标
-			var x = CurrentKLObj.getCandleXByIndex(KLIndex)+
-			CanvasPagePosition.x+GlobalKLOptionObj.region.x-5;
+			var lineX = CurrentKLObj.getCandleXByIndex(KLIndex)
+			var x = lineX-CurrentBarWidth/2;
 			//获取Y坐标
-			var y = CurrentKLObj.getYCoordByPrice(price)+CanvasPagePosition.y-5;
-			var topY = CurrentKLObj.getYCoordByPrice(klDt.high)+CanvasPagePosition.y-5;
-	        var bottomY = CurrentKLObj.getYCoordByPrice(klDt.low)+CanvasPagePosition.y-5;
-	        //console.log("x - topY - bottomY: "+x+'-'+topY+'-'+bottomY);
-	        var tradeDefaultPointer = 'trade-pointer-wrap-'+otime;
-	        var defaultFrag = "<div class='"+tradeDefaultPointer+"'></div>";
-	        $('body').append($(defaultFrag));
-	        //console.log($('.'+tradeDefaultPointer));
-	        $('.'+tradeDefaultPointer).css('background-image','url(images/xinhaodianheise.png)');
-	        $('.'+tradeDefaultPointer).css('top',y);
-	        $('.'+tradeDefaultPointer).css('left',x);
-	        var tradeCOPointer = 'trade-pointer-wrap-'+otime+co;
-	        var COPointerFrag = "<div class='"+tradeCOPointer+"'></div>";
-	        $('body').append($(COPointerFrag));
+			var y = CurrentKLObj.getYCoordByPrice(price)-CurrentBarWidth/2;
+			var topY = CurrentKLObj.getYCoordByPrice(klDt.high)-CurrentBarWidth/2;
+	        var bottomY = CurrentKLObj.getYCoordByPrice(klDt.low)-CurrentBarWidth/2;
+	        var img = document.getElementById('tradePointDefault');
+        	canvasCtx.drawImage(img,x,y);
 	        if(co == 0){//开仓
 	        	//多开空平在下
-	        	var openPointerImage = 'url(images/trade-pointer-duokai.png)';
+	        	var imgId = 'tradePointDuoKai';
 	        	var tempY = bottomY;
 	        	if(dir == 1) {
-	        		openPointerImage = 'url(images/trade-pointer-kongkai.png)';
+	        		imgId = 'tradePointKongKai';
 	        		tempY = topY;
 	        	}
-	        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
-		        $('.'+tradeCOPointer).css('top',tempY);
-		        $('.'+tradeCOPointer).css('left',x);
+	        	var img = document.getElementById(imgId);
+	        	canvasCtx.drawImage(img,x,tempY);
 	        }else if(co == 1){//平仓
 	        	//空开多平在上
-	        	var closePointerImage = 'url(images/trade-pointer-duoping.png)';
+	        	var imgId = 'tradePointDuoPing';
 	        	var tempY = topY
 	        	if(dir == 1){
-	        		openPointerImage = 'url(images/trade-pointer-kongping.png)';
+	        		imgId = 'tradePointKongPing';
 	        		tempY = bottomY;
-	        	} 
-	        	$('.'+tradeCOPointer).css('background-image',openPointerImage);
-		        $('.'+tradeCOPointer).css('top',tempY);
-		        $('.'+tradeCOPointer).css('left',x);
+	        	}
+	        	var img = document.getElementById(imgId);
+	        	canvasCtx.drawImage(img,x,tempY);
 	        }
 		}
 	}
@@ -1165,7 +1193,7 @@ function pendingDeputeOrderNotify(dt,priceCount){
 	}
 	var canvasObj = $('.KL_Canvas');
 	var canvasCoord =getPageCoord(canvasObj[0]);
-	$('.'+dashClass).find('span[name=codir]').css('background-image','url(images/mai'+image+'.png)');
+	$('.'+dashClass).find('span[name=codir]').css('background-image','url('+CurrentImagePath+'/mai'+image+'.png)');
 	var wrap = $('.order-dashed-wrap-'+did);
 	var width = canvasObj.width()-GlobalKLOptionObj.region.x;
 	wrap.css('width',width);
@@ -1226,17 +1254,20 @@ function repealPendingDepute(dt){
 //获取历史挂单数据
 function tradeInfoPDHandler(data){
 	var wrap = $('.TradeInfoPendingDepute');
-	if(wrap.length == 0) return;
+	var trList = wrap.find('tr:not(:first-child)'),tempLen = trList.length;
 	var trLen = wrap.attr('trLen');
 	//清空所有内容
-	for(var i=0;i<trLen;i++){
-		var tr = wrap.find('tr').eq(i+1);
+	for(var i=0;i<tempLen;i++){
+		var tr = trList.eq(i);
 		tr.find('td').html('');
 		tr.unbind('mouseover');
 		tr.unbind('mouseout');
 		tr.unbind('dblclick');
 		tr.css('background-color','white');
 		tr.css('cursor','default');
+		if(i >= trLen){
+			tr.remove();		//以此为准
+		}
 	}
 	//隐藏所有黄色虚线
 	$("div[class^=order-dashed-wrap-]").hide();
@@ -1244,8 +1275,7 @@ function tradeInfoPDHandler(data){
 	PendingDeputePriceArr.length = 0;
 	var len = data.length;
 	if(len == 0) return;
-	wrap.attr('trLen',len);
-	if(len > 5){//大于5行
+	if(len > trLen){//大于5行
 		var htmlFrage = "<tr>"+
 							"<td></td>"+
 							"<td></td>"+
@@ -1253,7 +1283,7 @@ function tradeInfoPDHandler(data){
 							"<td></td>"+
 							"<td></td>"+
 						"</tr>";
-		var fragLen = len - 5;
+		var fragLen = len - trLen;
 		for(var j=0;j<fragLen;j++){
 			wrap.append($(htmlFrage));
 		}
@@ -1341,7 +1371,21 @@ function tradeInfoAllDeputeHandler(data){
 	var wrap = $('.Order_Manager_TB_Delegation');
 	if(wrap.length == 0) return;
 	var table = wrap.find('table');
+	var trList = table.find('tr:not(:first-child)'),tempLen = trList.length;
 	var trLen = table.attr('trLen');
+	//清空所有内容
+	for(var i=0;i<tempLen;i++){
+		var tr = trList.eq(i);
+		tr.find('td').html('');
+		tr.unbind('mouseover');
+		tr.unbind('mouseout');
+		tr.unbind('dblclick');
+		tr.css('background-color','white');
+		tr.css('cursor','default');
+		if(i >= trLen){
+			tr.remove();		//以此为准
+		}
+	}
 	var i=0,len = data.length;
 	if(len > trLen){//大于5行
 		var htmlFrage = "<tr>"+
@@ -1364,29 +1408,34 @@ function tradeInfoAllDeputeHandler(data){
 			table.append($(htmlFrage));
 		}
 	}
-	if(len > 5) table.attr('trLen',len);
 	for(;i<len;i++){
 		var dt=data[i];
 		wrap.find('tr').eq(i+1).css('background-color','#FFE7E7');
 		wrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
 		wrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
 		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'开':'平');
-		var state;
+		var state,chengJiaoTime,cheDanTime;
 		if(dt.status == 1){
-			state = '已报销';
+			state = '未成交';
+			chengJiaoTime = '';
+			cheDanTime = '';
 		}else if(dt.status == 2){
 			state = '已撤单';
+			chengJiaoTime = '';
+			cheDanTime = dt.otime;
 		}else if(dt.status == 3){
 			state = '已成交';
+			chengJiaoTime = dt.otime;
+			cheDanTime = '';
 		}
 		wrap.find('tr').eq(i+1).find('td:nth-child(4)').html(state);
 		wrap.find('tr').eq(i+1).find('td:nth-child(5)').html((dt.dprice).toFixed(CurrentInstrumentDigits));
 		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(msecondConvertToDate(dt.dtime));
-		wrap.find('tr').eq(i+1).find('td:nth-child(7)').html(msecondConvertToDate(dt.otime));
+		wrap.find('tr').eq(i+1).find('td:nth-child(7)').html(msecondConvertToDate(cheDanTime));
 		wrap.find('tr').eq(i+1).find('td:nth-child(8)').html(dt.tvol);
 		wrap.find('tr').eq(i+1).find('td:nth-child(9)').html(dt.volfcls);
 		if(dt.volfcls > 0){
-			wrap.find('tr').eq(i+1).find('td:nth-child(10)').html(msecondConvertToDate(dt.otime));
+			wrap.find('tr').eq(i+1).find('td:nth-child(10)').html(msecondConvertToDate(chengJiaoTime));
 		}else{
 			wrap.find('tr').eq(i+1).find('td:nth-child(10)').html();
 		}
@@ -1518,6 +1567,11 @@ function getTradeInfoAllOrder(){
 				var res=data.res,dt=res.data;
 				if(!dt) return;
 				tradeInfoOrderHandler(dt);
+				if(AllOrderInitFinish == false){
+					//设置左侧交易数据界面
+					
+				}
+				AllOrderInitFinish = true;
 			}
 		},
 		error:function(xhr,state){
@@ -1529,21 +1583,151 @@ function getTradeInfoAllOrder(){
 		}
 	});
 }
+//添加条件单红色虚线
+function conOrderNotify(dt,priceCount){
+	if(CurrentInstrumentID != dt.iid) return;
+	var price = dt.dprice,did=dt.did,image,dir=dt.dir,co=dt.co,offset=5;
+	if(!GlobalKLOptionObj) return;
+	var dashClass = 'coorder-dashed-wrap-'+did;
+	var pendingDeputeFrag = "<div class="+dashClass+">"+
+								"<span name='codir'></span>"+
+								"<span name='price'>"+price.toFixed(CurrentInstrumentDigits)+"</span>"+
+							"</div>";
+	if($('.'+dashClass).length == 0){
+		$('body').append($(pendingDeputeFrag));
+	}
+	$('.'+dashClass).show();
+	if(co == 1){//平仓
+		if(dir == 0){//
+			image = 'kongping';
+		}else{
+			image = 'duoping';
+		}
+	}else{//开仓
+		if(dir == 0){//买
+			image = 'duokai';		
+		}else{//卖
+			image = 'kongkai';
+		}
+	}
+	var canvasObj = $('.KL_Canvas');
+	var canvasCoord =getPageCoord(canvasObj[0]);
+	$('.'+dashClass).find('span[name=codir]').css('background-image','url('+CurrentImagePath+'/mai'+image+'.png)');
+	var wrap = $('.coorder-dashed-wrap-'+did);
+	var width = canvasObj.width()-GlobalKLOptionObj.region.x;
+	wrap.css('width',width);
+	var left = canvasCoord.x+GlobalKLOptionObj.region.x;
+	wrap.css('left',left);
+	//图片偏移量设置
+	wrap.find('span[name=codir]').css('left',priceCount*(51+offset));
+	var top = CanvasPagePosition.y+CurrentKLObj.getYCoordByPrice(price);
+	wrap.css('top',top);
+}
+
+//条件单设置
 function tradeInfoConOrderHandler(data){
-	var wrap = $('.Order_Manager_TB_Condition');
+	var conditionWrap = $('.Order_Manager_TB_Condition');
+	if(conditionWrap.length == 0) return;
+	var wrap = conditionWrap.find('table'),trList = wrap.find('tr:not(:first-child)'),trLen = trList.length;
+	var tableTrLen = wrap.attr('trLen');
 	if(wrap.length == 0) return;
+	//清空所有数据
+	for(var i=0;i<trLen;i++){
+		var tr = trList.eq(i);
+		tr.find('td').html('');
+		tr.css('background-color','white');
+		tr.unbind('oncontextmenu');
+		tr.attr('conDt','');
+		if(i >= tableTrLen){
+			tr.remove();
+		}
+	}
+	//隐藏条件单
+	$('div[class^=coorder-dashed-wrap-]').hide();
+	
 	var i=0;len=data.length;
+	if(len > tableTrLen){
+		//添加行
+		var htmlFrage = "<tr>"+
+				"<td></td>"+
+				"<td></td>"+
+				"<td></td>"+
+				"<td></td>"+
+				"<td></td>"+
+				"<td></td>"+
+				"<td></td>"+
+				"<td></td>"+
+				"<td></td>"+
+			"</tr>";
+		var fragLen = len - tableTrLen;
+		for(var j=0;j<fragLen;j++){
+			wrap.append($(htmlFrage));
+		}	
+		
+	}
+	
 	for(;i<len;i++){
-		/*wrap.find('tr').eq(i+1).css('background-color','#E3FFEA');
-		wrap.find('tr').eq(i+1).find('td:first-child').html(dt.iid);
-		wrap.find('tr').eq(i+1).find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
-		wrap.find('tr').eq(i+1).find('td:nth-child(3)').html(dt.co==0?'开仓':'平仓');
-		wrap.find('tr').eq(i+1).find('td:nth-child(4)').html(data.price);
-		wrap.find('tr').eq(i+1).find('td:nth-child(5)').html(dt.volfcls);
-		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(dt.otime);
-		wrap.find('tr').eq(i+1).find('td:nth-child(7)').html(dt.otime);//成交编号没找到
-		wrap.find('tr').eq(i+1).find('td:nth-child(8)').html(dt.did);
-		wrap.find('tr').eq(i+1).find('td:nth-child(9)').html(dt.dtime);*/
+		var dt = data[i];
+		var tr = wrap.find('tr').eq(i+1);
+		tr.attr('conDt',JSON.stringify(dt));
+		tr.bind('contextmenu',function(e){
+			var dt = $(this).attr('conDt');
+			//不使用screenX, pageX, 使用clientX, 随着滚动条而变动
+			var pageX = e.pageX,
+				pageY = e.pageY;
+			var htmlFrag = "<div class='conOrderContextMenu'>"+
+								"<div onclick='conOrderSendClick(this)' onmouseover='conOrderSendMouseOver(this)' onmouseout='conOrderSendMouseOut(this)' name='send'></div>"+
+								"<div onclick='conOrderDelClick(this)' onmouseover='conOrderDelMouseOver(this)' onmouseout='conOrderDelMouseOut(this)' name='del'></div>"+
+							"</div>";
+			if($('.conOrderContextMenu').length == 0){
+				$('body').append($(htmlFrag));
+			}
+			if($('.conOrderContextMenu').is(':hidden')){
+				$('.conOrderContextMenu').show();
+			}
+			var wrap = $('.conOrderContextMenu');
+			wrap.attr('conDt',dt);
+			wrap.css('top',pageY);
+			wrap.css('left',pageX)
+		});
+		tr.css('background-color','#E3FFEA');
+		var type;
+		if(dt.otype == 1){
+			type = '条件单';
+		}else if(dt.otype == 2){
+			type = '止盈止损单';
+		}
+		tr.find('td:first-child').html(type);
+		
+		var status = dt.status,statusStr = '';
+		if(status == '1'){
+			statusStr='未触发';
+		}else if(status == '2'){
+			statusStr='已撤单';
+		}else if(status == '3'){
+			statusStr='已成交';
+		}
+		tr.find('td:nth-child(2)').html(statusStr);
+		
+		var conStr,dprice=dt.dprice,cprice = dt.conprice;
+		if(dt.con == 0){
+			conStr = '当最新价>'+cprice+'时发出';
+		}else if(dt.con == 1){
+			conStr = '当最新价>='+cprice+'时发出';
+		}else if(dt.con == 2){
+			conStr = '当最新价<'+cprice+'时发出';
+		}else if(dt.con == 3){
+			conStr = '当最新价<='+cprice+'时发出';
+		}
+		tr.find('td:nth-child(3)').html(conStr);
+		tr.find('td:nth-child(4)').html(dt.iid);
+		tr.find('td:nth-child(5)').html(dt.dir==0?'买':'卖');
+		wrap.find('tr').eq(i+1).find('td:nth-child(6)').html(dt.co==0?'开':'平');
+		var digits = RoomInstrumentListInfo[dt.iid].digits;
+		tr.find('td:nth-child(7)').html(dprice.toFixed(digits));
+		tr.find('td:nth-child(8)').html(dt.tvol);
+		tr.find('td:nth-child(9)').html(msecondConvertToDate(dt.ctime));
+		conOrderNotify(dt);//添加红色虚线
 	}
 }
 
@@ -1577,7 +1761,7 @@ function getTradeInfoConOrder(){
 			if(state === 0){
 				var res=data.res,dt=res.data;
 				if(!dt) return;
-				
+				tradeInfoConOrderHandler(dt);
 			}
 		},
 		error:function(xhr,state){
@@ -1591,16 +1775,16 @@ function getTradeInfoConOrder(){
 }
 
 function remodalConditionPriceOver(div,type){
-	var image = 'url(images/NumericSteppersdown1.png)';
+	var image = 'url('+CurrentImagePath+'/NumericSteppersdown1.png)';
 	if(type == 'down'){
-		image = 'url(images/NumericStepperxdown.png)';
+		image = 'url('+CurrentImagePath+'/NumericStepperxdown.png)';
 	}
 	$(div).css('background-image',image);
 }
 function remodalConditionPriceOut(div,type){
-	var image = 'url(images/NumericSteppersup.png)';
+	var image = 'url('+CurrentImagePath+'/NumericSteppersup.png)';
 	if(type == 'down'){
-		image = 'url(images/NumericStepperxup.png)';
+		image = 'url('+CurrentImagePath+'/NumericStepperxup.png)';
 	}
 	$(div).css('background-image',image);
 }
@@ -1627,16 +1811,30 @@ function refreshTradeMPHandler(dt){
 
 //账户资金不足
 function accountCapitalNotEnough(){
-	alert("账户资金不足");
+	RemodalInstance.open();
+	var remodalWrap = $('.remodal');
+	if(remodalWrap.length == 0 ) return;
+	var titleWrap = remodalWrap.children('.remodal-title');
+	titleWrap.html('下单提示');
+	var contentWrap = remodalWrap.children('.remodal-content');
+	contentWrap.attr('remodalConType','invalid');
+	contentWrap.empty();
+	var htmlFrag = "<div class='remodal-notification'>账户资金不足"+
+		"</div>";
+	contentWrap.append($(htmlFrag));
 }
 //切换合约
 function orderInstrumentSwitch(select){
 	console.log(select.value);
+	//停止盘口数据的订阅
+	cancelInstruTapeSubscribe(CurrentInstrumentID);
 	//设置当前合约
 	CurrentInstrumentID = select.value;
-	//停止K线和盘口数据的订阅
-	if(KLWSSubscribe) KLWSSubscribe.unsubscribe();
-	if(TapWSSubscribe) TapWSSubscribe.unsubscribe();
+	//添加盘口数据的订阅
+	addInstruTapeSubscribe(CurrentInstrumentID);
+	
+	/*if(KLWSSubscribe) KLWSSubscribe.unsubscribe();
+	if(TapWSSubscribe) TapWSSubscribe.unsubscribe();*/
 	//顶部添加合约设置
 	var instruWrap = $('.KL_Instrument_Wrap'),
 	liList = instruWrap.find('li'),liLen = liList.length;
@@ -1646,7 +1844,7 @@ function orderInstrumentSwitch(select){
 			if(iid != select.value){
 				//取消选中样式
 				li.attr('isSelect',false);
-				li.css('background-image','url(images/dingbumorenjiaoyi.png)');
+				li.css('background-image','url('+CurrentImagePath+'/dingbumorenjiaoyi.png)');
 				var textWrap = li.find('span[name=instru_text_bg]');
 				textWrap.css('background-image','');
 				textWrap.css('color','black');
@@ -1657,12 +1855,12 @@ function orderInstrumentSwitch(select){
 			if(iid == select.value){
 				//设置选中样式
 				var textWrap = li.find('span[name=instru_text_bg]');
-				textWrap.css('background-image','url(images/heyueItemtxt_bg.png)');
+				textWrap.css('background-image','url('+CurrentImagePath+'/heyueItemtxt_bg.png)');
 				textWrap.css('color','white');
 				var priceSpan = li.find('span[name=instru_price]');
 				priceSpan.css('color','#E60302');
 				li.attr('isSelect',true);
-				li.css('background-image','url(images/dingbuxuanzhongjiaoyi.png)');
+				li.css('background-image','url('+CurrentImagePath+'/dingbuxuanzhongjiaoyi.png)');
 			}
 		}
 	}
@@ -1702,3 +1900,174 @@ function orderInstrumentSwitch(select){
 	//获取盘口数据
 	getTapeInfo();
 }
+
+//下条件单
+function conditionOrderService(con,dprice,cprice,dir,co,vol,iid){
+	//下单
+	var method = 'trade';//方法
+	var data = {
+		"otype":1,
+		"con":Number(con),//
+		"conprice":cprice,//
+		"rid":CurrentRoomID,
+		"co":Number(co),//
+		"lc":CurrentLC,
+		"uid":CurrentUserId,
+		"rmc":CurrentRMC,
+		"dir":Number(dir),//
+		"dprice":dprice,//
+		"iid":iid,//
+		"aid":CurrentAccountID,
+		"action":1,
+		"vol":Number(vol),//
+		"pricetype":0
+	};
+	var param = JSON.stringify(data);
+	console.log(data);
+	$.ajax({
+		url:WebServiceTransferUrl+'/call_ws/output',
+		type:'post',
+		dataType:"json",
+		//async:false,//同步请求
+		data:{
+			ws_url:WebServiceTradeUrl,
+			ws_func:method,
+			ws_param:param
+		},
+		timeout:AjaxTimeOut, //设置超时5秒钟
+		success:function(data){
+			var state = data.rc;
+			console.log('set condition order');
+			console.log(data);
+			if(state == 0){
+				var res = data.res,returncode = res.returncode;
+				if(returncode == 99){//非交易时间, 下单失败
+					RemodalInstance.open();
+					var remodalWrap = $('.remodal');
+					var titleWrap = remodalWrap.children('.remodal-title');
+					titleWrap.html('下单提示');
+					var contentWrap = remodalWrap.children('.remodal-content');
+					contentWrap.attr('remodalConType','invalid');
+					contentWrap.empty();
+					var htmlFrag = "<div class='remodal-order-fail'>非交易时间， 无法下单"+
+						"</div>";
+					contentWrap.append($(htmlFrag));
+				}
+			}
+		},
+		error:function(xhr,state){
+			console.log("get data error");
+			//alert("请求服务器出错");
+		},
+		complete:function(xhr,state){
+			//console.log('get data complete');
+		}
+	});
+}
+
+//条件单右键菜单点击事件
+function conOrderSendClick(div){
+	var parent = $(div).parent(),
+		dt = JSON.parse(parent.attr('conDt'));
+	parent.hide();
+	//立即发出条件单
+	var method = 'trade';//方法
+	var data = {
+		"otype":1,
+		"iid":dt.iid,
+		"aid":CurrentAccountID,
+		"rid":CurrentRoomID,
+		"lc":CurrentLC,
+		"action":3,
+		"uid":CurrentUserId,
+		"rmc":CurrentRMC,
+		"ctime":dt.ctime
+	};
+	var param = JSON.stringify(data);
+	$.ajax({
+		url:WebServiceTransferUrl+'/call_ws/output',
+		type:'post',
+		dataType:"json",
+		//async:false,//同步请求
+		data:{
+			ws_url:WebServiceTradeUrl,
+			ws_func:method,
+			ws_param:param
+		},
+		timeout:AjaxTimeOut, //设置超时5秒钟
+		success:function(data){
+			var state = data.rc;
+			console.log('immediately send condition order');
+			console.log(data);
+			if(state == 0){
+				
+			}
+		},
+		error:function(xhr,state){
+			console.log("get data error");
+			//alert("请求服务器出错");
+		},
+		complete:function(xhr,state){
+			//console.log('get data complete');
+		}
+	});
+}
+function conOrderSendMouseOver(div){
+	$(div).css('background-image','url('+CurrentImagePath+'/rightclick_dispatchnow2.png)');
+}
+function conOrderSendMouseOut(div){
+	$(div).css('background-image','url('+CurrentImagePath+'/rightclick_dispatchnow1.png)');
+}
+function conOrderDelClick(div){
+	var parent = $(div).parent(),
+	dt = JSON.parse(parent.attr('conDt'));
+	parent.hide();
+	//删除条件单
+	var method = 'trade';//方法
+	var data = {
+		"otype":1,
+		"iid":dt.iid,
+		"aid":CurrentAccountID,
+		"rid":CurrentRoomID,
+		"lc":CurrentLC,
+		"action":2,
+		"uid":CurrentUserId,
+		"rmc":CurrentRMC,
+		"ctime":dt.ctime
+	};
+	var param = JSON.stringify(data);
+	$.ajax({
+		url:WebServiceTransferUrl+'/call_ws/output',
+		type:'post',
+		dataType:"json",
+		//async:false,//同步请求
+		data:{
+			ws_url:WebServiceTradeUrl,
+			ws_func:method,
+			ws_param:param
+		},
+		timeout:AjaxTimeOut, //设置超时5秒钟
+		success:function(data){
+			var state = data.rc;
+			console.log('del condition order');
+			console.log(data);
+			if(state == 0){
+				
+			}
+		},
+		error:function(xhr,state){
+			console.log("get data error");
+			//alert("请求服务器出错");
+		},
+		complete:function(xhr,state){
+			//console.log('get data complete');
+		}
+	});
+}
+function conOrderDelMouseOver(div){
+	$(div).css('background-image','url('+CurrentImagePath+'/rightclick_delete2.png)');
+}
+function conOrderDelMouseOut(div){
+	$(div).css('background-image','url('+CurrentImagePath+'/rightclick_delete1.png)');
+}
+

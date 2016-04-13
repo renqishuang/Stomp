@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>交易网仿真版 - 官方网站 - 中量网 - 看得见的交易</title>
+<style>
+.login_form{
+	width: 320px;
+	margin:100px auto;
+	border:1px solid black;
+	height:100px;
+}
+.login_inner_wrap{
+	margin:10px auto;
+	width: 260px;
+	height:80px;
+}
+.user_name_wrap{
+	margin-bottom:8px;
+}
+.user_name_wrap > span:first-child{
+	display:inline-block;
+	width:80px;
+}
+.user_password_wrap > span:first-child{
+	display:inline-block;
+	width:80px;
+}
+.login_btn_wrap{
+	text-align:center;
+	margin-top: 10px;
+}
+</style>
+</head>
+<body>
+<form class='login_form' action="">
+	<div class='login_inner_wrap'>
+		<div class='user_name_wrap'>
+			<span>用户名: </span><input name='user_name'>
+		</div>
+		<div class='user_password_wrap'>
+			<span>密码: </span><input name='user_password'>
+		</div>
+		<div class='login_btn_wrap'>
+			<button onclick='loginFn(this)' type='button'>登录</button>
+		</div>
+	</div>
+</form>
+<script src='js/jquery.1.11.3.min.js'></script>
+<script src='libs/base64encode.js'></script>
+<script type="text/javascript" src="http://counter.sina.com.cn/ip/" charset="utf-8"></script> 
+<script src='js/login.js'></script>
+<script>
+	$(function(){
+		
+	});
+</script>
+</body>
+</html>

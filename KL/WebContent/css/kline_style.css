@@ -330,17 +330,13 @@ a:focus { outline: none; }
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100% 100%;
-    cursor: pointer;
 }
 .KL_OrderManager_FirstWrap table{
 	border:none;
 }
-.TradeInfo_MP{
-	margin-left:10px;
-}
 .TradeInfoPendingDepute,.TradeInfo_MP{
-	width:49%;
-    float:left;
+	width:100%;
+    /*  float:left;*/
 }
 .TradeInfoPendingDepute tr:first-child th:first-child{
 	width:50px;
@@ -355,6 +351,7 @@ a:focus { outline: none; }
 .KL_OrderManager_FirstWrap > div:not(:first-child){
 	margin-left:10px;
 	height:154px;
+	overflow: auto;
 }
 .KL_OrderManager_FirstWrap > div:not(:first-child)::-webkit-scrollbar{
 	height:6px;
@@ -689,10 +686,29 @@ a:focus { outline: none; }
 }
 .Order_Manager_TB_Convenience{
 	position:relative;
+	margin-left: 0px !important;
+}
+.OM_PendingDeputeMark,
+.OM_MPMark{
+	position: absolute;
+    width: 16px;
+    height: 16px;
+    top: -2px;
+    left: 0px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+.OM_PendingDeputeMark{
+	background-image: url('../images/icon_kuaijie_gua.png');
+}
+.OM_MPMark{
+	background-image: url('../images/icon_kuaijie_chi.png');
 }
 .Order_Manager_TB_Convenience > span:first-child,
 .Order_Manager_TB_Convenience > span:nth-child(2){
-	text-align: center;
 	position: absolute;
     width: 16px;
     height: 16px;
@@ -711,17 +727,26 @@ a:focus { outline: none; }
 	background-image: url('../images/icon_kuaijie_chi.png');
 	left: 365px;
 }
-.Order_Manager_TB_Convenience::-webkit-scrollbar{
-	height:6px;
+
+.Order_Manager_Convenience_Wrap{
+	width:47%;
+	display: inline-block;
+	height: 100%;
+    overflow: auto;
+    position: relative;
+    padding-left: 10px;
+}
+.Order_Manager_Convenience_Wrap::-webkit-scrollbar{
+	height:0px;
 	width:6px;
 }
-.Order_Manager_TB_Convenience::-webkit-scrollbar-track-piece{
+.Order_Manager_Convenience_Wrap::-webkit-scrollbar-track-piece{
 	background:#E1E5EB;
 }
-.Order_Manager_TB_Convenience::-webkit-scrollbar-thumb:horizontal{
+.Order_Manager_Convenience_Wrap::-webkit-scrollbar-thumb:horizontal{
 	background-color:#9299A5;
 }
-.Order_Manager_TB_Convenience::-webkit-scrollbar-thumb:vertical{
+.Order_Manager_Convenience_Wrap::-webkit-scrollbar-thumb:vertical{
 	background-color:#9299A5;
 }
 
@@ -835,8 +860,9 @@ a:focus { outline: none; }
 .Order_Manager_TB_Position tr td:nth-child(7){
 	width:142px;
 }
-
-
+.Order_Manager_TB_Condition table{
+	min-width:710px;
+}
 .Order_Manager_TB_Condition tr td:first-child,
 .Order_Manager_TB_Condition tr td:nth-child(2),
 .Order_Manager_TB_Condition tr td:nth-child(4){
@@ -971,6 +997,36 @@ div[class^=order-dashed-wrap] span[name=price]{
     line-height: 20px;
     font-weight: bold;
 }
+
+div[class^=coorder-dashed-wrap]{
+	position: absolute;
+    height: 1px;
+    border-top: 1px dashed red;
+    pointer-events: none;
+    /* width: 800px;
+    top: 50%; */
+}
+div[class^=coorder-dashed-wrap] span[name=codir]{
+	width: 51px;
+    height: 18px;
+    display: inline-block;
+    /* background-image: url(../images/maiduokai.png); */
+    background-repeat:no-repeat;
+    background-size:100% 100%;
+    position: absolute;
+}
+div[class^=coorder-dashed-wrap] span[name=price]{
+	display: inline-block;
+    position: absolute;
+    right: -52px;
+    background-color: #FFCA00;
+    width: 50px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+}
+
 div[class^=trade-pointer-wrap]{
 	width: 10px;
     height: 10px;
@@ -1312,4 +1368,24 @@ div[class^=remodal-add-instru-select]::-webkit-scrollbar-thumb:vertical{
 	width:55px;
 	height:284px;
 	display:inline-block;
+}
+.conOrderContextMenu{
+	width:84px;
+	height:34px;
+	position:absolute;
+}
+.conOrderContextMenu div[name=send],
+.conOrderContextMenu div[name=del]{
+	width:80px;
+	height:27px;
+	background-repeat:no-repeat;
+	background-position:center;
+	cursor:pointer;
+}
+.conOrderContextMenu div[name=send]{
+	margin-bottom: 4px;
+	background-image:url(../images/rightclick_dispatchnow1.png);
+}
+.conOrderContextMenu div[name=del]{
+	background-image:url(../images/rightclick_delete1.png);
 }

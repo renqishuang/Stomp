@@ -70,34 +70,20 @@ function KLSubscribeHandler(dt){
 	if(!CurrentDataTime){
 		CurrentDataTime = time;
 		CurrentKLObj.addCandleToKL(item);//收到订阅数据后, 先添加第一条数据
-		//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;//临时修改最后一条数据
 		this.lastUpdateDt = item;
 		drawKL();//重新画图
-		CurrentKLObj.updateKLOnCandle(item);
+		CurrentKLObj.updateKLOnCandle(item);//临时修改最后一条数据
 	}else{
 		//return;
 		if(CurrentDataTime == time){
-			//修改一条数据
-			//console.log("修改一条数据");
 			this.lastUpdateDt = item;
-			//GlobalKLData.ks[GlobalKLData.ks.length-1] = item;//临时修改最后一条数据
-			//CurrentKLObj.addCandleToKL(item);
-			//drawKL();
-			CurrentKLObj.updateKLOnCandle(item);
+			CurrentKLObj.updateKLOnCandle(item);//临时修改最后一条数据
 		}else{
-			//添加一条数据
-			//var lastItem = KLDataDecimalHandler(this.lastUpdateDt);
 			CurrentKLObj.updateGlobalKLLastDt(this.lastUpdateDt);//更新最后一条数据
-			//drawKL();
-			//CurrentKLObj.addCandleToKL(lastItem); //添加最后更新的数据 
 			CurrentKLObj.addCandleToKL(item);//添加新数据
 			//清空交易点
 			$('div[class^=trade-pointer-wrap]').remove();
 			drawKL();
-			//重画交易点
-			//hisTradeDataSet(HisTradePointerData,false);
-			//调取交易历史数据
-			//getHisTradeInfo(); -------------------
 			CurrentDataTime = time;
 		}
 	}
@@ -180,7 +166,12 @@ function originalDataHandle(data){
 
 //画K线
 function drawKLHandler(interval){
-	LoadKLineDataFinish = true;//标识数据加载完成
+	//系统数据加载完成后处理
+	if(SystemDataLoadFinish == false){
+		afterInitSysInfo();
+		SystemDataLoadFinish = true;
+	}
+	LoadKLineDataFinish = true;//标识K线数据加载完成
 	if(GlobalKLData.ks.length == 0)return;
 	drawKL();//画图
 	//调取交易历史数据
@@ -198,15 +189,22 @@ function drawKLHandler(interval){
 		//委托挂单
 		getTradeInfoPendingDepute();
 	}
-	var destination = "/topic/"+CurrentInstrumentID+"_"+interval; 
+	
+	/*var destination = "/topic/"+CurrentInstrumentID+"_"+interval; 
 	if(!KLWSClient) return;
 	//console.log("添加监听");
 	KLWSSubscribe = KLWSClient.subscribe(destination,function(message){
 		if(!LoadKLineDataFinish)return;
-		console.log('topic-kl------------------------');
+		//console.log('topic-kl------------------------');
 		var tempData = JSON.parse(message.body);
 		KLSubscribeHandler(tempData);//实时K线变化
-	});
+	});*/
+	/*console.log('subscribe obj type---------->');
+	console.log(KLWSSubscribe);
+	console.log(typeof KLWSSubscribe);
+	var myOb = {};
+	myOb.kl = KLWSSubscribe;
+	console.log(myOb.kl);*/
 }
 
 //获取当天K线数据
@@ -299,7 +297,6 @@ function getHisKLines(interval,time,amount,have){
 			console.log(data);
 			if(state === 0){
 				var obj = data.res.data;
-				LoadKLineDataFinish = true;
 				if(have == 'not'){
 					originalDataHandle(obj);
 				}else if(have == 'yes'){
@@ -355,11 +352,11 @@ function setKLIntervalEvent(KLTimeShareList){
 				$(this).attr('isMouseDown','true');
 				$(this).css('backgroundColor','#8494A4');
 				$(this).css('color','black');
-				//取消原来的订阅 ,开始新的订阅
-				if(KLWSSubscribe) KLWSSubscribe.unsubscribe();
 				var val = $(this).val();
+				CurrentKLInterval = Number(val);
 				loadHisKLineData(val);//加载数据  
-				//drawKL();//画图
+				//取消原来的订阅 ,开始新的订阅
+				addAllInstruKLSubscribe(CurrentKLInterval);
 			}
 		});
 	}

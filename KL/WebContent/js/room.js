@@ -7,8 +7,9 @@ function roomInstrumentListInfo(iidArr){
 		getMarketInstruInfo();
 		//获取交易数据
 		getTradeInfoInstStat();
-		//监听MQ
-		addMQTopicSubscribe();
+		
+		/*//监听MQ
+		addMQTopicSubscribe();*/
 		
 		//红色边框闪烁
 		var firstLi = $('.KL_Instrument_Wrap').find('li:nth-child(1)');
@@ -20,6 +21,10 @@ function roomInstrumentListInfo(iidArr){
 		mainViewWrap.append($(addInstruFrag));
 		var promptObj = $('.addInstrumentPrompt');
 		promptObj.css('left',mainViewWrap.width()/2-promptObj.width()/2);
+		//下单器价格手数设置
+		var volWrap = $('.KL_OM_Volume_Number');
+		volWrap.prev().html(0);
+		volWrap.find('input').val(1);
 		return;
 	}
 	
@@ -65,9 +70,6 @@ function roomInstrumentListInfo(iidArr){
 				var KLTimeShareList = KLTimeShareDiv.find("li");
 				//默认触发1分钟K线图
 				KLTimeShareList.eq(0).trigger('mousedown');
-				setTimeout(function(){
-					afterInitSysInfo();
-				},200);
 			}
 		},
 		error:function(xhr,state){
@@ -133,16 +135,16 @@ function roomInstrumentSet(dt){
 		selectObj.append($(htmlFrag));
 		//在添加合约界面显示所有合约
 		var addInstruWrap = $('.KL_Instrument_Wrap');
-		var addInstruBg = 'url(images/dingbumorenjiaoyi.png)';
+		var addInstruBg = 'url('+CurrentImagePath+'/dingbumorenjiaoyi.png)';
 		var isSelect = false;
 		var pricecolor = '#06E65A';
 		var li = addInstruWrap.find('li').eq(i);
 		if(i == 0) {
-			addInstruBg = 'url(images/dingbuxuanzhongjiaoyi.png)';
+			addInstruBg = 'url('+CurrentImagePath+'/dingbuxuanzhongjiaoyi.png)';
 			isSelect = true;
 			pricecolor='#E60302';
 			var textWrap = li.find('span[name=instru_text_bg]');
-			textWrap.css('background-image','url(images/heyueItemtxt_bg.png)');
+			textWrap.css('background-image','url('+CurrentImagePath+'/heyueItemtxt_bg.png)');
 			textWrap.css('color','white');
 		}
 		var inameSpan = li.find('span[name=instru_name]');

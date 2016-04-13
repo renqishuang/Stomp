@@ -3,12 +3,12 @@ function KLAddInstruMouseOver(li){
 	var isSelect = $(li).attr('isSelect');
 	if(hasInstru == 'true'){
 		if(isSelect != 'true'){
-			$(li).css('background-image','url(images/dingbuxuanzhongjiaoyi.png)');
+			$(li).css('background-image','url('+CurrentImagePath+'/dingbuxuanzhongjiaoyi.png)');
 		}
 		var delSpan = $(li).find('span[name=instru_del]');
 		delSpan.css('display','inline-block')
 	}else{
-		$(li).css('background-image','url(images/zengjiaheyueover.png)');
+		$(li).css('background-image','url('+CurrentImagePath+'/zengjiaheyueover.png)');
 	}
 }
 function KLAddInstruMouseOut(li){	
@@ -16,12 +16,12 @@ function KLAddInstruMouseOut(li){
 	var isSelect = $(li).attr('isSelect');
 	if(hasInstru == 'true'){
 		if(isSelect != 'true'){
-			$(li).css('background-image','url(images/dingbumorenjiaoyi.png)');
+			$(li).css('background-image','url('+CurrentImagePath+'/dingbumorenjiaoyi.png)');
 		}
 		var delSpan = $(li).find('span[name=instru_del]');
 		delSpan.css('display','none');
 	}else{
-		$(li).css('background-image','url(images/zengjiaheyue.png)');
+		$(li).css('background-image','url('+CurrentImagePath+'/zengjiaheyue.png)');
 	}
 }
 //获取行情-产品
@@ -369,8 +369,6 @@ function selectInstruMouseClick(li,event){
 }
 //添加合约
 function KLAddInstruMouseDown(li){
-	/*$('.KL_Canvas').css('width',600);
-	return;*/
 	var hasInstru = $(li).attr('hasInstru');
 	var isSelect = $(li).attr('isSelect');
 	if(hasInstru != 'true'){
@@ -421,7 +419,7 @@ function KLAddInstruMouseDown(li){
 				var tempLi = liList.eq(i),tempIsSelect = tempLi.attr('isSelect');
 				if(tempIsSelect == 'true'){
 					tempLi.attr('isSelect',false);
-					tempLi.css('background-image','url(images/dingbumorenjiaoyi.png)');
+					tempLi.css('background-image','url('+CurrentImagePath+'/dingbumorenjiaoyi.png)');
 					var textWrap = tempLi.find('span[name=instru_text_bg]');
 					textWrap.css('background-image','');
 					textWrap.css('color','black');
@@ -431,12 +429,12 @@ function KLAddInstruMouseDown(li){
 			}
 			//设置当前合约的样式
 			var textWrap = $(li).find('span[name=instru_text_bg]');
-			textWrap.css('background-image','url(images/heyueItemtxt_bg.png)');
+			textWrap.css('background-image','url('+CurrentImagePath+'/heyueItemtxt_bg.png)');
 			textWrap.css('color','white');
 			var priceSpan = $(li).find('span[name=instru_price]');
 			priceSpan.css('color','#E60302');
 			$(li).attr('isSelect',true);
-			$(li).css('background-image','url(images/dingbuxuanzhongjiaoyi.png)');
+			$(li).css('background-image','url('+CurrentImagePath+'/dingbuxuanzhongjiaoyi.png)');
 			
 			//切换合约
 			var selectObj = $('.Order_Instrument_Select');
@@ -447,6 +445,7 @@ function KLAddInstruMouseDown(li){
 		}
 	}
 }
+//删除合约
 function KLDeleteInstrument(wrap){
 	var parent = $(wrap).parent();
 	var instru = parent.attr('value');
@@ -472,7 +471,6 @@ function addInstruSuccessCallBack(dt){
 	var instruListWrap = $('.KL_Instrument_Wrap'),
 		liList = instruListWrap.find('li'),
 		liLen = liList.length;
-	CurrentInstrumentID = iid;
 	//隐藏红色边框闪烁
 	var addInstruAnimate = $('.addInstrumentAnimate');
 	if(addInstruAnimate.length != 0) addInstruAnimate.hide();
@@ -484,7 +482,7 @@ function addInstruSuccessCallBack(dt){
 		var isSelect = li.attr('isSelect');
 		//取消选中样式
 		if(isSelect == 'true'){
-			li.css('background-image','url(images/dingbumorenjiaoyi.png)');
+			li.css('background-image','url('+CurrentImagePath+'/dingbumorenjiaoyi.png)');
 			li.attr('hasInstru',true);
 			li.attr('isSelect',false);
 			var priceSpan = li.find('span[name=instru_price]');
@@ -494,11 +492,11 @@ function addInstruSuccessCallBack(dt){
 			textWrap.css('color','black');
 		}
 		if(value == ''){
-			var addInstruBg = 'url(images/dingbuxuanzhongjiaoyi.png)',
+			var addInstruBg = 'url('+CurrentImagePath+'/dingbuxuanzhongjiaoyi.png)',
 				isSelect = true,
 				pricecolor='#E60302';
 			var textWrap = li.find('span[name=instru_text_bg]');
-			textWrap.css('background-image','url(images/heyueItemtxt_bg.png)');
+			textWrap.css('background-image','url('+CurrentImagePath+'/heyueItemtxt_bg.png)');
 			textWrap.css('color','white');
 			//添加选中样式
 			var inameSpan = li.find('span[name=instru_name]');
@@ -526,6 +524,8 @@ function addInstruSuccessCallBack(dt){
 				step:step,
 				volmul:volmul
 			};
+			//单个合约K线订阅添加
+			addInstruKLSubscribe(iid);
 			orderInstrumentSwitch(selectObj[0]);
 			break;
 		}
@@ -556,10 +556,13 @@ function delInstruSuccessCallBack(dt){
 		selectObj.val('');
 		var delOption = selectObj.find('option[value='+iid+']');
 		delOption.remove();
-		//设置K线图
+		
 		//停止K线和盘口数据的订阅
-		KLWSSubscribe.unsubscribe();
-		TapWSSubscribe.unsubscribe();
+		/*KLWSSubscribe.unsubscribe();
+		TapWSSubscribe.unsubscribe();*/
+		cancelInstruKLSubscribe(iid);
+		cancelInstruTapeSubscribe(iid);
+		//清空画布
 		CurrentKLObj.clearCanvas();
 		CurrentInstrumentID = ''; //重置当前合约
 		var firstLi = instruListWrap.find('li:nth-child(1)');
@@ -579,6 +582,9 @@ function delInstruSuccessCallBack(dt){
 		//隐藏最新价格提示框
 		var lastPriceTip = $('div[class^=KL_Y_Axis_Last_Price_Tip]');
 		lastPriceTip.hide();
+		//挂单提示黄色虚线
+		var orderDashWraps = $('div[class^=order-dashed-wrap-]');
+		orderDashWraps.hide();
 	}else{
 		for(var i=0;i<liLen;i++){
 			var li = liList.eq(i);
@@ -587,6 +593,9 @@ function delInstruSuccessCallBack(dt){
 				li.remove();
 				var liFrag = "<li value='' name='addInstrumentOne' onclick='KLAddInstruMouseDown(this)' onmouseover='KLAddInstruMouseOver(this)' onmouseout='KLAddInstruMouseOut(this)'><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>";
 				instruListWrap.append($(liFrag));
+				
+				//取消K线数据的订阅
+				cancelInstruKLSubscribe(iid);
 				
 				//如果删除的合约是当前正选中的合约, 切换到第一个合约
 				if(iid == selectObj.val()){
@@ -611,10 +620,10 @@ function delInstruSuccessCallBack(dt){
 				//修改添加合约区域, 第一个合约的样式
 				var firstLi = liList.eq(0);
 				if(firstLi.length != 0){
-					firstLi.css('background-image','url(images/dingbuxuanzhongjiaoyi.png)');
+					firstLi.css('background-image','url('+CurrentImagePath+'/dingbuxuanzhongjiaoyi.png)');
 					firstLi.attr('isSelect',true);
 					var textWrap = firstLi.find('span[name=instru_text_bg]');
-					textWrap.css('background-image','url(images/heyueItemtxt_bg.png)');
+					textWrap.css('background-image','url('+CurrentImagePath+'/heyueItemtxt_bg.png)');
 					textWrap.css('color','white');
 					var priceSpan = li.find('span[name=instru_price]');
 					priceSpan.css('color','#E60302');

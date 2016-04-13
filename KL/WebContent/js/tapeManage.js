@@ -261,7 +261,7 @@ function getTapeInfo() {
 			if(state === 0){
 				var res = data.res;
 				//标识昨结价
-				window.CurrentPresettlement= res.presettlement;
+				CurrentPresettlement= res.presettlement;
 				//console.log("当前昨结价位:-----------------");
 				//console.log(CurrentPresettlement);
 				//LoadTapeFinish = true;//标识历史数据加载完成
@@ -311,6 +311,7 @@ function TapeTwoViewerHandler(data){
 	if(div.length == 0) return;
 	var redColor = '#E60302';
 	var greenColor = '#06E65A';
+	if(!CurrentPresettlement) return;
 	if(data.lastprice > CurrentPresettlement){
 		div.find('li[value=lastprice] span').css('color',redColor);
 	}else{

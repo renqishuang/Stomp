@@ -60,7 +60,7 @@ function listenerAccountID(){
 	if(AccountWSSubscribe) return;
 	AccountWSSubscribe = TradeWSClient.subscribe('/topic/'+CurrentAccountID,function(message){
 		var tempData = JSON.parse(message.body);
-		console.log('topic AID---------------------');
+		//console.log('topic AID---------------------');
 		//设置资金信息
 		var actionType = tempData.actiontype,
 			returnCode = tempData.returncode,
@@ -91,7 +91,17 @@ function listenerAccountID(){
 			}
 		}else if(actionType == 1){//下单成功
 			if(returnCode == 6){
-				alert('持仓不足');
+				RemodalInstance.open();
+				var remodalWrap = $('.remodal');
+				if(remodalWrap.length == 0 ) return;
+				var titleWrap = remodalWrap.children('.remodal-title');
+				titleWrap.html('成交提示');
+				var contentWrap = remodalWrap.children('.remodal-content');
+				contentWrap.attr('remodalConType','invalid');
+				contentWrap.empty();
+				var htmlFrag = "<div class='remodal-notification'>持仓不足"+
+					"</div>";
+				contentWrap.append($(htmlFrag));
 				return;
 			}
 			console.log('下单成功');
@@ -102,7 +112,18 @@ function listenerAccountID(){
 			if(returnCode == 1){
 				accountCapitalNotEnough();
 			}else if(returnCode == 11){
-				alert('下单价格超过价格变动幅度限制');
+				//alert('下单价格超过价格变动幅度限制');
+				RemodalInstance.open();
+				var remodalWrap = $('.remodal');
+				if(remodalWrap.length == 0 ) return;
+				var titleWrap = remodalWrap.children('.remodal-title');
+				titleWrap.html('下单提示');
+				var contentWrap = remodalWrap.children('.remodal-content');
+				contentWrap.attr('remodalConType','invalid');
+				contentWrap.empty();
+				var htmlFrag = "<div class='remodal-notification'>下单价格超过价格变动幅度限制"+
+					"</div>";
+				contentWrap.append($(htmlFrag));
 			}
 		}else if(actionType == 7){//添加合约
 			console.log('添加合约成功');
@@ -112,6 +133,14 @@ function listenerAccountID(){
 			console.log('删除合约成功');
 			console.log(tempData);
 			delInstruSuccessCallBack(tempData);
+		}else if(actionType == 5){
+			console.log('MQ 获取持仓信息');
+		}else if(actionType == 11){
+			if(status == 1){//设置条件单
+				getTradeInfoConOrder();
+			}else{//移出条件单
+				getTradeInfoConOrder();
+			}
 		}
 	});
 }
