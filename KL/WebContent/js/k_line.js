@@ -1231,7 +1231,6 @@ function drawKL(height) {
 	        	tipWidth:152, //交易点Tip宽度
 	        	tipOffset:4 //交易点Tip与Y线的偏移量
 	        }
-	       
 	    }; 
         CurrentKLObj = new kLine(GlobalKLOptionObj);
         KLPainter = new Painter('canvasKL', CurrentKLObj, GlobalKLData);

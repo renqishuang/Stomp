@@ -3,19 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <title>测试各种页面组件</title>
+<style>
+.signal{
+	width:21px;
+	height:21px;
+	/* background-image:url(images/signals_normal.png); */
+	background-repeat:no-repeat;
+	animation: connect 1s infinite;
+}
+@keyframes connect{
+	0%{background-image:url(images/signals_connecting1.png);}
+	20%{background-image:url(images/signals_connecting2.png);}
+	40%{background-image:url(images/signals_connecting3.png);}
+	6%{background-image:url(images/signals_connecting4.png);}
+	8%{background-image:url(images/signals_connecting5.png);}
+	100%{background-image:url(images/signals_connecting6.png);}
+}
+</style>
 <script src='js/jquery.1.11.3.min.js'></script>
 </head>
+<div class='signal'></div>
+<button id='test'>测试</button>
 <body>
-<input onkeydown="testKeyDown(this,event)" type='text'>
 <script>
-	var dataCount = Math.ceil(835 / (4 + 10))-1;
-	console.log('同时显示数据个数--->'+dataCount);
-	function testKeyDown(input, e){
-		console.log(e.keyCode);
-		if(e.keyCode < 48 || e.keyCode > 57){
-			e.preventDefault();
-		}
-	}
+//立即调用的函数表达式
+//闭包: 程序能够调用已运行的函数内部定义的局部变量
+	$('#test')[0].onclick = (function(){
+		console.log(this);
+		console.log('click');
+	})(window);
+	$('#test')[0].onclick = function(){
+		console.log('ddddd');
+	};
 </script>
 </body>
 </html>

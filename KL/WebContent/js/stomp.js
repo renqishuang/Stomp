@@ -132,8 +132,9 @@
       this.counter = 0;
       this.connected = false;
       this.heartbeat = {
-        outgoing: 10000,
-        incoming: 10000
+        outgoing: 120000,//发送心跳的时间
+        incoming: 10000,
+        content:'ping' //心跳发送的内容
       };
       this.maxWebSocketFrameSize = 16 * 1024;
       this.subscriptions = {};
@@ -206,14 +207,18 @@
         }
         return _results;
       })(), serverOutgoing = _ref1[0], serverIncoming = _ref1[1];
-      if (!(this.heartbeat.outgoing === 0 || serverIncoming === 0)) {
-        ttl = Math.max(this.heartbeat.outgoing, serverIncoming);
+      //if (!(this.heartbeat.outgoing === 0 || serverIncoming === 0)) {
+        //ttl = Math.max(this.heartbeat.outgoing, serverIncoming);
+        if (this.heartbeat.outgoing !== 0) {
+        	ttl = this.heartbeat.outgoing;//发送心跳
         if (typeof this.debug === "function") {
           this.debug("send PING every " + ttl + "ms");
         }
         this.pinger = Stomp.setInterval(ttl, (function(_this) {
           return function() {
-            _this.ws.send(Byte.LF);
+        	  var content = _this.heartbeat.content;
+            //_this.ws.send(Byte.LF);
+        	  _this.ws.send(content);
             return typeof _this.debug === "function" ? _this.debug(">>> PING") : void 0;
           };
         })(this));
@@ -335,6 +340,7 @@
                 _results.push(typeof _this.onreceipt === "function" ? _this.onreceipt(frame) : void 0);
                 break;
               case "ERROR":
+            	  console.log('触发Stomp Websocket onmessage方法, frame = error');
                 _results.push(typeof errorCallback === "function" ? errorCallback(frame) : void 0);
                 break;
               default:
@@ -352,6 +358,7 @@
             _this.debug(msg);
           }
           _this._cleanUp();
+          console.log('触发Stomp Websocket onclose方法');
           return typeof errorCallback === "function" ? errorCallback(msg) : void 0;
         };
       })(this);

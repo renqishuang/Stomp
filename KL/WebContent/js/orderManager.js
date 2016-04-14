@@ -44,8 +44,10 @@ function OMVolumeKeyPress(input,e){
 function OMPriceNumberUpClick(div){
 	if(CurrentInstrumentID == '') return;
 	var step = RoomInstrumentListInfo[CurrentInstrumentID].step;
+	var digits = RoomInstrumentListInfo[CurrentInstrumentID].digits;
 	var input = $(div).parent().prev();
-	input.val(Number(input.val())+step);
+	var val = (Number(input.val())+step).toFixed(digits);
+	input.val(val);
 	//设置固定价
 	var priceTypeWrap = $('.KL_OM_Price_Type_Wrap');
 	priceTypeWrap.css('background-image','url('+CurrentImagePath+'/gudingjia.png)');
@@ -54,8 +56,10 @@ function OMPriceNumberUpClick(div){
 function OMPriceNumberDownClick(div){
 	if(CurrentInstrumentID == '') return;
 	var step = RoomInstrumentListInfo[CurrentInstrumentID].step;
+	var digits = RoomInstrumentListInfo[CurrentInstrumentID].digits;
 	var input = $(div).parent().prev();
-	input.val(Number(input.val())-step);
+	var val = (Number(input.val())-step).toFixed(digits);
+	input.val(val);
 	//设置固定价
 	var priceTypeWrap = $('.KL_OM_Price_Type_Wrap');
 	priceTypeWrap.css('background-image','url('+CurrentImagePath+'/gudingjia.png)');
@@ -1320,7 +1324,8 @@ function tradeInfoPDHandler(data){
 		tr.find('td:nth-child(2)').html(dt.dir==0?'买':'卖');
 		tr.find('td:nth-child(3)').html(dt.co==0?'开':'平');
 		tr.find('td:nth-last-child(2)').html(dt.dvol);
-		tr.find('td:last-child').html(dt.dprice);
+		var digits = RoomInstrumentListInfo[dt.iid].digits;
+		tr.find('td:last-child').html((dt.dprice).toFixed(digits));
 	}
 }
 
@@ -1830,6 +1835,12 @@ function orderInstrumentSwitch(select){
 	cancelInstruTapeSubscribe(CurrentInstrumentID);
 	//设置当前合约
 	CurrentInstrumentID = select.value;
+	//合约名字设置
+	var timeShareWrap = $('.KL_TimeShareDesc_Wrap');
+	if(timeShareWrap.length !== 0){
+		var iidWrap = timeShareWrap.find('span[name=iid]');
+		iidWrap.html(CurrentInstrumentID);
+	}
 	//添加盘口数据的订阅
 	addInstruTapeSubscribe(CurrentInstrumentID);
 	

@@ -1,21 +1,18 @@
-//添加MQ订阅
-function addMQTopicSubscribe(){
-	//监听AID
-	listenerAccountID();
-	//给合约添加K线订阅
-	addAllInstruKLSubscribe();
-	//给合约添加盘口订阅
-	addInstruTapeSubscribe(CurrentInstrumentID);
-}
-
 //系统数据加载完成后调用
 function afterInitSysInfo(){
 	//获取盘口数据
 	getTapeInfo();
 	//获取交易数据
 	getTradeInfoInstStat();
-	//监听MQ
-	addMQTopicSubscribe();
+	if(window.WebSocket) {
+	    var destination;
+	    //订阅KL数据
+	    KLWSClient = Stomp.client(KLWebSocketUrl);
+	    KLWSClient.connect("","", klConnectOpenCallBack,klConnectCloseCallBack);
+	    //订阅资金(交易)数据
+	    TradeWSClient = Stomp.client(TradeWebSocketUrl);
+	    TradeWSClient.connect('','',aidConnectOpenCallBack,aidConnectOpenCallBack);
+	}
 }
 
 $(document).ready(function() {
@@ -30,35 +27,7 @@ $(document).ready(function() {
 	var canvas = $id('canvasKL');
 	CanvasPagePosition = getPageCoord(canvas);
 	CanvasPagePosition.width = initWidth;
-	function GetQueryString(name)
-	{
-	     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-	     var r = window.location.search.substr(1).match(reg);
-	     if(r!=null)return  unescape(r[2]); return null;
-	}
-	/*console.log('tiao--------------');
-	console.log(CurrentRoomID);
-	console.log(GetQueryString('a'));
-	CurrentRoomID=GetQueryString('a');
-	console.log(CurrentRoomID);
-	console.log('tiao--------------');
 	
-	return;*/
-	if(window.WebSocket) {
-	    var destination;
-	    //订阅KL数据
-	    KLWSClient = Stomp.client(KLWebSocketUrl);
-	    KLWSClient.connect("","", function(frame) {
-			console.log('connect-----------------ws');
-	    });
-	    //订阅资金(交易)数据
-	    TradeWSClient = Stomp.client(TradeWebSocketUrl);
-	    TradeWSClient.connect('','',function(){
-	    	
-	    });
-	 }else {
-	    return;
-	 }
 	//当前屏幕显示的最大K线个数
 	getMaxKLShowCount();
 	//禁用右键菜单事件
@@ -78,6 +47,7 @@ $(document).ready(function() {
 	if(orderManagerSecondWrap.length != 0 ){
 		orderManagerRightRegion(orderManagerSecondWrap);
 	}
+	//return;
 	//账户资金信息设置
 	getAccountInfo();
 });

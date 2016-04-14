@@ -33,6 +33,10 @@
 			</div>
 			<div class='KL_MainView_Region_Center'>
 			<div class="KL_TimeShareChart_Interval">
+				<span class='KL_TimeShareDesc_Wrap'> 
+					<span name='iid'></span>
+					<span name='minutes'></span>
+				</span>
 				<ul>
 					<li value="60">1</li>
 					<li value="180">3</li>
@@ -42,6 +46,27 @@
 					<li value="1800">30</li>
 					<li value="86400">日</li>
 				</ul>
+				<div class='Kl_MainView_Header_Right'>
+				<!-- 行情连接已断开,正在重新连接 -->
+					<span class='KL_Singal_State_Info'>正在连接服务器...</span>
+					<span class='KL_Signals_Connect_Tip_Wrap'>
+						<span class='KL_Signals_Connect_Tip' hidden="true"></span>
+					</span>
+					<span onmouseover="signalsConnectMouseOver(this,event)" onmouseout="signalsConnectMouseOut(this)" 
+						class='KL_Signals_Connect KL_Signals_Connect_Anim'></span>
+					<span class='KL_Legend_Wrap' onmouseover='legendMouseOver(this)' onmouseout='legendMouseOut(this)'>
+						<span class='KL_Legend_Bg'></span>
+					</span>
+					<span isClick='false' class='KL_Sound_Wrap' onclick="soundMouseClick(this)" onmouseover='soundMouseOver(this)' onmouseout='soundMouseOut(this)'>
+						<span class='KL_Sound_Bg'></span>
+					</span>
+					<span isClick='false' class='KL_TradeLine_Wrap' onclick='tradeLineMouseClick(this)' onmouseover='tradeLineMouseOver(this)' onmouseout='tradeLineMouseOut(this)'>
+						<span class='KL_TradeLine_Bg'></span>
+					</span>
+					<span isClick='false' class='KL_FullScreen_Wrap' onclick='fullScreenMouseClick(this)' onmouseover='fullScreenMouseOver(this)' onmouseout='fullScreenMouseOut(this)'>
+						<span class='KL_FullScreen_Bg'></span>
+					</span>
+				</div>
 			</div>
 			<!--width='890'-->
 			<canvas width='55' height='284' class='KL_Canvas_Y_Axis_Region' id = 'KL_Canvas_Y_Axis_Region'></canvas>
@@ -725,43 +750,15 @@
 	  <div class='remodal-title'>下单提示</div>
 	  <div data-remodal-action="close" class='remodal-close'></div>
 	  <div class='remodal-content'>
-	  	   <div class='remodal-add-instru-wrap'>
-	  	   	   <span name='exchange'><span name='combox-btn'></span></span>
-	  	   	   <span name='product'><span name='combox-btn'></span></span>
-	  	   	   <span name='instrument'><span name='combox-btn'></span></span>
-	  	   </div>
+	  	   
 	  </div>
 	  <span data-remodal-action="cancel" class="remodal-confirm"></span>
 	  <span data-remodal-action="confirm" class="remodal-cancel"></span>
 	</div>
 	
-	<!-- <div class='conOrderContextMenu'>
-		<div onclick='conOrderSendClick(this)' onmouseover='conOrderSendMouseOver(this)' onmouseout='conOrderSendMouseOut(this)' name='send'></div>
-		<div onclick='conOrderDelClick(this)' onmouseover='conOrderDelMouseOver(this)' onmouseout='conOrderDelMouseOut(this)' name='del'></div>
-	</div> -->
-	<!-- <div class='order_notify_wrap'>
-		<span value='iid'>i1609</span>
-		<span value='img'></span>
-		<span value='dir'>多</span>
-		<span value='co'>开</span>
-		<span value='price'>430</span>
-		<span value='vol'>1</span>
-		<span>手</span>
-		<span value='time'>11:26:20</span>
-	</div> -->
-	<!-- <div onclick="" class='remodal-open'>测试弹出框</div> -->
-	<!-- <div class='remodal-add-instru-select-exchange'>
-		<ul>
-			<li onmouseover='selectExchangeMouseOver(this)' onmouseout='selectExchangeMouseOut(this)'>郑州</li>
-			<li onmouseover='selectExchangeMouseOver(this)' onmouseout='selectExchangeMouseOut(this)'>上海</li>
-			<li onmouseover='selectExchangeMouseOver(this)' onmouseout='selectExchangeMouseOut(this)'>中金所</li>
-			<li onmouseover='selectExchangeMouseOver(this)' onmouseout='selectExchangeMouseOut(this)'>大连</li>
-		</ul>
-	</div> -->
-	<!-- <div class='order-dashed-wrap-123456'>
-		<span name='codir'></span>
-		<span name='price'></span>
-	</div> -->
+	<!-- <div class='KL_Signals_Connect_Tip'></div> -->
+	
+	
 	<script src="js/stomp.js"></script>
 	<script src='js/globalField.js'></script>
     <script src='js/jquery.1.11.3.min.js'></script>
@@ -789,6 +786,8 @@
     <script src="js/remodal.js"></script>
     <script src='js/remodalEventHandler.js'></script>
     <script src='js/topicSubscribe.js'></script>
+    <script src='js/mainView.js'></script>
+    <script src='js/clientConnect.js'></script>
     <script src='js/initHandler.js'></script>
   </body>
 </html>

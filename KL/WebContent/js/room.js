@@ -8,9 +8,6 @@ function roomInstrumentListInfo(iidArr){
 		//获取交易数据
 		getTradeInfoInstStat();
 		
-		/*//监听MQ
-		addMQTopicSubscribe();*/
-		
 		//红色边框闪烁
 		var firstLi = $('.KL_Instrument_Wrap').find('li:nth-child(1)');
 		var animationFrag = '<div class="addInstrumentAnimate"></div>';
@@ -128,6 +125,12 @@ function roomInstrumentSet(dt){
 				volumeWrap.find('input[type=text]').val(1);
 			}else{
 				volumeWrap.find('input[type=text]').val(0);
+			}
+			//合约名字设置
+			var timeShareWrap = $('.KL_TimeShareDesc_Wrap');
+			if(timeShareWrap.length !== 0){
+				var iidWrap = timeShareWrap.find('span[name=iid]');
+				iidWrap.html(iid);
 			}
 		}else{
 			htmlFrag = "<option value='"+iid+"'>"+iid+"</option>";

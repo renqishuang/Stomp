@@ -71,6 +71,7 @@ function listenerAccountID(){
 		if(actionType == 6){
 			if(returnCode == 0){
 				getTradeInfoPendingDepute();//重新获取委托单数据
+				getTradeInfoMP();
 			}
 			if(datatype == 33 && com == 2){
 				if(status == 3){
@@ -80,6 +81,7 @@ function listenerAccountID(){
 					getTradeInfoPendingDepute();
 				}else if(status == 2){//撤单
 					getTradeInfoPendingDepute(tempData);
+					getTradeInfoMP();
 				}
 			}
 		}else if(actionType == 4){

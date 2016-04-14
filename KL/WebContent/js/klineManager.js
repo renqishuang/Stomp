@@ -189,22 +189,6 @@ function drawKLHandler(interval){
 		//委托挂单
 		getTradeInfoPendingDepute();
 	}
-	
-	/*var destination = "/topic/"+CurrentInstrumentID+"_"+interval; 
-	if(!KLWSClient) return;
-	//console.log("添加监听");
-	KLWSSubscribe = KLWSClient.subscribe(destination,function(message){
-		if(!LoadKLineDataFinish)return;
-		//console.log('topic-kl------------------------');
-		var tempData = JSON.parse(message.body);
-		KLSubscribeHandler(tempData);//实时K线变化
-	});*/
-	/*console.log('subscribe obj type---------->');
-	console.log(KLWSSubscribe);
-	console.log(typeof KLWSSubscribe);
-	var myOb = {};
-	myOb.kl = KLWSSubscribe;
-	console.log(myOb.kl);*/
 }
 
 //获取当天K线数据
@@ -354,6 +338,17 @@ function setKLIntervalEvent(KLTimeShareList){
 				$(this).css('color','black');
 				var val = $(this).val();
 				CurrentKLInterval = Number(val);
+				//分钟设置
+				var timeShareWrap = $('.KL_TimeShareDesc_Wrap');
+				if(timeShareWrap.length !== 0){
+					var minuteWrap = timeShareWrap.find('span[name=minutes]');
+					if(CurrentKLInterval == 86400){
+						minuteWrap.html('日K线图');
+					}else{
+						minuteWrap.html(CurrentKLInterval/60+'分钟K线图');
+					}
+				}
+				
 				loadHisKLineData(val);//加载数据  
 				//取消原来的订阅 ,开始新的订阅
 				addAllInstruKLSubscribe(CurrentKLInterval);

@@ -433,10 +433,14 @@ a:focus { outline: none; }
 }
 .KL_TimeShareChart_Interval{
 	height:40px;
-	padding-left:10px;
+	padding-left:15px;
+	line-height: 40px;
 }
 .KL_TimeShareChart_Interval ul{
-	margin-top: 7px;
+	width: 200px;
+	display: inline-block;
+	position:relative;
+	vertical-align: middle;
 }
 .KL_TimeShareChart_Interval ul li{
 	background-color:transparent;
@@ -1388,4 +1392,169 @@ div[class^=remodal-add-instru-select]::-webkit-scrollbar-thumb:vertical{
 }
 .conOrderContextMenu div[name=del]{
 	background-image:url(../images/rightclick_delete1.png);
+}
+.Kl_MainView_Header_Right{
+	display: inline-block;
+    width: 340px;
+    position: absolute;
+    top: 12px;
+    right: 0px;
+    height: 24px;
+    line-height: 24px;
+}
+.KL_Singal_State_Info{
+	color:red;
+	font-size:13px;
+	vertical-align: super;
+	/* background-color: #262E3E; */
+    margin-right: 5px;
+    width:175px;
+    display: inline-block;
+    text-align: right;
+}
+@keyframes connect{
+	0%{background-image:url(../images/signals_connecting1.png);}
+	10%{background-image:url(../images/signals_connecting2.png);}
+	20%{background-image:url(../images/signals_connecting3.png);}
+	30%{background-image:url(../images/signals_connecting4.png);}
+	40%{background-image:url(../images/signals_connecting5.png);}
+	50%{background-image:url(../images/signals_connecting6.png);}
+	60%{background-image:url(../images/signals_connecting5.png);}
+	70%{background-image:url(../images/signals_connecting4.png);}
+	80%{background-image:url(../images/signals_connecting3.png);}
+	90%{background-image:url(../images/signals_connecting2.png);}
+	100%{background-image:url(../images/signals_connecting1.png);}
+}
+.KL_Signals_Connect_Anim{
+	animation: connect 3s infinite;
+	animation-timing-function:ease;
+}
+.KL_Signals_Connect{
+	width:21px;
+	height:21px;
+	background-image:url(../images/signals_normal.png);
+	background-repeat:no-repeat;
+	display:inline-block;
+	cursor:pointer;
+}
+.KL_Signals_Connect_Tip_Wrap{
+	position:relative;
+}
+.KL_Signals_Connect_Tip{
+	width:71px;
+	height:23px;
+	background-image:url(../images/linkState_tip.png);
+	background-repeat:no-repeat;
+	position:absolute;
+	top: -10px;
+    left: -75px;
+}
+.KL_Legend_Bg{
+	background-image:url(../images/showLegend_small2.png);
+	background-repeat:no-repeat;
+	width:90px;
+	height:23px;
+	display:inline-block;
+	pointer-events:none;
+	position: absolute;
+	top: 0px;
+    right: 0px;
+    display:none;
+}
+.KL_Legend_Wrap{
+	background-image:url(../images/showLegend_small1.png);
+	background-repeat:no-repeat;
+	background-position: 100% 0%;
+	width:23px;
+	height:23px;
+	display:inline-block;
+	position: absolute;
+    top: -2px;
+    right: 109px;
+    cursor:pointer;  
+}
+
+.KL_Sound_Bg{
+	background-image:url(../images/closeSound_small2.png);
+	background-repeat:no-repeat;
+	width:90px;
+	height:23px;
+	display:inline-block;
+	pointer-events:none;
+	position: absolute;
+	top: 0px;
+    right: 0px;
+    display:none;
+}
+.KL_Sound_Wrap{
+	background-image:url(../images/closeSound_small1.png);
+	background-repeat:no-repeat;
+	background-position: 100% 0%;
+	width:23px;
+	height:23px;
+	display:inline-block;
+	position: absolute;
+    top: -2px;
+    right: 78px;
+    cursor:pointer;  
+}
+
+.KL_TradeLine_Bg{
+	background-image:url(../images/hideTradeLine_small2.png);
+	background-repeat:no-repeat;
+	width:122px;
+	height:23px;
+	display:inline-block;
+	pointer-events:none;
+	position: absolute;
+	top: 0px;
+    right: 0px;
+    display:none;
+}
+.KL_TradeLine_Wrap{
+	background-image:url(../images/hideTradeLine_small1.png);
+	background-repeat:no-repeat;
+	background-position: 100% 0%;
+	width:23px;
+	height:23px;
+	display:inline-block;
+	position: absolute;
+    top: -2px;
+    right: 50px;
+    cursor:pointer;  
+}
+.KL_FullScreen_Bg{
+	background-image:url(../images/fullScreen_small2.png);
+	background-repeat:no-repeat;
+	width:90px;
+	height:23px;
+	display:inline-block;
+	pointer-events:none;
+	position: absolute;
+	top: 0px;
+    right: 0px;
+    display:none;
+}
+.KL_FullScreen_Wrap{
+	background-image:url(../images/fullScreen_small1.png);
+	background-repeat:no-repeat;
+	background-position: 100% 0%;
+	width:23px;
+	height:23px;
+	display:inline-block;
+	position: absolute;
+    top: -2px;
+    right: 25px;
+    cursor:pointer;  
+}
+.KL_TimeShareDesc_Wrap{
+	font-weight: bold;
+	font-size: 12px;
+    color: #F2F291;
+    vertical-align: middle;
+    height: 24px;
+    display: inline-block;
+    line-height: 24px;
+    margin-right: 16px;
+    width:115px;
 }
