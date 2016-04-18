@@ -19,7 +19,7 @@ window.CurrentUserId=12583;
 window.CurrentLC='ea46bff33476133b71a17210bcd2b28e';
 window.CurrentRMC=8514;
 
-/*window.KLWebSocketUrl='ws://mq1.zlw.com:61634';
+window.KLWebSocketUrl='ws://mq1.zlw.com:61634';
 window.TradeWebSocketUrl='ws://mq1.zlw.com:61633';
 //K线内网 192.168.1.157 ,Trade内网: 192.168.1.151
 window.WebServiceStrageUrl = 'http://kline1.zlw.com:8080/axis2/services/StrategyEngine?wsdl';
@@ -28,7 +28,7 @@ window.CurrentAccountID = 18349;
 window.CurrentRoomID=17384;
 window.CurrentUserId=348517;
 window.CurrentLC='4eed4aa58024f9c608cc72ff8d37d4bf';
-window.CurrentRMC=68300;*/
+window.CurrentRMC=68300;
 
 window.CurrentInstrumentID = '';//当前合约
 window.CurrentInstrumentDigits = 0;//价格后保留小数位数
@@ -62,3 +62,52 @@ window.AllOrderInitFinish = false;
 window.SystemDataLoadFinish = false;
 window.CurrentPresettlement=null; //昨结价
 window.CurrentImagePath='images';
+//当前MA设置
+window.CurrentKLMASet = 'ma';//noShow,ma,boll
+//KL日均线
+window.CurrentKLMAArr = ['MA1','MA2','MA3'];
+window.GlobalKLMAObj={
+	'MA1':{
+		name:'MA5',
+		count:5,
+		color:'#0063CD'
+	},
+	'MA2':{
+		name:'MA10',
+		count:10,
+		color:'#FFCB34'
+	},
+	'MA3':{
+		name:'MA20',
+		count:20,
+		color:'#71DDFF'
+	},
+	'MA4':{
+		name:'MA30',
+		count:30,
+		color:'#FF3009'
+	},
+	'MA5':{
+		name:'MA40',
+		count:40,
+		color:'#969696'
+	},
+	'MA6':{
+		name:'MA60',
+		count:60,
+		color:'#E65696'
+	},
+	'MA7':{
+		name:'MA120',
+		count:120,
+		color:'#A66CBD'
+	},
+	'MA8':{
+		name:'MA250',
+		count:250,
+		color:'#A3D648'
+	}
+};
+//Remodal default width and height
+window.RemodalDefaultWidth = 440;
+window.RemodalDefaultHeight = 285;

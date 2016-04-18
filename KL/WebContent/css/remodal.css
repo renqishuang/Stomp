@@ -39,15 +39,16 @@
   box-sizing: border-box;
   width: 440px;
   height:285px;
-  padding: 25px;
+  /* padding: 25px; */
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
   color: #2b2e38;
-  background-image: url('../images/alertbg.png');
+  /* background-image: url('../images/alertbg.png'); */
+  background-color: #2a3646;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
-  background-color: transparent;
+  /* background-color: transparent; */
 }
 
 .remodal.remodal-is-opening,
@@ -76,12 +77,18 @@
 }
 
 /* Close button */
+.remodal-footer{
+	position: absolute;
+    bottom: 20px;
+    right: 0px;
+    width: 100%;
+}
 .remodal-close{
 	width: 11px;
     height: 12px;
     position: absolute;
-    top: 30px;
-    right: 30px;
+    top: 15px;
+    right: 15px;
     background-image: url('../images/alertCloseBtn0001.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -99,6 +106,10 @@
     height: 38px;
     text-align: left;
     font-size: 16px;
+    border-bottom: 1px solid #39424e;
+    line-height: 38px;
+    text-indent: 10px;
+    position:relative;
 }
 .remodal-confirm,
 .remodal-cancel {

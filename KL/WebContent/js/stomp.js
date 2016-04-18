@@ -216,6 +216,7 @@
         }
         this.pinger = Stomp.setInterval(ttl, (function(_this) {
           return function() {
+        	  console.log('send heart beat to server');
         	  var content = _this.heartbeat.content;
             //_this.ws.send(Byte.LF);
         	  _this.ws.send(content);

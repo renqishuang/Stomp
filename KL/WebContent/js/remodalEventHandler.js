@@ -1,3 +1,10 @@
+$('.remodal-open').click(function(){
+	var remodal = $('.remodal');
+	if(remodal.length != 0){
+		remodal.css('width',RemodalDefaultWidth);
+		remodal.css('height',RemodalDefaultHeight);
+	}
+});
 $('.remodal-confirm').click(function(){
 	var remodalContent = $(this).prev();
 	var remodalType = remodalContent.attr('remodalConType');

@@ -60,7 +60,7 @@ function listenerAccountID(){
 	if(AccountWSSubscribe) return;
 	AccountWSSubscribe = TradeWSClient.subscribe('/topic/'+CurrentAccountID,function(message){
 		var tempData = JSON.parse(message.body);
-		//console.log('topic AID---------------------');
+		console.log('topic AID---------------------');
 		//设置资金信息
 		var actionType = tempData.actiontype,
 			returnCode = tempData.returncode,
@@ -96,6 +96,8 @@ function listenerAccountID(){
 				RemodalInstance.open();
 				var remodalWrap = $('.remodal');
 				if(remodalWrap.length == 0 ) return;
+				remodalWrap.css('width',RemodalDefaultWidth);
+				remodalWrap.css('height',RemodalDefaultHeight);
 				var titleWrap = remodalWrap.children('.remodal-title');
 				titleWrap.html('成交提示');
 				var contentWrap = remodalWrap.children('.remodal-content');
@@ -118,6 +120,8 @@ function listenerAccountID(){
 				RemodalInstance.open();
 				var remodalWrap = $('.remodal');
 				if(remodalWrap.length == 0 ) return;
+				remodalWrap.css('width',RemodalDefaultWidth);
+				remodalWrap.css('height',RemodalDefaultHeight);
 				var titleWrap = remodalWrap.children('.remodal-title');
 				titleWrap.html('下单提示');
 				var contentWrap = remodalWrap.children('.remodal-content');

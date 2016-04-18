@@ -5,7 +5,7 @@
  * count 屏幕显示数据的个数
  * daysCn  日均线天数
  */
-function calcMAPrices(ks, startIndex, count, daysCn) {
+function calcMAPrices(ks, startIndex, count, daysCn,maName) {
     var result = new Array();
     for (var i = startIndex; i < startIndex + count; i++) {
         var startCalcIndex = i - daysCn + 1;
@@ -19,6 +19,9 @@ function calcMAPrices(ks, startIndex, count, daysCn) {
             sum += ks[k].close;
         }
         var val = sum / daysCn;
+    	//每根K线根据MA的Name值绑定日均线的价格
+        ks[i].MADt[maName] = val;
+        //console.log('日均线索引---------'+i);
         result.push(val);
     }
     return result;
@@ -72,7 +75,7 @@ kLine.prototype = {
     //修改全局KL数据的最后一条数据
     updateGlobalKLLastDt:function(item){
     	for(var s in GlobalKLData.ks[GlobalKLData.ks.length-1]){
-    		if(s == 'KLIndex' || s == 'tradeDt') continue;
+    		if(s == 'KLIndex' || s == 'tradeDt' || s == 'MADt') continue;
     		GlobalKLData.ks[GlobalKLData.ks.length-1][s] = item[s];
     	}
     	return GlobalKLData.ks[GlobalKLData.ks.length-1];
@@ -191,6 +194,24 @@ kLine.prototype = {
     	$('div[class^=KL_Trade_Tip_Wrap]').hide();
     },
     
+    //MA价格显示
+    changeMAPrice:function(ki){
+    	if(CurrentKLMASet != 'ma') return;
+    	var MADt = ki.MADt;
+        var maPriceWrap = $('.KL_MA_Price_Wrap');
+        if(maPriceWrap.length != 0){
+        	for(var ma in MADt){
+            	var maWrap = maPriceWrap.find('span[name='+ma+']');
+            	if(maWrap.length != 0){
+            		var priceWrap = maWrap.next();
+            		if(priceWrap.length != 0){
+            			priceWrap.html(MADt[ma]);
+            		}
+            	}
+            }
+        }
+    },
+    
     //根据X坐标获取蜡烛的索引,并获取数据, 显示到Tip里面
     getTipHtml: function(x,y){
     	if(CurrentInstrumentID == '') return;
@@ -204,15 +225,20 @@ kLine.prototype = {
         var ki = data.ks[index];
         if(!ki) return;
         //判断当前K线
-        if(!CurrentKLXIndex){
+        if(CurrentKLXIndex == null){
         	CurrentKLXIndex = this.getIndex(x);
+        	//MA数据显示
+            this.changeMAPrice(ki);
         }else{
         	if(CurrentKLXIndex != this.getIndex(x)){
         		this.hideTradePointerTip();
+        		//MA数据显示
+                this.changeMAPrice(ki);
         		CurrentKLXIndex = this.getIndex(x);
         	}
         }
         this.currentTradePoint = ki.tradeDt
+        
         //判断是否有交易点
         if(ki.tradeDt.length != 0){
         	//console.log('交易点个数: '+ki.tradeDt.length);
@@ -888,8 +914,10 @@ kLine.prototype = {
         var priceIncrease = me.caclPriceIncrease(high,low);
         this.high += priceIncrease;
         this.low -= priceIncrease;
-        //画移动平均线
-        this.paintMAs(filteredData,"global");
+        if(CurrentKLMASet == 'ma'){
+        	//画移动平均线
+            this.paintMAs(filteredData,"global");
+        }
         this.currentX = 0;  //做逻辑 
         //画蜡烛
         for(var i=0;i<filteredData.length;i++){
@@ -1028,14 +1056,22 @@ kLine.prototype = {
         if(paintType == "global") startCalcIndex = startIndex;
         else startCalcIndex = toIndex-1;
         MAs.each(function (val, arr, index) {
-            var MA = calcMAPrices(me.getKLStore().ks, startCalcIndex, filteredData.length, val.daysCount);
+            var MA = calcMAPrices(me.getKLStore().ks, startCalcIndex, filteredData.length, val.daysCount, val.name);
             //console.log("计算后的日均线价格数组");
             //console.log(MA);
             val.values = MA;
-            MA.each(function (val, arr, i) {
-                if (val) {
-                    me.high = Math.max(me.high, val);
-                    me.low = Math.min(me.low, val);
+            MA.each(function (price, arr, i) {
+                if (price) {
+                    me.high = Math.max(me.high, price);
+                    me.low = Math.min(me.low, price);
+                    //设置上面显示的MA价格
+                    if(i == MA.length - 1){//用最后一根K线的日均线价格
+                    	var MAPriceWrap = $('.KL_MA_Price_Wrap');
+                    	var wrap = MAPriceWrap.find('span[name='+val.name+']');
+                    	if(wrap){
+                    		wrap.next().html(price);
+                    	}
+                    }
                 }
             });
         });
@@ -1176,6 +1212,29 @@ kLine.prototype = {
 function drawKL(height) {
 	if(CurrentInstrumentID == '') return;
 	if(!LoadKLineDataFinish) return;
+	var MAs = [];
+	//获取日均线数据
+	var MALen = CurrentKLMAArr.length;
+	for(var i=0;i<MALen;i++){
+		var MAObj = GlobalKLMAObj[CurrentKLMAArr[i]],
+			name = MAObj.name,
+			color = MAObj.color,
+			count = MAObj.count;
+		var tempMA = {
+			name:name,
+			color:color,
+			daysCount:count
+		};
+		MAs.push(tempMA);
+		var MAPriceWrap = $('.KL_MA_Price_Wrap');
+		if(MAPriceWrap.length != 0){
+			if(MAPriceWrap.find('span[name='+name+']').length == 0){
+				var htmlFrag = '<span name="'+name+'" style="margin-left:10px;color:'+color+';">'+name+':</span><span style="color:'+color+';" name="price"></span>';
+				MAPriceWrap.append($(htmlFrag));
+			}
+		}
+	}
+	
 	if(!KLPainter){
 		var canvasObj = $('#canvasKL');
 		if(canvasObj.length == 0) return;
@@ -1199,12 +1258,7 @@ function drawKL(height) {
 	        //y: 5
 	        region: { x: 0, y: 0, width: regionWidth, height: yAxisHt},
 	        barWidth: CurrentBarWidth, spaceWidth: CurrentSpaceWidth, horizontalLineCount: 10, verticalLineCount: 7, lineStyle: 'solid', borderColor: 'gray', splitLineColor: '#252A31', lineWidth: 1,
-	        MAs: [
-	            { color: '#0063CD', daysCount: 5 },
-	            { color: '#FFCB34', daysCount: 10 },
-	            { color: '#71DDFF', daysCount: 20 }/*,
-	            { color: 'rgb(0,0,0)', daysCount: 60 }*/
-	            ],
+	        MAs: MAs,
 	        yAxis: {
 	            font: '11px Arial', // region: { },
 	            color: '#55616E',
@@ -1237,6 +1291,7 @@ function drawKL(height) {
         CurrentKLObj.canvas = canvas;
         CurrentKLObj.ctx = canvas.getContext('2d');
     }
+	CurrentKLObj.options.MAs=MAs;
 	//如果高度变化, 重画Y轴
 	if(height && KLPainter.klOptions) KLPainter.klOptions.region.height = height;
     KLPainter.paint();

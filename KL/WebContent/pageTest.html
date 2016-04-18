@@ -19,22 +19,68 @@
 	8%{background-image:url(images/signals_connecting5.png);}
 	100%{background-image:url(images/signals_connecting6.png);}
 }
+select{
+	width:90px;
+	height:24px;
+	background-color: #191F26;
+    color: rgb(132, 148, 164);
+    border: 1px solid rgb(132, 148, 164);
+}
+input[type=color]{
+	width:20px;
+	height:20px;
+	cursor:pointer;
+	/* opacity:0; */
+}
 </style>
 <script src='js/jquery.1.11.3.min.js'></script>
 </head>
 <div class='signal'></div>
 <button id='test'>测试</button>
+<select onclick="selectClickFn(this)">
+	<option>不显示</option>
+	<option>MA组合</option>
+	<option>Boll</option>
+</select>
+<input type="color">
+<span style='display:inline-block;width:20px;height:20px;background-color:blue;'></span>
+<div class='MA_Set_Menu'>
+		<ul>
+			<li>MA50</li>
+			<li>MA10</li>
+			<li>MA20</li>
+		</ul>
+	</div>
 <body>
 <script>
 //立即调用的函数表达式
-//闭包: 程序能够调用已运行的函数内部定义的局部变量
+//闭包: 调用已运行的函数的局部变量
+	window.testArr = ['1','2','3'];
+	var b = $.map(testArr,function(item){
+		return item+'---';
+	});
+	console.log(b);
+	var colorWrap = $('input[type=color]');
+	colorWrap.val('#0063CD');
+	console.log('init val: '+colorWrap.val());
+	colorWrap.bind('change',function(wrap){
+		console.log('onChange--');
+	});
+	setTimeout(function(){
+		console.log('after set val: '+$('input[type=color]').val());
+	},4000);
 	$('#test')[0].onclick = (function(){
 		console.log(this);
 		console.log('click');
 	})(window);
 	$('#test')[0].onclick = function(){
 		console.log('ddddd');
+		console.log($('input[type=color]').val());
 	};
+	function selectClickFn(div){
+		$(div).css('background-color','rgb(132, 148, 164)');
+		$(div).css('color','black');
+	}
 </script>
 </body>
 </html>

@@ -36,7 +36,8 @@ function KLDataDecimalHandler(dt){
 		volumechg:Number(dt.volumechg),
 		openinterest:Number(dt.openinterest),
 		openinterestchg:Number(dt.openinterestchg),
-		tradeDt:[]//存放交易点
+		tradeDt:[],//存放交易点
+		MADt:{} //存放MA数据
 	};
 	return item;
 }
@@ -119,7 +120,8 @@ function originalDataHandleSplice(data){
 			volumechg:Number(dt.volumechg),
 			openinterest:Number(dt.openinterest),
 			openinterestchg:Number(dt.openinterestchg),
-			tradeDt:[]
+			tradeDt:[],
+			MADt:{}
 		};
 		GlobalKLData.ks.splice(0,0,item);
 	}
@@ -158,7 +160,8 @@ function originalDataHandle(data){
 			volumechg:Number(dt.volumechg),
 			openinterest:Number(dt.openinterest),
 			openinterestchg:Number(dt.openinterestchg),
-			tradeDt:[]
+			tradeDt:[],
+			MADt:{}
 		};
 		GlobalKLData.ks.splice(0,0,item);
 	}
@@ -329,6 +332,7 @@ function setKLIntervalEvent(KLTimeShareList){
 		var value = $(li).val();
 		$(li).attr('isMouseDown','false');
 		$('li').mousedown(function(e){
+			if($(this).attr('value') == 'timeShare') return;
 			if($(this).attr('isMouseDown') == 'false'){
 				CurrentDataTime = null;
 				LoadKLineDataFinish = false;

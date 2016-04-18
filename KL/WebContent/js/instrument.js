@@ -374,6 +374,9 @@ function KLAddInstruMouseDown(li){
 	if(hasInstru != 'true'){
 		RemodalInstance.open();
 		var remodalWrap = $('.remodal');
+		if(remodalWrap.length == 0) return;
+		remodalWrap.css('width',RemodalDefaultWidth);
+		remodalWrap.css('height',RemodalDefaultHeight);
 		var titleWrap = remodalWrap.children('.remodal-title');
 		titleWrap.html('添加合约');
 		var contentWrap = remodalWrap.children('.remodal-content');
@@ -451,6 +454,9 @@ function KLDeleteInstrument(wrap){
 	var instru = parent.attr('value');
 	RemodalInstance.open();
 	var remodalWrap = $('.remodal');
+	if(remodalWrap.length == 0) return;
+	remodalWrap.css('width',RemodalDefaultWidth);
+	remodalWrap.css('height',RemodalDefaultHeight);
 	var titleWrap = remodalWrap.children('.remodal-title');
 	titleWrap.html('删除合约');
 	var contentWrap = remodalWrap.children('.remodal-content');
@@ -548,7 +554,7 @@ function delInstruSuccessCallBack(dt){
 			if(value == iid){
 				//删除合约
 				li.remove();
-				var liFrag = "<li value='' name='addInstrumentOne' onclick='KLAddInstruMouseDown(this)' onmouseover='KLAddInstruMouseOver(this)' onmouseout='KLAddInstruMouseOut(this)'><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>";
+				var liFrag = "<li value='' onclick='KLAddInstruMouseDown(this)' onmouseover='KLAddInstruMouseOver(this)' onmouseout='KLAddInstruMouseOut(this)'><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>";
 				instruListWrap.append($(liFrag));
 			}
 		}
@@ -591,7 +597,7 @@ function delInstruSuccessCallBack(dt){
 			var value = li.attr('value');
 			if(value == iid){
 				li.remove();
-				var liFrag = "<li value='' name='addInstrumentOne' onclick='KLAddInstruMouseDown(this)' onmouseover='KLAddInstruMouseOver(this)' onmouseout='KLAddInstruMouseOut(this)'><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>";
+				var liFrag = "<li value='' onclick='KLAddInstruMouseDown(this)' onmouseover='KLAddInstruMouseOver(this)' onmouseout='KLAddInstruMouseOut(this)'><span name='instru_text_bg'><span name='instru_name'></span><span name='instru_id'></span></span><span name='instru_price'></span><span name='instru_del' onclick='KLDeleteInstrument(this)'></span></li>";
 				instruListWrap.append($(liFrag));
 				
 				//取消K线数据的订阅
@@ -671,6 +677,9 @@ function DeleteInstrumentHandler(iid){
 				}else if(returncode == 26){//不能删除持仓合约
 					RemodalInstance.open();
 					var remodalWrap = $('.remodal');
+					if(remodalWrap.length == 0) return;
+					remodalWrap.css('width',RemodalDefaultWidth);
+					remodalWrap.css('height',RemodalDefaultHeight);
 					var titleWrap = remodalWrap.children('.remodal-title');
 					titleWrap.html('删除合约提示');
 					var contentWrap = remodalWrap.children('.remodal-content');

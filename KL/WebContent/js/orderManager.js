@@ -90,6 +90,8 @@ function OMConditionMouseDown(div){
 		RemodalInstance.open();
 		var remodalWrap = $('.remodal');
 		if(remodalWrap.length == 0 ) return;
+		remodalWrap.css('width',RemodalDefaultWidth);
+		remodalWrap.css('height',RemodalDefaultHeight);
 		var titleWrap = remodalWrap.children('.remodal-title');
 		titleWrap.html('系统提示');
 		var contentWrap = remodalWrap.children('.remodal-content');
@@ -247,6 +249,8 @@ function OMOrderService(iid,dir,co,price,vol){
 				if(returncode == 99){//非交易时间, 下单失败
 					RemodalInstance.open();
 					var remodalWrap = $('.remodal');
+					remodalWrap.css('width',RemodalDefaultWidth);
+					remodalWrap.css('height',RemodalDefaultHeight);
 					var titleWrap = remodalWrap.children('.remodal-title');
 					titleWrap.html('下单提示');
 					var contentWrap = remodalWrap.children('.remodal-content');
@@ -281,6 +285,8 @@ function OMOrderMouseDown(){
 	if(Number(volumeVal) <= 0){
 		RemodalInstance.open();
 		var remodalWrap = $('.remodal');
+		remodalWrap.css('width',RemodalDefaultWidth);
+		remodalWrap.css('height',RemodalDefaultHeight);
 		var titleWrap = remodalWrap.children('.remodal-title');
 		titleWrap.html('系统提示');
 		var contentWrap = remodalWrap.children('.remodal-content');
@@ -295,6 +301,8 @@ function OMOrderMouseDown(){
 	RemodalInstance.open();
 	var remodalWrap = $('.remodal');
 	if(remodalWrap.length == 0 ) return;
+	remodalWrap.css('width',RemodalDefaultWidth);
+	remodalWrap.css('height',RemodalDefaultHeight);
 	var titleWrap = remodalWrap.children('.remodal-title');
 	titleWrap.html('下单提示');
 	var contentWrap = remodalWrap.children('.remodal-content');
@@ -815,8 +823,11 @@ function tradeInfoMPHandler(data){
 		shortTr.css('cursor','pointer');
 		shortTr.css('background-color','#FFE7E7');
 		
-		var instru = RoomInstrumentListInfo[dt.iid];
-		var digits = instru.digits;
+		var instru = RoomInstrumentListInfo[dt.iid],digits;
+		if(instru){
+			digits = instru.digits;
+		}
+		if(!digits) digits = 0;
 		shortTr.find('td:last-child').html((dt.avgprice).toFixed(digits));
 		shortTr.find('td:nth-last-child(2)').html(dt.volfcls);
 		shortTr.find('td:first-child').html(dt.iid);
@@ -1819,6 +1830,8 @@ function accountCapitalNotEnough(){
 	RemodalInstance.open();
 	var remodalWrap = $('.remodal');
 	if(remodalWrap.length == 0 ) return;
+	remodalWrap.css('width',RemodalDefaultWidth);
+	remodalWrap.css('height',RemodalDefaultHeight);
 	var titleWrap = remodalWrap.children('.remodal-title');
 	titleWrap.html('下单提示');
 	var contentWrap = remodalWrap.children('.remodal-content');
@@ -1955,6 +1968,8 @@ function conditionOrderService(con,dprice,cprice,dir,co,vol,iid){
 				if(returncode == 99){//非交易时间, 下单失败
 					RemodalInstance.open();
 					var remodalWrap = $('.remodal');
+					remodalWrap.css('width',RemodalDefaultWidth);
+					remodalWrap.css('height',RemodalDefaultHeight);
 					var titleWrap = remodalWrap.children('.remodal-title');
 					titleWrap.html('下单提示');
 					var contentWrap = remodalWrap.children('.remodal-content');

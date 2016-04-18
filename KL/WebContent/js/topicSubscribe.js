@@ -14,7 +14,7 @@ function addAllInstruKLSubscribe(){
 			var tempData = JSON.parse(message.body),
 				tempIid = tempData.iid,
 				tempInterval = tempData.interval;
-			console.log('K线订阅的合约ID---'+tempIid+'---周期: '+tempInterval);
+			//console.log('K线订阅的合约ID---'+tempIid+'---周期: '+tempInterval);
 			if(tempIid == CurrentInstrumentID && tempInterval == CurrentKLInterval){
 				//console.log('当前合约K线订阅价格->'+tempData.close);
 				KLSubscribeHandler(tempData);//实时K线变化
@@ -40,7 +40,7 @@ function addInstruKLSubscribe(iid){
 		var tempData = JSON.parse(message.body),
 			tempIid = tempData.iid,
 			tempInterval = tempData.interval;
-		console.log('K线订阅的合约ID---'+tempIid+'---周期: '+tempInterval);
+		//console.log('K线订阅的合约ID---'+tempIid+'---周期: '+tempInterval);
 		if(tempIid == CurrentInstrumentID && tempInterval == CurrentKLInterval ){
 			//console.log('当前合约K线订阅价格->'+tempData.close);
 			KLSubscribeHandler(tempData);//实时K线变化
@@ -74,7 +74,7 @@ function addInstruTapeSubscribe(iid){
 		//console.log("盘口数据");
 		//console.log('topic-tape------------------------');
 		var tempData = JSON.parse(message.body);
-		console.log('盘口订阅的合约ID---'+tempData.instrumentid);
+		//console.log('盘口订阅的合约ID---'+tempData.instrumentid);
 		if(tempData.instrumentid == CurrentInstrumentID){
 			TapeOneViewerHandler(tempData);
 			TapeTwoViewerHandler(tempData);

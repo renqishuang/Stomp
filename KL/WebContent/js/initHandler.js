@@ -33,6 +33,9 @@ $(document).ready(function() {
 	//禁用右键菜单事件
 	document.oncontextmenu = function(){return false;}; 
 	
+	//获取MA设置
+	getMAInitDT();
+	
 	 //分时段设置
 	var KLTimeShareDiv = $('div.KL_TimeShareChart_Interval');
 	var KLTimeShareList = KLTimeShareDiv.find("li");
@@ -47,7 +50,7 @@ $(document).ready(function() {
 	if(orderManagerSecondWrap.length != 0 ){
 		orderManagerRightRegion(orderManagerSecondWrap);
 	}
-	//return;
+	return;
 	//账户资金信息设置
 	getAccountInfo();
 });
