@@ -13,4 +13,9 @@ $('body').bind('click',function(){
 			}
 		}
 	}
+	//条件订单菜单
+	var conOrderMenu = $('.conOrderContextMenu');
+	if(conOrderMenu.length != 0){
+		conOrderMenu.hide();
+	}
 });

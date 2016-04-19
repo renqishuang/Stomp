@@ -26,6 +26,7 @@ function mainViewRightSplitClick(div){
 	//挂单提示黄色虚线
 	var orderDashWraps = $('div[class^=order-dashed-wrap-]'),
 		orderDashLen = orderDashWraps.length;
+	var canvasHeight = canvasRegion[0].height;
 	if(isClick == 'false'){
 		splitBtn.css('transform','rotate(180deg)');
 		$(div).attr('isClick',true);
@@ -35,7 +36,7 @@ function mainViewRightSplitClick(div){
 		orderTableRegion.css('width',centerRegion.width()-orderManWidth-5);
 		var canvasWidth = canvasRegion.width()+tapeWidth;
 		canvasRegion[0].width = canvasWidth;
-		canvasRegion[0].height = 284;
+		canvasRegion[0].height = canvasHeight;
 		orderDashWraps.css('width',canvasWidth);
 		
 		if(!addInstrumentPrompt.is(':hidden')){
@@ -57,7 +58,7 @@ function mainViewRightSplitClick(div){
 		orderTableRegion.css('width',centerRegion.width()-orderManWidth-5);
 		var canvasWidth = canvasRegion.width()-tapeWidth;
 		canvasRegion[0].width = canvasWidth;
-		canvasRegion[0].height = 284;
+		canvasRegion[0].height = canvasHeight;
 		orderDashWraps.css('width',canvasWidth);
 		
 		if(!addInstrumentPrompt.is(':hidden')){
@@ -99,7 +100,7 @@ function mainViewLeftSplitClick(div){
 	//交易点
 	var tradePoints = $('div[class^=trade-pointer-wrap]'),
 		tradePointLen = tradePoints.length; 
-	
+	var canvasHeight = canvasRegion[0].height;
 	if(isClick == 'false'){
 		leftRegion.css('width',tradeWidth);
 		tradeRegion.css('width',tradeWidth-splitWidth);
@@ -108,7 +109,7 @@ function mainViewLeftSplitClick(div){
 		centerRegion.css('width',centerRegion.width()-tradeWidth+splitWidth);
 		var canvasWidth = canvasRegion.width()-tradeWidth+splitWidth;
 		canvasRegion[0].width = canvasWidth;
-		canvasRegion[0].height=284;
+		canvasRegion[0].height=canvasHeight;
 		CanvasPagePosition.width = canvasRegion.width();
 		CanvasPagePosition.x += tradeWidth-splitWidth;
 		orderTableRegion.css('width',centerRegion.width()-orderManRegion.width()-5);
@@ -143,7 +144,7 @@ function mainViewLeftSplitClick(div){
 		centerRegion.css('width',centerRegion.width()+tradeWidth-splitWidth);
 		var canvasWidth = canvasRegion.width()+tradeWidth-splitWidth;
 		canvasRegion[0].width = canvasWidth;
-		canvasRegion[0].height=284;
+		canvasRegion[0].height=canvasHeight;
 		CanvasPagePosition.width = canvasRegion.width();
 		CanvasPagePosition.x -= tradeWidth-splitWidth;
 		orderTableRegion.css('width',centerRegion.width()-orderManRegion.width()-5);

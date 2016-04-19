@@ -1,0 +1,55 @@
+.message_box_wrap{
+	position: absolute;
+    width: 385px;
+    height: 245px;
+    top: 0px;
+    left:0px;
+    background-color: #2a3646;
+    z-index: 99999;
+}
+.message_box_title{
+	font-weight: bold;
+    color: #CBD8F8;
+    height: 38px;
+    text-align: left;
+    font-size: 16px;
+    border-bottom: 1px solid #39424e;
+    line-height: 38px;
+    text-indent: 10px;
+    position: relative;
+}
+.message_box_content{
+	height: 150px;
+    line-height: 150px;
+    font-size: 18px;
+    color: white;
+    text-align: center;
+}
+.message_box_confirm{
+	width: 117px;
+    height: 31px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center;
+    background-image: url('../images/maalertqueding0001.png');
+    margin: 0px auto;
+    cursor:pointer;
+}
+.message_box_confirm:hover{
+	background-image: url('../images/maalertqueding0002.png');
+}
+.message_box_close{
+	width: 11px;
+    height: 12px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-image: url('../images/alertCloseBtn0001.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor:pointer;
+}
+.message_box_close:hover{
+	background-image: url('../images/alertCloseBtn0002.png');
+}

@@ -50,6 +50,12 @@ $(document).ready(function() {
 	if(orderManagerSecondWrap.length != 0 ){
 		orderManagerRightRegion(orderManagerSecondWrap);
 	}
+	
+	//账户信息界面设置
+	var KLFooterWrap = $('.KL_FooterRegion');
+	if(KLFooterWrap.length != 0){
+		KLFooterWrap.find('li').css('width',KLFooterWrap.width()/9-2);
+	}
 	//return;
 	//账户资金信息设置
 	getAccountInfo();

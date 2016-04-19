@@ -4,18 +4,18 @@ document.write(
 '<script src="js/jquery.1.11.3.min.js"></script>'+
 '<script src="js/beforeonload.js"></script>'+
 '<script src="js/commonTool.js"></script>'+
-'<script src="libs/loading.js" ></script>'+
-'<script src="libs/util.js" ></script>'+
-'<script src="libs/absPainter.js" ></script>'+
-'<script src="libs/ajax.js"  ></script>'+
-'<script src="libs/crossLines.js"  ></script>'+
-'<script src="libs/axis-x.js"  ></script>'+
-'<script src="libs/tip.js"  ></script>'+
-'<script src="libs/linepainter.js"  ></script>'+
-'<script src="libs/volumePainter.js"  ></script>'+
-'<script src="libs/axis-y.js"  ></script>'+
-'<script src="libs/chartEventHelper.js?abc"  ></script>'+
-'<script src="libs/controller.js" ></script>'+
+'<script src="libs/loading.js"></script>'+
+'<script src="libs/util.js"></script>'+
+'<script src="libs/absPainter.js"></script>'+
+'<script src="libs/ajax.js"></script>'+
+'<script src="libs/crossLines.js"></script>'+
+'<script src="libs/axis-x.js"></script>'+
+'<script src="libs/tip.js"></script>'+
+'<script src="libs/linepainter.js"></script>'+
+'<script src="libs/volumePainter.js"></script>'+
+'<script src="libs/axis-y.js"></script>'+
+'<script src="libs/chartEventHelper.js?abc"></script>'+
+'<script src="libs/controller.js"></script>'+
 '<script src="js/room.js"></script>'+
 '<script src="js/tapeManage.js"></script>'+
 '<script src="js/klineManager.js"></script>'+
@@ -31,5 +31,6 @@ document.write(
 '<script src="js/clientConnect.js"></script>'+
 '<script src="js/body.js"></script>'+
 '<script src="js/localStorage.js"></script>'+
+'<script src="js/messageBox.js"></script>'+
 '<script src="js/initHandler.js"></script>'
 );

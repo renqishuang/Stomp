@@ -597,6 +597,8 @@ function orderManagerLeftRegionStyle(wrap){
 	}
 }
 
+
+
 //订单其左侧部分点击事件
 function orderManagerLeftRegion(wrap){
 	var navs = $(wrap[0]).find('div:first-child span');
@@ -607,6 +609,12 @@ function orderManagerLeftRegion(wrap){
 			if($(this).attr('isClick') == 'true'){
 				return;
 			}
+			var name = $(this).attr('name');
+			if(name == 'allRepeal'){
+				//全部撤单接口
+				repealPendingDepute('');
+				return;
+			}
 			//wrap.append(getOrderManagerConditionTpl());
 			orderManagerLeftRegionStyle(wrap);
 			$(this).css('border','1px solid #8393AA');
@@ -614,7 +622,7 @@ function orderManagerLeftRegion(wrap){
 			$(this).css('background-color','white');
 			$(this).attr('isClick',true);
 			
-			switch ($(this).attr('name')) {
+			switch (name) {
 			case 'convenience':
 				$('.Order_Manager_TB_Convenience').show();
 				//委托挂单
@@ -1224,17 +1232,30 @@ function pendingDeputeOrderNotify(dt,priceCount){
 function repealPendingDepute(dt){
 	/*console.log(dt.did);
 	return;*/
-	dt = JSON.parse(dt);
 	var method = 'trade';//方法
-	var data = {
-		"uid":CurrentUserId,
-		"rid":CurrentRoomID,
-		"lc":CurrentLC,
-		"did":dt.did,
-		"action":2,
-		"rmc":CurrentRMC,
-		"aid":CurrentAccountID
-	};
+	var data = {};
+	if(dt == ''){
+		data = {
+			"uid":CurrentUserId,
+			"rid":CurrentRoomID,
+			"lc":CurrentLC,
+			"action":2,
+			"rmc":CurrentRMC,
+			"aid":CurrentAccountID
+		};
+	}else{
+		dt = JSON.parse(dt);
+		data = {
+			"uid":CurrentUserId,
+			"rid":CurrentRoomID,
+			"lc":CurrentLC,
+			"did":dt.did,
+			"action":2,
+			"rmc":CurrentRMC,
+			"aid":CurrentAccountID
+		};
+	}
+	
 	var param = JSON.stringify(data);
 	$.ajax({
 		url:WebServiceTransferUrl+'/call_ws/output',

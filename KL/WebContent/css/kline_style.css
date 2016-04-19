@@ -42,10 +42,11 @@ a:focus { outline: none; }
 	margin:0 auto;
 }
 .KL_Instrument_Wrap{
+	width: 100%;
 	height:90px;
 }
 .KL_Instrument_Wrap li{
-	width: 300px;
+	width: 25%;
     height: 46px;
     float: left;
     background-image:url(../images/zengjiaheyue.png);
@@ -144,6 +145,17 @@ a:focus { outline: none; }
 }
 .KL_OrderManager_FirstWrap > div:first-child span:nth-child(5){
 	left:360px;
+}
+.KL_OrderManager_FirstWrap span[name=allRepeal]{
+	width:74px !important;
+	height:20px !important;
+	top:3px !important;
+	right:0px;
+	background-image:url(../images/allchedanbtn0001.png);
+	background-repeat:no-repeat;
+}
+.KL_OrderManager_FirstWrap span[name=allRepeal]:hover{
+	background-image:url(../images/allchedanbtn0002.png);
 }
 .KL_OrderManager_SecondWrap{
 	min-width:218px;
@@ -333,6 +345,7 @@ a:focus { outline: none; }
 }
 .KL_OrderManager_FirstWrap table{
 	border:none;
+	width: 100%;
 }
 .TradeInfoPendingDepute,.TradeInfo_MP{
 	width:100%;
@@ -379,7 +392,7 @@ a:focus { outline: none; }
 	border-right:1px solid rgba(23, 59, 111, 0.65);
 }
 .KL_OrderManager_FirstWrap tr:not(:first-child){
-	height:26px;
+	height:25px;
 }
 .KL_OrderManager_FirstWrap tr:first-child{
 	background-color: #8393AA;
@@ -435,6 +448,7 @@ a:focus { outline: none; }
 	height:40px;
 	padding-left:15px;
 	line-height: 40px;
+	position: relative;
 }
 .KL_TimeShareChart_Interval ul{
 	width: 250px;
@@ -489,13 +503,14 @@ a:focus { outline: none; }
     margin-left: 10px;
     font-weight: 500;
     font-size: 12px;
+    height:100%;
+    padding-top: 5px;
 }
 .Tape_Sub_Viewer_Two li{
 	color: #A6A7A9;
 	float: left;
 	width:50%;
-	height: 25px;
-    line-height: 25px;
+	height: 14%;
     position: relative;
 }
 .Tape_Sub_Viewer_Two span{
@@ -523,9 +538,10 @@ a:focus { outline: none; }
 .Tape_Sub_Viewer_Three ul{
 	margin-left:10px;
 	position:relative;
+	height:100%;
 }
 .Tape_Sub_Viewer_Three li{
-	height:170px;
+	height:100%;
 	float:left;
 	width:32px;
 	text-align:center;
@@ -533,17 +549,16 @@ a:focus { outline: none; }
 	color:white;
 }
 .Tape_Sub_Viewer_Three li div{
-	height:25px;
-	line-height:25px;
+	/* height:25px;
+	line-height:25px; */
+	height: 14%;
 }
 .Tape_Sub_Viewer_Three li:first-child{
-	height:170px;
 	float:left;
 	width:62px;
 	text-align:left;
 }
 .Tape_Sub_Viewer_Three li:nth-child(2){
-	height:170px;
 	float:left;
 	width:50px;
 }
@@ -638,23 +653,30 @@ a:focus { outline: none; }
 	color:white;
 	position:relative;
 	top:15px;
-	left:10px;
 	font-size:15px;
 }
 .Sell_Tape_Sub_Viewer_One span,.Buy_Tape_Sub_Viewer_One span{
 	font-weight:bold;
 }
-.Sell_Tape_Sub_Viewer_One span:first-child{
+.Sell_Tape_Sub_Viewer_One span[name=type]{
+	text-indent: 10px;
+    display: inline-block;
+}
+.Buy_Tape_Sub_Viewer_One span[name=type]{
+	text-indent: 10px;
+    display: inline-block;
+}
+.Sell_Tape_Sub_Viewer_One span[name=price]{
 	color:#06E65A;
 	margin-left: 20px;
 }
-.Buy_Tape_Sub_Viewer_One span:first-child{
+.Buy_Tape_Sub_Viewer_One span[name=price]{
 	color:#E60302;
 	margin-left: 20px;
 }
 
-.Sell_Tape_Sub_Viewer_One span:last-child,
-.Buy_Tape_Sub_Viewer_One span:last-child{
+.Sell_Tape_Sub_Viewer_One span[name=vol],
+.Buy_Tape_Sub_Viewer_One span[name=vol]{
 	position:absolute;
 	right:36px;
 	color:#FFFF99;
@@ -672,7 +694,6 @@ a:focus { outline: none; }
 }
 .KL_FooterRegion li{
 	float:left;
-	width:131px;
 	color:#A6A7A9;
 	font-weight: bold;
     text-align: center;
@@ -736,7 +757,7 @@ a:focus { outline: none; }
 .Order_Manager_Convenience_Wrap{
 	width:47%;
 	display: inline-block;
-	height: 100%;
+	height: 98%;
     overflow: auto;
     position: relative;
     padding-left: 10px;
@@ -764,7 +785,7 @@ a:focus { outline: none; }
 	border-right:1px solid rgba(41, 114, 220, 0.7);
 }
 .Order_Manager_TB_Delegation table{
-	width:1000px;
+	min-width:1000px;
 }
 
 .Order_Manager_TB_Delegation tr td:first-child{
@@ -808,7 +829,7 @@ a:focus { outline: none; }
 }
 .Order_Manager_TB_Bargain table{
 	border:none;
-	width:890px;
+	min-width:890px;
 }
 .Order_Manager_TB_Bargain tr td:first-child{
 	width:70px;
@@ -1097,6 +1118,9 @@ div[class^=KL_Y_Axis_Last_Price_Tip]{
 	background-color:transparent;
 	color:black;
 }
+.remodal-condition-order-wrap{
+	padding-left:25px;
+}
 .remodal-condition-order-wrap select{
 	width:122px;
 	height:28px;
@@ -1178,7 +1202,7 @@ div[class^=KL_Y_Axis_Last_Price_Tip]{
 	display: inline-block;
     height: 284px;
     min-width: 50px;
-    vertical-align: bottom;
+    /* vertical-align: bottom; */
     background-color: #191F26;
 }
 div[class^=KL_Trade_Tip_Wrap]{
@@ -1358,6 +1382,7 @@ div[class^=remodal-add-instru-select]::-webkit-scrollbar-thumb:vertical{
 .KL_MainView_Region_Center{
 	float:left;
 	width:950px;
+	height: 100%;
 }
 .KL_Hidden_Region_Btn{
 	width:5px;
@@ -1370,13 +1395,16 @@ div[class^=remodal-add-instru-select]::-webkit-scrollbar-thumb:vertical{
 	left:5px;
 }
 .KL_Canvas_Y_Axis_Region{
-	width:55px;
-	height:284px;
-	display:inline-block;
+	/* width:55px;
+	height:284px; */
+	/* display:inline-block; */
+}
+.KL_Canvas{
+	/* float:left; */
 }
 .conOrderContextMenu{
 	width:84px;
-	height:34px;
+	height:60px;
 	position:absolute;
 }
 .conOrderContextMenu div[name=send],
@@ -1402,6 +1430,10 @@ div[class^=remodal-add-instru-select]::-webkit-scrollbar-thumb:vertical{
     right: 0px;
     height: 24px;
     line-height: 24px;
+    pointer-events: none;
+}
+.Kl_MainView_Header_Right > span{
+	pointer-events: auto;
 }
 .KL_Singal_State_Info{
 	color:red;

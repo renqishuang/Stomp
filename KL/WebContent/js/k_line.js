@@ -163,9 +163,11 @@ kLine.prototype = {
         	}
         	tradeTip.show();
         	tradeTip.css('top',top);
-        	var xOffset = CanvasPagePosition.x+this.getX(x)+tipOffset;
+        	var canvasCoord = getPageCoord(this.canvas);
+        		canvasCoordX = canvasCoord.x;
+        	var xOffset = canvasCoordX+this.getX(x)+tipOffset;
         	if(direct == 'left'){
-        		xOffset = CanvasPagePosition.x+this.getX(x)-tipOffset-tipWidth;
+        		xOffset = canvasCoordX+this.getX(x)-tipOffset-tipWidth;
         	}
         	tradeTip.css('left',xOffset);
         	//设置数据
@@ -873,8 +875,6 @@ kLine.prototype = {
     
     //画K线及移动平均线
     paintItems: function () {
-    	//重置Canvas宽度
-    	this.options.region.width = this.canvas.clientWidth;
     	var me = this;
     	var options = this.options;
         var ctx = this.ctx;
@@ -1294,6 +1294,10 @@ function drawKL(height) {
         KLPainter = new Painter('canvasKL', CurrentKLObj, GlobalKLData);
         CurrentKLObj.canvas = canvas;
         CurrentKLObj.ctx = canvas.getContext('2d');
+    }else{
+    	//重置K线区域的宽度和高度
+    	CurrentKLObj.options.region.height = CurrentKLObj.canvas.clientHeight - 40;
+    	CurrentKLObj.options.region.width = CurrentKLObj.canvas.clientWidth;
     }
 	CurrentKLObj.options.MAs=MAs;
 	//如果高度变化, 重画Y轴

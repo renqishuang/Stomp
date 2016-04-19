@@ -7,6 +7,7 @@
     <link href="css/css.css" rel="stylesheet">
     <link href="css/remodal.css" rel="stylesheet">
     <link href="css/kline_style.css" rel="stylesheet">
+    <link href="css/messagebox.css" rel="stylesheet">
   </head>
   <body>
      <div class='KL_Wrap_Div'>
@@ -96,6 +97,7 @@
 						<span name='bargain'>当日成交</span>
 						<span name='position'>持仓信息</span>
 						<span name='condition'>条件单</span>
+						<span name='allRepeal'></span>
 					</div>
 					<div hidden="true" class='Order_Manager_TB_Convenience'>
 						<div class='Order_Manager_Convenience_Wrap'>
@@ -272,8 +274,10 @@
 		<!--K线侧区域  -->
 		<aside class='KL_TapeViewer_Wrap'>
 			<div class='Tape_Sub_Viewer_One'>
-				<div class='Sell_Tape_Sub_Viewer_One'>卖出<span>--</span><span>--</span></div>
-				<div class='Buy_Tape_Sub_Viewer_One'>买入<span>--</span><span>--</span></div>
+				<div class='Sell_Tape_Sub_Viewer_One'>
+				<span name='type'>卖出</span><span name='price'>--</span><span name='vol'>--</span></div>
+				<div class='Buy_Tape_Sub_Viewer_One'>
+				<span name='type'>买入</span><span name='price'>--</span><span name='vol'>--</span></div>
 			</div>
 			<div class='Tape_Sub_Viewer_Two'>
 				<ul>
@@ -407,6 +411,12 @@
 	  	 <span data-remodal-action="cancel" class="remodal-cancel"></span>
 	  </div>
 	</div>
+	
+	<!-- <div class='message_box_wrap'>
+		<div class='message_box_title'></div>
+		<div class='message_box_content'></div>
+		<div class='message_box_footer'></div>
+	</div> -->
     <script src='js/all.js'></script>
   </body>
 </html>

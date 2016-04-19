@@ -61,6 +61,8 @@ window.MarketInfoObj={};//存储市场行情
 window.AllOrderInitFinish = false;
 window.SystemDataLoadFinish = false;
 window.CurrentPresettlement=null; //昨结价
+window.MainViewDefaultWidth = 1200;
+window.MainViewDefaultHeight = 671;
 window.CurrentServiceRootPath='test/KL/WebContent/';
 window.CurrentImagePath='images';
 //当前MA设置

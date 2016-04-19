@@ -67,15 +67,89 @@ function tradeLineMouseOut(div){
 	}
 	$('.KL_TradeLine_Bg').hide();
 }
+function screenWidthAndHeightSet(width,height){
+	//整个区域宽高设置
+	var KLWrap = $('.KL_Wrap_Div');
+	KLWrap.css('width',width);
+	KLWrap.css('height',height);
+	//KLWrap.css('margin','0px');
+	//中心区域高度设置
+	var mainView = $('.KL_MainView_Wrap');
+		centerRegion = $('.KL_MainView_Region_Center'),
+		leftSplit = $('.KL_MainView_Region_Left'),
+		leftTrade = $('.KL_MainView_Left_Trade'),
+		rightSplit = $('.KL_MainView_Region_Right'),
+		headerRegion = $('.KL_Instrument_Wrap'),
+		footerRegion = $('.KL_FooterRegion'),
+		asideRegion= $('.KL_TapeViewer_Wrap');
+	var leftSplitWidth = rightSplit.width(),
+		rightSplitWidth = rightSplit.width();
+	if(!leftTrade.is(':hidden')) leftSplitWidth += leftTrade.width(); 
+	var centerHeight = height - headerRegion.height() - footerRegion.height();
+	centerHeight = centerHeight-3;//好像是有边框
+	mainView.css('height',centerHeight);
+	asideRegion.css('height',centerHeight);
+	//中心区域内部组件高度设置
+	var intervalWrap = $('.KL_TimeShareChart_Interval'),
+		maWrap = $('.KL_MA_Price_Wrap');
+		orderWrap = $('.KL_OrderManger_Wrap'),
+		yCanvas = $('.KL_Canvas_Y_Axis_Region'),
+		klCanvas = $('.KL_Canvas'),
+		moveWrap = $('.KL_Canvas_Move_Wrap');
+	var centerMainHeight = centerHeight - intervalWrap.height() 
+		- maWrap.height() - orderWrap.height();
+	centerMainHeight = centerMainHeight - 4;//好像是有边框
+	yCanvas[0].height = centerMainHeight;
+	klCanvas[0].height = centerMainHeight;
+	moveWrap.css('height',centerMainHeight);
+	//盘口界面高度设置
+	var tapeView = $('.KL_TapeViewer_Wrap');
+	var	tapeViewWidth = tapeView.width();
+	if(tapeView.is(':hidden')) tapeViewWidth=0;
+	var tapeViewOne = $('.Tape_Sub_Viewer_One');
+	var tapeViewTwo = $('.Tape_Sub_Viewer_Two');
+	var tapeViewThree = $('.Tape_Sub_Viewer_Three');
+	var tapeViewFour = $('.Tape_Sub_Viewer_Trade');
+	var tapeViewFive = $('.Tape_Sub_Viewer_Trade_Profit');
+	var tapeThreeHeight = centerHeight - tapeViewOne.height() - tapeViewFour.height() 
+		- tapeViewFive.height();
+	tapeViewThree.css('height',tapeThreeHeight/2-2);
+	tapeViewTwo.css('height',tapeThreeHeight/2-2);
+	//中心区域宽度设置
+	var orderManaFirstWrap = $('.KL_OrderManager_FirstWrap');
+	var orderManaSeconWrap = $('.KL_OrderManager_SecondWrap');
+	var mainViewWidth = width-tapeViewWidth;
+	mainView.css('width',mainViewWidth);
+	var centerWidth = mainViewWidth-leftSplitWidth-rightSplitWidth;
+	centerRegion.css('width',centerWidth);
+	var klCanvasWidth = centerWidth - yCanvas[0].width - moveWrap.width()-10;
+	klCanvas[0].width=klCanvasWidth;
+	
+	orderManaFirstWrap.css('width',centerWidth-orderManaSeconWrap.width()-10);
+	//重新画图
+	drawKL();
+	//账户信息界面设置
+	var KLFooterWrap = $('.KL_FooterRegion');
+	if(KLFooterWrap.length != 0){
+		KLFooterWrap.find('li').css('width',KLFooterWrap.width()/9-2);
+	}
+}
+
 function fullScreenMouseClick(div){
 	var isClick = $(div).attr('isClick');
 	$(div).css('background-image','none');
 	if(isClick == 'false'){
 		$('.KL_FullScreen_Bg').css('background-image','url('+CurrentImagePath+'/exitFullScreen_small2.png)');
 		$(div).attr('isClick',true);
+		var width = screen.availWidth, //宽度用screen对象 高度用window对象
+			height = window.innerHeight;
+		screenWidthAndHeightSet(width,height);
 	}else{
 		$('.KL_FullScreen_Bg').css('background-image','url('+CurrentImagePath+'/fullScreen_small2.png)');
 		$(div).attr('isClick',false);
+		var width = MainViewDefaultWidth;
+			height = MainViewDefaultHeight;
+		screenWidthAndHeightSet(width,height);
 	}
 }
 function fullScreenMouseOver(div){
@@ -205,7 +279,10 @@ function indicatrixSetMouseClick(btn){
 			var checkCount = Number(ulWrap.attr('checkCount'));
 			if(isClick == 'false'){
 				if(checkCount == 3){
-					alert('最多可选择3条均线');return;
+					MesBoxInstance.show();
+					MesBoxInstance.setContent('最多可选择3条均线');
+					return;
+					//alert('最多可选择3条均线');return;
 					/*RemodalInstance.open();
 					var remodalWrap = $('.remodal');
 					if(remodalWrap.length == 0 ) return;
