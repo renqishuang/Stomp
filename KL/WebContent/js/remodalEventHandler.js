@@ -6,7 +6,7 @@ $('.remodal-open').click(function(){
 	}
 });
 $('.remodal-confirm').click(function(){
-	var remodalContent = $(this).prev();
+	var remodalContent = $(this).parent().prev();
 	var remodalType = remodalContent.attr('remodalConType');
 	if(remodalType == 'order'){
 		//下单操作
@@ -62,6 +62,41 @@ $('.remodal-confirm').click(function(){
 		
 		//console.log('co-'+con+',price-'+price+',dir-'+dir+',co-'+co+',vol-'+vol);
 		conditionOrderService(con,dprice,cprice,dir,co,vol,iid);
+	}else if(remodalType == 'MASet'){
+		var MAMenu = remodalContent.find('.MA_Set_Menu');
+		if(MAMenu.length != 0){
+			var tempArr = [];
+			var tempObj = {};
+			var liList = MAMenu.find('li'),liLen = liList.length;
+			for(var i=0;i<liLen;i++){
+				var li = liList.eq(i);
+				var MAName = li.find('span[name=name]').html();
+				var checkLabel = li.find('span[name=check_label]');
+				var check = checkLabel.attr('isClick');
+				if(check == 'true'){
+					tempArr.push(MAName);
+				}
+				var colorWrap = li.find('input[type=color]'),
+					color = colorWrap.val();
+				var countWrap = li.find('input[type=text]');
+					count = countWrap.val();
+					tempObj[MAName] = {
+						name: 'MA'+	count,
+						count: Number(count),
+						color:color
+					};
+			}
+			CurrentKLMAArr = tempArr;
+			GlobalKLMAObj = tempObj;
+			if(window.localStorage){
+				localStorage.setItem('MAArr',CurrentKLMAArr);
+				localStorage.setItem('MAObj',JSON.stringify(GlobalKLMAObj));
+			}
+		}
+		var MAPriceWrap = $('.KL_MA_Price_Wrap');
+		if(MAPriceWrap.length != 0) MAPriceWrap.empty();
+		//重新画图
+		drawKL();
 	}
 });
 $('.remodal-order>div:last-child>span').click(function(){

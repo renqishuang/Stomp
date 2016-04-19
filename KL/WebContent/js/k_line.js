@@ -7,6 +7,8 @@
  */
 function calcMAPrices(ks, startIndex, count, daysCn,maName) {
     var result = new Array();
+    var digits = RoomInstrumentListInfo[CurrentInstrumentID].digits;
+    digits = typeof digits == 'undefined' || !digits ? 0 : digits;
     for (var i = startIndex; i < startIndex + count; i++) {
         var startCalcIndex = i - daysCn + 1;
         if (startCalcIndex < 0) {
@@ -20,6 +22,8 @@ function calcMAPrices(ks, startIndex, count, daysCn,maName) {
         }
         var val = sum / daysCn;
     	//每根K线根据MA的Name值绑定日均线的价格
+        val = val.toFixed(digits+1);
+         
         ks[i].MADt[maName] = val;
         //console.log('日均线索引---------'+i);
         result.push(val);

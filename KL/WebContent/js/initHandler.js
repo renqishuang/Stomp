@@ -50,7 +50,7 @@ $(document).ready(function() {
 	if(orderManagerSecondWrap.length != 0 ){
 		orderManagerRightRegion(orderManagerSecondWrap);
 	}
-	return;
+	//return;
 	//账户资金信息设置
 	getAccountInfo();
 });

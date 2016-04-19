@@ -147,7 +147,7 @@ function indicatrixSetMouseClick(btn){
 	var titleWrap = remodalWrap.children('.remodal-title');
 	titleWrap.html('MA提示');
 	var contentWrap = remodalWrap.children('.remodal-content');
-	contentWrap.attr('remodalConType','invalid');
+	contentWrap.attr('remodalConType','MASet');
 	contentWrap.empty();
 	var MASetWrapCls = 'MA_Set_Menu';
 	var htmlFrag = "<div class='"+MASetWrapCls+"'>"+

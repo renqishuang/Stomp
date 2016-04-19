@@ -195,7 +195,9 @@ function getRoomInstrumentInfo(){
 			console.log('room instrument list');
 			console.log(data);
 			if(state === 0){
-				var res = data.res,dt = res.inst,len = dt.length;
+				var res = data.res,dt = res.inst;
+				
+				/*var len = dt.length;*/
 				if(!dt) return;
 				//房间合约设置
 				roomInstrumentSet(dt);
