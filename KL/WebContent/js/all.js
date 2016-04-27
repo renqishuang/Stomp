@@ -14,7 +14,7 @@ document.write(
 '<script src="libs/linepainter.js"></script>'+
 '<script src="libs/volumePainter.js"></script>'+
 '<script src="libs/axis-y.js"></script>'+
-'<script src="libs/chartEventHelper.js?abc"></script>'+
+'<script src="libs/chartEventHelper.js"></script>'+
 '<script src="libs/controller.js"></script>'+
 '<script src="js/room.js"></script>'+
 '<script src="js/tapeManage.js"></script>'+
@@ -32,5 +32,6 @@ document.write(
 '<script src="js/body.js"></script>'+
 '<script src="js/localStorage.js"></script>'+
 '<script src="js/messageBox.js"></script>'+
+'<script src="js/canvasRenderingContext.js"></script>'+
 '<script src="js/initHandler.js"></script>'
 );

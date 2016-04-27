@@ -1,5 +1,5 @@
 function signalsConnectMouseOver(div,e){
-	console.log($(div));
+	//console.log($(div));
 	var pageX = e.pageX,pageY = e.pageY;
 	var signalStateWrap = 'KL_Signals_Connect_Tip';
 	if($('.'+signalStateWrap).is(':hidden')){
@@ -48,9 +48,13 @@ function tradeLineMouseClick(div){
 	if(isClick == 'false'){
 		$('.KL_TradeLine_Bg').css('background-image','url('+CurrentImagePath+'/showTradeLine_small2.png)');
 		$(div).attr('isClick',true);
+		ShowTrandePointLine = false;
+		drawKL();
 	}else{
 		$('.KL_TradeLine_Bg').css('background-image','url('+CurrentImagePath+'/hideTradeLine_small2.png)');
 		$(div).attr('isClick',false);
+		ShowTrandePointLine = true;
+		drawKL();
 	}
 }
 
@@ -133,6 +137,38 @@ function screenWidthAndHeightSet(width,height){
 	if(KLFooterWrap.length != 0){
 		KLFooterWrap.find('li').css('width',KLFooterWrap.width()/9-2);
 	}
+	//挂单提示黄色虚线
+	var canvasCoord =getPageCoord($('.KL_Canvas')[0]);
+	var orderDashWraps = $('div[class^=order-dashed-wrap-]'),
+		orderDashLen = orderDashWraps.length;
+	for(var i=0;i<orderDashLen;i++){
+		var dashWrap = orderDashWraps.eq(i);
+		if(!dashWrap.is(':hidden')){
+			dashWrap.css('left',canvasCoord.x);
+			dashWrap.css('width',$('.KL_Canvas')[0].width);
+		}
+	}
+	//条件单提示红色虚线
+	var coorderDashWraps = $('div[class^=coorder-dashed-wrap-]');
+		coorderDashLen = coorderDashWraps.length;
+	for(var i=0;i<coorderDashLen;i++){
+		var dashWrap = coorderDashWraps.eq(i);
+		if(!dashWrap.is(':hidden')){
+			dashWrap.css('left',canvasCoord.x);
+			dashWrap.css('width',$('.KL_Canvas')[0].width);
+		}
+	}
+	//最新价格提示框
+	var lastPriceLeft = $('.KL_Y_Axis_Last_Price_Tip_Left');
+	var lastPriceRight = $('.KL_Y_Axis_Last_Price_Tip_Right');
+	var yAxisCoord = getPageCoord($('.KL_Canvas_Y_Axis_Region')[0]);
+	if(!lastPriceLeft.is(':hidden')){
+		lastPriceLeft.css('left',yAxisCoord.x);
+	}
+	if(!lastPriceRight.is(':hidden')){
+		lastPriceRight.css('left',yAxisCoord.x+$('.KL_Canvas_Y_Axis_Region')[0].width+
+				$('.KL_Canvas')[0].width);
+	}
 }
 
 function fullScreenMouseClick(div){
@@ -178,17 +214,24 @@ function maOptionMouseClick(option,event){
 	if(CurrentKLMASet == name) return;
 	CurrentKLMASet = name;
 	var maWrap = $('.KL_MA_Price_Wrap');
+	if(maWrap.length == 0) return;
 	if(name == 'noShow'){
 		type = '不显示';
-		if(maWrap.length != 0){
-			maWrap.find('span').hide();
-		}
+		maWrap.find('span[type=MA]').hide();
+		maWrap.find('span[type=MA]').next().hide();
+		maWrap.find('span[type=BOLL]').hide();
+		maWrap.find('span[type=BOLL]').next().hide();
 	}else if(name == 'ma'){
 		type = 'MA组合';
-		if(maWrap.length != 0){
-			maWrap.find('span').show();
-		}
+		maWrap.find('span[type=BOLL]').hide();
+		maWrap.find('span[type=BOLL]').next().hide();
+		maWrap.find('span[type=MA]').show();
+		maWrap.find('span[type=MA]').next().show();
 	}else if(name == 'boll'){
+		maWrap.find('span[type=MA]').hide();
+		maWrap.find('span[type=MA]').next().hide();
+		maWrap.find('span[type=BOLL]').show();
+		maWrap.find('span[type=BOLL]').next().show();
 		type = 'BOLL';
 	}
 	var selectWrap = $('.KL_MA_Select');
@@ -282,21 +325,6 @@ function indicatrixSetMouseClick(btn){
 					MesBoxInstance.show();
 					MesBoxInstance.setContent('最多可选择3条均线');
 					return;
-					//alert('最多可选择3条均线');return;
-					/*RemodalInstance.open();
-					var remodalWrap = $('.remodal');
-					if(remodalWrap.length == 0 ) return;
-					remodalWrap.css('width',RemodalDefaultWidth);
-					remodalWrap.css('height',RemodalDefaultHeight);
-					var titleWrap = remodalWrap.children('.remodal-title');
-					titleWrap.html('系统提示');
-					var contentWrap = remodalWrap.children('.remodal-content');
-					contentWrap.attr('remodalConType','invalid');
-					contentWrap.empty();
-					var htmlFrag = "<div class='remodal-notification'>最多可选择3条均线"+
-						"</div>";
-					contentWrap.append($(htmlFrag));
-					return;*/
 				}
 				ulWrap.attr('checkCount',checkCount+1);
 				$(this).find('span[name=check]').css('background-image','url(images/maset_combox_select.png)');
@@ -324,4 +352,37 @@ function indicatrixSetMouseOut(btn){
 function MAColorSet(input){
 	var color = $(input).val();
 	$(input).next().css('background-color',color);
+}
+//K线移动事件
+function canvasMoveHandler(btn){
+	var name = btn.attr('name');
+	if(name == 'up'){
+		if(CurrentBarWidth >= 54) return;
+		CurrentBarWidth += 2;
+		$('img[type=tradePoint]').css('width',$('img[type=tradePoint]').width()+1);
+		$('img[type=tradePoint]').css('height',$('img[type=tradePoint]').height()+1);
+		drawKL();
+	}else if(name == 'down'){
+		if(CurrentBarWidth <= 10) return;
+		CurrentBarWidth -= 2;
+		$('img[type=tradePoint]').css('width',$('img[type=tradePoint]').width()-1);
+		$('img[type=tradePoint]').css('height',$('img[type=tradePoint]').height()-1);
+		drawKL();
+	}else if(name == 'left'){
+		if(CurrentKLStartIndex <= 0) return;
+		CurrentKLMoveMark = true;
+		CurrentKLStartIndex -= 3;
+		CurrentKLEndIndex -= 3;
+		drawKL();
+	}else if(name == 'right'){
+		var totalCount = GlobalKLData.ks.length;
+		//大于KL数据的总个数时，停止移动
+		if(CurrentKLEndIndex >= totalCount - 1) {
+			CurrentKLMoveMark = false;
+			return;
+		}
+		CurrentKLStartIndex += 3;
+		CurrentKLEndIndex += 3;
+		drawKL()
+	}
 }

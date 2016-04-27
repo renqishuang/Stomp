@@ -4,11 +4,14 @@ function addAllInstruKLSubscribe(){
 	for(var iid in RoomInstrumentListInfo){
 		var klDestination = "/topic/"+iid+"_"+CurrentKLInterval;//每个合约只订阅当前的周期
 		if(RoomInstrumentListInfo[iid].klSubscribe){
-			//切换周期后，取消原来的订阅，开始新的订阅
-			RoomInstrumentListInfo[iid].klSubscribe.unsubscribe();
-			RoomInstrumentListInfo[iid].klSubscribe = null;
+			if(KLWebSocketCloseMark == false){
+				//切换周期后，取消原来的订阅，开始新的订阅
+				RoomInstrumentListInfo[iid].klSubscribe.unsubscribe();
+				RoomInstrumentListInfo[iid].klSubscribe = null;
+			}
 		}
 		RoomInstrumentListInfo[iid].klSubscribe = KLWSClient.subscribe(klDestination,function(message){
+			KLWebSocketCloseMark = false;
 			if(!LoadKLineDataFinish)return;
 			//console.log('topic-kl------------------------');
 			var tempData = JSON.parse(message.body),

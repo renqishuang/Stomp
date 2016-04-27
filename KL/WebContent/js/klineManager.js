@@ -1,10 +1,11 @@
 //计算屏幕显示的最多K线个数
 function getMaxKLShowCount(){
 	var canvasObj = $('#canvasKL');
-	console.log('screen----------------------');
-	console.log(screen);
+	/*console.log('screen----------------------');
+	console.log(screen);*/
 	var screenWidth = screen.width;
-	CurrentMaxKLShowCount = Math.ceil(screenWidth / (CurrentSpaceWidth + CurrentBarWidth))-1;
+	var spaceWidth = CurrentBarWidth*0.4;
+	CurrentMaxKLShowCount = Math.ceil(screenWidth / (spaceWidth + CurrentBarWidth))-1;
 }
 
 //根据类型转换数据格式
@@ -37,12 +38,14 @@ function KLDataDecimalHandler(dt){
 		openinterest:Number(dt.openinterest),
 		openinterestchg:Number(dt.openinterestchg),
 		tradeDt:[],//存放交易点
-		MADt:{} //存放MA数据
+		MADt:{}, //存放MA数据
+		BOLLDt:{}//存放BOLL数据
 	};
 	return item;
 }
 //收到订阅数据后调用     K线订阅处理器
 function KLSubscribeHandler(dt){
+	return;
 	if(!CurrentKLObj) return;
 	//对订阅数据的小数位数进行判断
 	var item = KLDataDecimalHandler(dt);		
@@ -78,7 +81,11 @@ function KLSubscribeHandler(dt){
 		//return;
 		if(CurrentDataTime == time){
 			this.lastUpdateDt = item;
-			CurrentKLObj.updateKLOnCandle(item);//临时修改最后一条数据
+			//CurrentKLObj.updateKLOnCandle(item);//临时修改最后一条数据
+			var tempItem=CurrentKLObj.updateGlobalKLLastDt(item);
+			//显示最新价格
+			CurrentKLObj.showLastPriceTip(tempItem);
+			drawKL();
 		}else{
 			CurrentKLObj.updateGlobalKLLastDt(this.lastUpdateDt);//更新最后一条数据
 			CurrentKLObj.addCandleToKL(item);//添加新数据
@@ -121,7 +128,8 @@ function originalDataHandleSplice(data){
 			openinterest:Number(dt.openinterest),
 			openinterestchg:Number(dt.openinterestchg),
 			tradeDt:[],
-			MADt:{}
+			MADt:{},
+			BOLLDt:{}
 		};
 		GlobalKLData.ks.splice(0,0,item);
 	}
@@ -161,7 +169,8 @@ function originalDataHandle(data){
 			openinterest:Number(dt.openinterest),
 			openinterestchg:Number(dt.openinterestchg),
 			tradeDt:[],
-			MADt:{}
+			MADt:{},
+			BOLLDt:{}
 		};
 		GlobalKLData.ks.splice(0,0,item);
 	}
@@ -169,11 +178,6 @@ function originalDataHandle(data){
 
 //画K线
 function drawKLHandler(interval){
-	//系统数据加载完成后处理
-	if(SystemDataLoadFinish == false){
-		afterInitSysInfo();
-		SystemDataLoadFinish = true;
-	}
 	LoadKLineDataFinish = true;//标识K线数据加载完成
 	if(GlobalKLData.ks.length == 0)return;
 	drawKL();//画图

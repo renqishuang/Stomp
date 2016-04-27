@@ -60,7 +60,7 @@ function listenerAccountID(){
 	if(AccountWSSubscribe) return;
 	AccountWSSubscribe = TradeWSClient.subscribe('/topic/'+CurrentAccountID,function(message){
 		var tempData = JSON.parse(message.body);
-		console.log('topic AID---------------------');
+		//console.log('topic AID---------------------');
 		//设置资金信息
 		var actionType = tempData.actiontype,
 			returnCode = tempData.returncode,
@@ -140,7 +140,7 @@ function listenerAccountID(){
 			console.log(tempData);
 			delInstruSuccessCallBack(tempData);
 		}else if(actionType == 5){
-			console.log('MQ 获取持仓信息');
+			//console.log('MQ 获取持仓信息');
 		}else if(actionType == 11){
 			if(status == 1){//设置条件单
 				getTradeInfoConOrder();
@@ -159,7 +159,7 @@ function getAccountInfo(){
 		"uid":CurrentUserId,
 		"aid":CurrentAccountID,
 		"rmc":CurrentRMC,
-		"rid":CurrentRoomID,
+		"rid":CurrentRoomID
 	};
 	var param = JSON.stringify(data);
 	$.ajax({

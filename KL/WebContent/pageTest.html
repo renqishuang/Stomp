@@ -2,85 +2,41 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>测试各种页面组件</title>
+<title>WebSocket功能测试</title>
 <style>
-.signal{
-	width:21px;
-	height:21px;
-	/* background-image:url(images/signals_normal.png); */
-	background-repeat:no-repeat;
-	animation: connect 1s infinite;
-}
-@keyframes connect{
-	0%{background-image:url(images/signals_connecting1.png);}
-	20%{background-image:url(images/signals_connecting2.png);}
-	40%{background-image:url(images/signals_connecting3.png);}
-	6%{background-image:url(images/signals_connecting4.png);}
-	8%{background-image:url(images/signals_connecting5.png);}
-	100%{background-image:url(images/signals_connecting6.png);}
-}
-select{
-	width:90px;
-	height:24px;
-	background-color: #191F26;
-    color: rgb(132, 148, 164);
-    border: 1px solid rgb(132, 148, 164);
-}
-input[type=color]{
-	width:20px;
-	height:20px;
-	cursor:pointer;
-	/* opacity:0; */
-}
 </style>
 <script src='js/jquery.1.11.3.min.js'></script>
 </head>
-<div class='signal'></div>
-<button id='test'>测试</button>
-<select onclick="selectClickFn(this)">
-	<option>不显示</option>
-	<option>MA组合</option>
-	<option>Boll</option>
-</select>
-<input type="color">
-<span style='display:inline-block;width:20px;height:20px;background-color:blue;'></span>
-<div class='MA_Set_Menu'>
-		<ul>
-			<li>MA50</li>
-			<li>MA10</li>
-			<li>MA20</li>
-		</ul>
-	</div>
 <body>
+<script src='js_test/ws.js'></script>
 <script>
-//立即调用的函数表达式
-//闭包: 调用已运行的函数的局部变量
-	window.testArr = ['1','2','3'];
-	var b = $.map(testArr,function(item){
-		return item+'---';
-	});
-	console.log(b);
-	var colorWrap = $('input[type=color]');
-	colorWrap.val('#0063CD');
-	console.log('init val: '+colorWrap.val());
-	colorWrap.bind('change',function(wrap){
-		console.log('onChange--');
-	});
-	setTimeout(function(){
-		console.log('after set val: '+$('input[type=color]').val());
-	},4000);
-	$('#test')[0].onclick = (function(){
-		console.log(this);
-		console.log('click');
-	})(window);
-	$('#test')[0].onclick = function(){
-		console.log('ddddd');
-		console.log($('input[type=color]').val());
-	};
-	function selectClickFn(div){
-		$(div).css('background-color','rgb(132, 148, 164)');
-		$(div).css('color','black');
+	window.WebSocketConnectState = false;
+	var url='ws://mq1.zlw.com:61634';
+	function success(client){
+		WebSocketConnectState = true;
+		console.log('success');
+		if(CurrentWSClient == null){
+			CurrentWSClient = client;
+			clearInterval(AgainConnectWS);
+		}
 	}
+	function fail(){
+		console.log('fail');
+	}
+	function message(){
+		console.log('message');
+	}
+	function close(){
+		WebSocketConnectState =false;
+		console.log('close');
+		//进行重新连接
+		window.AgainConnectWS = setInterval(function(){
+			if(WebSocketConnectState == true) return;
+			CurrentWSClient = null;
+			var client = WSClient.connect(url,success,fail,message,close);
+		},1000);
+	}
+	window.CurrentWSClient = WSClient.connect(url,success,fail,message,close);
 </script>
 </body>
 </html>

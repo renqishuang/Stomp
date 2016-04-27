@@ -44,14 +44,16 @@ window.CurrentDataTime = null;//接受MQ数据时,判断是否是一个时间段
 window.GlobalKLData = { //存储所有K线数据
 	ks:[]
 };
+window.CurrentAllTradeDt = null;
 window.CurrentKLStartDate=0;//当前K线开始时间
 window.CurrentKLEndDate=0;//当前K线结束时间
-window.CurrentKLInterval = 60;//当前K线周期
+window.CurrentKLInterval = 900;//当前K线周期
 window.CurrentBarWidth=10; //K线的宽度
-window.CurrentSpaceWidth=4;//K线之间的间距
 window.CurrentMaxKLShowCount = 0;
 window.CurrentKLStartIndex=0;
 window.CurrentKLEndIndex=0;
+//当前K线移动标识
+window.CurrentKLMoveMark=false;//false是指未移动过， true表示移动过
 window.KLHasTradePointer = false;//当前K线是否有交易点
 window.CurrentKLXIndex=null;//标记当前鼠标所在K线的X索引(在整个屏幕K线范围内 0 ~ 屏幕显示K线最大值)
 window.PendingDeputeInitFinish = false;//标识委托单是否初始化完成
@@ -65,6 +67,14 @@ window.MainViewDefaultWidth = 1200;
 window.MainViewDefaultHeight = 671;
 window.CurrentServiceRootPath='test/KL/WebContent/';
 window.CurrentImagePath='images';
+//K线  WebSocket连接状态标识
+window.KLWebSocketConnect = false;
+//交易 WebSocket连接状态标识
+window.TradeWebSocketConnect = false;
+//K线 WebSocket是否断开过
+window.KLWebSocketCloseMark = false;
+//是否显示交易点及交易线
+window.ShowTrandePointLine = true;
 //当前MA设置
 window.CurrentKLMASet = 'ma';//noShow,ma,boll
 //KL日均线
@@ -111,6 +121,18 @@ window.GlobalKLMAObj={
 		color:'#A3D648'
 	}
 };
+
+window.CurrentKLBOOLArr = [{
+	name:'MID',
+	color:'#39DBB9'
+},{
+	name:'UPPER',
+	color:'#C26330'
+},{
+	name:'LOWER',
+	color:'#EED02D'
+}];
+
 //Remodal default width and height
 window.RemodalDefaultWidth = 440;
 window.RemodalDefaultHeight = 285;

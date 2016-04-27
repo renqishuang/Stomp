@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<script>
+	//JS多线程性能测试
+	var start = new Date();
+	console.log('开始计时-->'+start.getTime());
+	var sum=0;
+	for(var i=0;i<100000;i++){
+		sum += i;
+	}
+	var end = new Date();
+	console.log('结束计时-->'+end.getTime());
+	var differ = end.getTime()-start.getTime();
+	console.log('时间差:-->'+differ);
+	console.log('总和'+sum);
+	if(Worker){
+		var worker = new Worker('js_test/thread.js');
+		worker.onmessage=function(event){
+			console.log('收到消息');
+			console.log(event.data);
+		}
+		worker.onerror=function(error){
+			console.log('连接错误');
+		}
+		worker.postMessage({
+			a:1
+		});
+	}else{
+		console.log('您的浏览器不支持WebWorker专用线程');
+	}
+</script>
+</body>
+</html>

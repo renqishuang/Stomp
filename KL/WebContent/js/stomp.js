@@ -216,21 +216,23 @@
         }
         this.pinger = Stomp.setInterval(ttl, (function(_this) {
           return function() {
-        	  console.log('send heart beat to server');
+        	  //console.log('send heart beat to server');
         	  var content = _this.heartbeat.content;
             //_this.ws.send(Byte.LF);
-        	  _this.ws.send(content);
+        	  //_this.ws.send(content);
             return typeof _this.debug === "function" ? _this.debug(">>> PING") : void 0;
           };
         })(this));
       }
-      if (!(this.heartbeat.incoming === 0 || serverOutgoing === 0)) {
+      if (!(this.heartbeat.incoming === 0 || serverOutgoing === 0)) { 
         ttl = Math.max(this.heartbeat.incoming, serverOutgoing);
         if (typeof this.debug === "function") {
           this.debug("check PONG every " + ttl + "ms");
         }
         return this.ponger = Stomp.setInterval(ttl, (function(_this) {
           return function() {
+        	  console.log('禁止自主关闭连接');
+        	return;
             var delta;
             delta = now() - _this.serverActivity;
             if (delta > ttl * 2) {
@@ -312,7 +314,8 @@
                 }
                 _this.connected = true;
                 _this._setupHeartbeat(frame.headers);
-                _results.push(typeof _this.connectCallback === "function" ? _this.connectCallback(frame) : void 0);
+                //_results.push(typeof _this.connectCallback === "function" ? _this.connectCallback(frame) : void 0);
+                _results.push(typeof _this.connectCallback === "function" ? _this.connectCallback(_this) : void 0);
                 break;
               case "MESSAGE":
                 subscription = frame.headers.subscription;
@@ -377,6 +380,7 @@
     };
 
     Client.prototype.disconnect = function(disconnectCallback, headers) {
+    	console.log('触发Stomp disconnect -> 触发ws close');
       if (headers == null) {
         headers = {};
       }

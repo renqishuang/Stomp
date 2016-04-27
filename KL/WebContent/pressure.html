@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+td{
+	height:22px;
+}
+</style>
+</head>
+<body>
+<table border="1">
+	<tr>
+		<th>开盘价</th>
+		<th>收盘价</th>
+		<th>最高价</th>
+		<th>最低价</th>
+	</tr>
+</table>
+<button action='prev' name='page' type='button'>上一页</button>
+<button action='next' name='page' type='button'>下一页</button>
+<button action='sort' name='page' type='button'>正序</button>
+<button action='reverse' name='page' type='button'>倒序</button>
+<button action='insert' name='page' type='button'>插入</button>
+<button action='update' name='page' type='button'>更新</button>
+<script src='js/jquery.1.11.3.min.js'></script>
+<script src='pressure/array-extend.js'></script>
+<script src='pressure/plugin.js'></script>
+<script src='pressure/init-data.js'></script>
+<script src='pressure/page-store.js'></script>
+<script src='pressure/page-event.js'></script>
+<script>
+var beatles = ['John','Paul','George','Ringo'];
+var beatlesJohn = Array();
+beatlesJohn['name'] = 'John';
+beatlesJohn['age'] = 33;
+beatlesJohn['isMan'] = true;
+beatlesJohn['mood'] = 'happy';
+beatlesJohn['band'] = beatles;
+console.log(beatlesJohn);
+	window.GlobalDt=[];//全局数据, 可以自己封装缓存用
+	window.CurrentPage = 20;//每页的数据个数
+	window.CurrentStartIndex=0;//每页的开始数据索引
+	window.CurrentEndIndex = CurrentStartIndex + CurrentPage;//每页的结束数据索引
+
+	for(var i=CurrentStartIndex;i<CurrentEndIndex;i++){
+		var dt = PressureTestDt[i];
+		var frag = '<tr>'+
+						'<td>'+dt.a+'</td>'+
+						'<td>'+dt.b+'</td>'+
+						'<td>'+dt.c+'</td>'+
+						'<td>'+dt.d+'</td>'+
+					'</tr>';
+		$('table').append($(frag));
+	}
+	//少一个参数都不行
+	var tableConfig={
+		data:PressureTestDt,
+		uniqueMark:'userId',
+		trDtIndex:'trDtIndex',
+		trDtAttr:'trDt',
+		sortType:parseInt,
+		sortKey:'a',
+		setTableData:function(startIndex){
+			if(!this.uniqueMark || this.startIndex === null || !this.trDtAttr
+					|| !this.trDtIndex) return;
+			var trList = this.table.find('tr'),trLen = trList.length;
+			for(var i=1;i<trLen;i++){
+				var tr = trList.eq(i);
+					tdLen = tr.find('td').length;
+				tr.find('td').html('');//先清空
+				var data = this.getData(),
+					dtIndex = i+this.startIndex-1,
+					dt = data[dtIndex];
+				if(dt){
+					tr.attr(this.trDtIndex,dtIndex);
+					tr.attr(this.uniqueMark,dt[this.uniqueMark]);//必须赋值tr唯一标识属性
+					tr.attr(this.trDtAttr,JSON.stringify(dt));
+					tr.find('td:nth-child(1)').html(dt.a);
+					tr.find('td:nth-child(2)').html(dt.b);
+					tr.find('td:nth-child(3)').html(dt.c);
+					tr.find('td:nth-child(4)').html(dt.d);
+				}
+			}
+		},
+		updateTrData:function(dt){
+			if(!this.uniqueMark) return;
+			var unique = dt[this.uniqueMark];
+			var tr = $('table').find('tr['+this.uniqueMark+'='+unique+']');
+			if(tr.length != 0){
+				tr.find('td:nth-child(1)').html(dt.a);
+				tr.find('td:nth-child(2)').html(dt.b);
+				tr.find('td:nth-child(3)').html(dt.c);
+				tr.find('td:nth-child(4)').html(dt.d);	
+			}
+		},
+		insertTrData:function(){
+			
+		}
+	};
+	$('table').createPageStore(tableConfig);
+	var page = $('table').getPageStore();
+	page.sort();//排序
+	page.action(0);//第一页
+	
+	var  arr = [1,2,5,3,9,20,13,42,7];
+	console.log(NormalNumArrQuickSort(arr));
+	var jsonArr = [{'a':3},{'a':2},{'a':4}];
+	console.log(JSONArrQuickSort(jsonArr,'a',true));
+</script>
+</body>
+</html>

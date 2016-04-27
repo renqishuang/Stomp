@@ -1201,9 +1201,50 @@ div[class^=KL_Y_Axis_Last_Price_Tip]{
 .KL_Canvas_Move_Wrap{
 	display: inline-block;
     height: 284px;
-    min-width: 50px;
+    min-width: 53px;
     /* vertical-align: bottom; */
     background-color: #191F26;
+    position:relative;
+}
+.KL_Canvas_Move_Wrap span{
+	position:absolute;
+	display:inline-block;
+	width:17px;
+	height:17px;
+	background-repeat:no-repeat;
+	cursor:pointer;
+}
+.KL_Canvas_Move_Wrap span[name=up]{
+	background-image:url('../images/keyboard_uparrow_normal.png');
+	bottom: 40px;
+    left: 18px;
+}
+.KL_Canvas_Move_Wrap span[name=up]:hover{
+	background-image:url('../images/keyboard_uparrow_over.png');
+}
+.KL_Canvas_Move_Wrap span[name=down]{
+	background-image:url('../images/keyboard_downarrow_normal.png');
+	bottom: 21px;
+    left: 18px;
+}
+.KL_Canvas_Move_Wrap span[name=down]:hover{
+	background-image:url('../images/keyboard_downarrow_over.png');
+}
+.KL_Canvas_Move_Wrap span[name=left]{
+	background-image:url('../images/keyboard_leftarrow_normal.png');
+	bottom: 21px;
+    left: -1px;
+}
+.KL_Canvas_Move_Wrap span[name=left]:hover{
+	background-image:url('../images/keyboard_leftarrow_over.png');
+}
+.KL_Canvas_Move_Wrap span[name=right]{
+	background-image:url('../images/keyboard_rightarrow_normal.png');
+	bottom: 21px;
+    right: -1px;
+}
+.KL_Canvas_Move_Wrap span[name=right]:hover{
+	background-image:url('../images/keyboard_rightarrow_over.png');
 }
 div[class^=KL_Trade_Tip_Wrap]{
 	background-image:url('../images/trade_tip_bg.png');
@@ -1650,7 +1691,8 @@ div[class^=remodal-add-instru-select]::-webkit-scrollbar-thumb:vertical{
 	transform:scale(0.7);
 	display:inline-block;
 }
-.KL_MA_Price_Wrap span[name=price]{
+.KL_MA_Price_Wrap span[name=price],
+.KL_MA_Price_Wrap span[name=bollPrice]{
 	display:inline-block;
 	width:40px;
 }
@@ -1719,4 +1761,16 @@ div[class^=remodal-add-instru-select]::-webkit-scrollbar-thumb:vertical{
 	position:absolute;
 	top:0px;
 	left:0px;
+}
+div[class^=kl_trade_line_]{
+	border-bottom:2px dashed red;
+	height:1px;
+	position:absolute;
+}
+img[type=tradePoint]{
+	max-width:20px;
+	max-height:20px;
+	background-size:100% 100%;
+	min-width:10px;
+	min-height:10px;
 }

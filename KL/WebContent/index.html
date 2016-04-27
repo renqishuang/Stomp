@@ -85,9 +85,15 @@
 			<canvas class='KL_Canvas' width='0' height="284" id="canvasKL">
 	   			<p>hey,您的浏览器不支持html5，换个浏览器吧，比如google chrome，firefox</p>
 			</canvas>
-			<div class='KL_Canvas_Move_Wrap'></div>
+			<div class='KL_Canvas_Move_Wrap'>
+				<span name='up'></span>
+				<span name='down'></span>
+				<span name='left'></span>
+				<span name='right'></span>
+			</div>
 			<!--下单器区域-->
-			<div class='KL_OrderManger_Wrap' id='KL_OrderManager'>
+			<!--禁止双击选中文字  onselectstart="return false"-->
+			<div onselectstart="return false" class='KL_OrderManger_Wrap' id='KL_OrderManager'>
 				<!--表格区域-->
 				<!-- <div id='room_deal_query'></div> -->
 				<div class='KL_OrderManager_FirstWrap'>
@@ -396,11 +402,11 @@
 		</div>
 	</div>
 	<!--交易点图标  隐藏起来  -->
-	<img id='tradePointDuoKai' alt="" src="images/trade-pointer-duokai.png" hidden='true'>
-	<img id='tradePointDuoPing' alt="" src="images/trade-pointer-duoping.png" hidden='true'>
-	<img id='tradePointKongKai' alt="" src="images/trade-pointer-kongkai.png" hidden='true'>
-	<img id='tradePointKongPing' alt="" src="images/trade-pointer-kongping.png" hidden='true'>
-	<img id='tradePointDefault' alt="" src="images/xinhaodianheise.png" hidden='true'>
+	<img type='tradePoint' id='tradePointDuoKai' alt="" src="images/trade-pointer-duokai.png" hidden='true'>
+	<img type='tradePoint' id='tradePointDuoPing' alt="" src="images/trade-pointer-duoping.png" hidden='true'>
+	<img type='tradePoint' id='tradePointKongKai' alt="" src="images/trade-pointer-kongkai.png" hidden='true'>
+	<img type='tradePoint' id='tradePointKongPing' alt="" src="images/trade-pointer-kongping.png" hidden='true'>
+	<img type='tradePoint' id='tradePointDefault' alt="" src="images/xinhaodianheise.png" hidden='true'>
 	<!--模态弹出框-->
 	<div class="remodal" data-remodal-id="modal" role="dialog" aria-labelledby="modal1Title" aria-describedby="modal1Desc">
 	  <div class='remodal-title'>下单提示</div>

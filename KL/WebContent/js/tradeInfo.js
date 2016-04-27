@@ -26,6 +26,10 @@ function mainViewRightSplitClick(div){
 	//挂单提示黄色虚线
 	var orderDashWraps = $('div[class^=order-dashed-wrap-]'),
 		orderDashLen = orderDashWraps.length;
+	//条件单提示红色虚线
+	var coorderDashWraps = $('div[class^=coorder-dashed-wrap-]');
+		coorderDashLen = coorderDashWraps.length;
+	
 	var canvasHeight = canvasRegion[0].height;
 	if(isClick == 'false'){
 		splitBtn.css('transform','rotate(180deg)');
@@ -38,7 +42,7 @@ function mainViewRightSplitClick(div){
 		canvasRegion[0].width = canvasWidth;
 		canvasRegion[0].height = canvasHeight;
 		orderDashWraps.css('width',canvasWidth);
-		
+		coorderDashWraps.css('width',canvasWidth);
 		if(!addInstrumentPrompt.is(':hidden')){
 			addInstrumentPrompt.css('left',mainView.width()/2-addInstrumentPrompt.width()/2);
 		}
@@ -60,6 +64,7 @@ function mainViewRightSplitClick(div){
 		canvasRegion[0].width = canvasWidth;
 		canvasRegion[0].height = canvasHeight;
 		orderDashWraps.css('width',canvasWidth);
+		coorderDashWraps.css('width',canvasWidth);
 		
 		if(!addInstrumentPrompt.is(':hidden')){
 			addInstrumentPrompt.css('left',mainView.width()/2-addInstrumentPrompt.width()/2);
@@ -94,6 +99,9 @@ function mainViewLeftSplitClick(div){
 	//挂单提示黄色虚线
 	var orderDashWraps = $('div[class^=order-dashed-wrap-]'),
 		orderDashLen = orderDashWraps.length;
+	//条件单提示红色虚线
+	var coorderDashWraps = $('div[class^=coorder-dashed-wrap-]');
+		coorderDashLen = coorderDashWraps.length;
 	//最新价格提示框
 	var lastPriceLeft = $('.KL_Y_Axis_Last_Price_Tip_Left');
 	var lastPriceRight = $('.KL_Y_Axis_Last_Price_Tip_Right');
@@ -126,6 +134,13 @@ function mainViewLeftSplitClick(div){
 		var left = canvasCoord.x+GlobalKLOptionObj.region.x;
 		for(var i=0;i<orderDashLen;i++){
 			var dashWrap = orderDashWraps.eq(i);
+			if(!dashWrap.is(':hidden')){
+				dashWrap.css('left',left);
+				dashWrap.css('width',canvasRegion.width()-GlobalKLOptionObj.region.x);
+			}
+		}
+		for(var i=0;i<coorderDashLen;i++){
+			var dashWrap = coorderDashWraps.eq(i);
 			if(!dashWrap.is(':hidden')){
 				dashWrap.css('left',left);
 				dashWrap.css('width',canvasRegion.width()-GlobalKLOptionObj.region.x);

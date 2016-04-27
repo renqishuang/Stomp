@@ -87,3 +87,5 @@ InitTestDataDaily = [{"close":"2880.0","closechg":"33.0","open":"2879.0","opench
 
 {"close":"2986.0","closechg":"0.6","open":"2984.8","openchg":"0.4","high":"2987.8","highchg":1,"low":"2983.1","lowchg":-1,"datetime":1455845460000,"volume":58,"volumechg":14143,"openinterest":29125,"openinterestchg":-18,"pricechg":"0.6","pricechgrate":"0.02%","datatype":"1","timeremain":47000,"tradingday":1455811200000,"iid":"IF1603","interval":60}
 	];*/
+
+

@@ -31,6 +31,10 @@ crossLinesAndTipMgr.prototype._removeTipAndCrossLines = function () {
     var me = this;
     if (me.tip) me.tip.hide();
     if (me.clsMgr) me.clsMgr.removeCrossLines();
+    var options = me.options;
+    if(options.tipOptions.updateBOLLPrice){
+    	options.tipOptions.updateBOLLPrice();
+    }
 };
 crossLinesAndTipMgr.prototype.updateOptions = function (options) {
     this.options = options;

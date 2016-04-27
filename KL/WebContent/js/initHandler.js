@@ -11,17 +11,19 @@ function afterInitSysInfo(){
 	    KLWSClient.connect("","", klConnectOpenCallBack,klConnectCloseCallBack);
 	    //订阅资金(交易)数据
 	    TradeWSClient = Stomp.client(TradeWebSocketUrl);
-	    TradeWSClient.connect('','',aidConnectOpenCallBack,aidConnectOpenCallBack);
+	    TradeWSClient.connect('','',aidConnectOpenCallBack,aidConnectCloseCallBack);
 	}
 }
 
 $(document).ready(function() {
+	var dt = new Date();
+	var initTimeStamp = dt.getTime();
+	console.log('初始化时的时间戳--->'+initTimeStamp);
 	//设置Canvas的宽度
 	var mainViewCenter = $('.KL_MainView_Region_Center');
 	var moveWidth = $('.KL_Canvas_Move_Wrap').width();
 	var yAxisWidth = $('.KL_Canvas_Y_Axis_Region').width();
 	var initWidth = mainViewCenter.width()-moveWidth-yAxisWidth-10;
-	$('.KL_Canvas')[0].width = 1500;
 	$('.KL_Canvas')[0].width = initWidth;
 	//获取Canvas相对于页面的偏移量
 	var canvas = $id('canvasKL');

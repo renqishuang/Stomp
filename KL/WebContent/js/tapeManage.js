@@ -283,10 +283,10 @@ function TapeOneViewerHandler(data){
 	var div = $('.Tape_Sub_Viewer_One');
 	if(div.length == 0) return;
 	div.find('.Sell_Tape_Sub_Viewer_One span[name=price]').eq(0).html(data.ask1);
-	div.find('.Sell_Tape_Sub_Viewer_One span[name=vol]').eq(1).html(data.ask1volume);
+	div.find('.Sell_Tape_Sub_Viewer_One span[name=vol]').eq(0).html(data.ask1volume);
 	
 	div.find('.Buy_Tape_Sub_Viewer_One span[name=price]').eq(0).html(data.bid1);
-	div.find('.Buy_Tape_Sub_Viewer_One span[name=vol]').eq(1).html(data.bid1volume);
+	div.find('.Buy_Tape_Sub_Viewer_One span[name=vol]').eq(0).html(data.bid1volume);
 }
 
 //监听MQ, 设置盘口第三部分界面数据

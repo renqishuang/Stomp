@@ -433,4 +433,11 @@
 			li.append(htmlFrag);
 		}
 	}
+	//K线上下左右移动
+	var moveWrap = $('.KL_Canvas_Move_Wrap');
+	if(moveWrap.length != 0){
+		moveWrap.find('span').bind('click',function(){
+			canvasMoveHandler($(this));
+		});
+	}
 })();

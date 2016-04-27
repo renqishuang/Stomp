@@ -227,7 +227,7 @@ function OMOrderService(iid,dir,co,price,vol){
 		"pricetype":0
 	};
 	var param = JSON.stringify(data);
-	console.log(data);
+	//console.log(data);
 	$.ajax({
 		url:WebServiceTransferUrl+'/call_ws/output',
 		type:'post',
@@ -974,12 +974,24 @@ function pdConvertToOrderTip(dt){
 }
 //历史交易数据设置
 function hisTradeDataSet(dt,isInit){
+	if(!dt) return;
 	var len = dt.length;
-	console.log(CurrentKLStartIndex);
-	console.log(CurrentKLEndIndex);
 	var canvasRegion = $('.KL_Canvas'),
 		canvasCtx = canvasRegion[0].getContext('2d');
 		canvasCoord =getPageCoord(canvasRegion[0]);
+	var lastKL = GlobalKLData.ks[GlobalKLData.ks.length-1];
+	var lastKLIndex=lastKL.KLIndex;
+	var filterOpenDt = [];//存放开仓数据
+	var filterCloseDt = [];//存放平仓数据
+	
+	//KL数据的开始索引是根据 是否是初始化调用
+	var klStartIndex = 0,klEndIndex=GlobalKLData.ks.length-1;
+	if(isInit == false){
+		klStartIndex = CurrentKLStartIndex,klEndIndex =CurrentKLEndIndex;
+	}
+	var defaultImg = $('#tradePointDefault');
+    var defaultImgWidth = defaultImg.width(),defaultImgHeight = defaultImg.height();
+	
 	//GlobalKLData
 	for(var i=0;i<len;i++){
 		var tempDt = dt[i];
@@ -988,33 +1000,58 @@ function hisTradeDataSet(dt,isInit){
 		co = tempDt.co,
 		vol = tempDt.vol,
 		iid = tempDt.iid,
-		price = tempDt.price;
-		for(var j=CurrentKLStartIndex;j<=CurrentKLEndIndex;j++){
+		did = tempDt.did,
+		price = tempDt.price,
+		oid = tempDt.oid;
+		//for(var j=CurrentKLStartIndex;j<=CurrentKLEndIndex;j++){
+		for(var j=klStartIndex;j<=klEndIndex;j++){
 			var klDt = GlobalKLData.ks[j];
-			if(!klDt) return;
+			if(!klDt) continue;
 			if(otime < klDt.closeTime && otime > klDt.openTime){
-				//console.log('find trade pointer');
-				//console.log(tempDt);
-				//console.log(klDt);
+				//初始化时,把交易数据复制到K线上
+				if(isInit == true){
+		        	GlobalKLData.ks[j].tradeDt.push(tempDt);
+		        }
+				if(!ShowTrandePointLine) continue;//不显示交易点及交易线
 				var KLIndex = klDt.KLIndex;
 				//获取X坐标
-				var x = CurrentKLObj.getCandleXByIndex(KLIndex)-CurrentBarWidth/2;
+				var x = CurrentKLObj.getCandleXByIndex(KLIndex);
 				//获取Y坐标
-				var y = CurrentKLObj.getYCoordByPrice(price)-CurrentBarWidth/2;
-				var topY = CurrentKLObj.getYCoordByPrice(klDt.high)-CurrentBarWidth/2;
-		        var bottomY = CurrentKLObj.getYCoordByPrice(klDt.low)-CurrentBarWidth/2;
-		        var img = document.getElementById('tradePointDefault');
-	        	canvasCtx.drawImage(img,x,y);
+				//应该减去交易点图标高度的一半
+				var y = CurrentKLObj.getYCoordByPrice(price);
+				var topY = CurrentKLObj.getYCoordByPrice(klDt.high);
+		        var bottomY = CurrentKLObj.getYCoordByPrice(klDt.low);
+		        canvasCtx.drawImage(defaultImg[0],x-defaultImgWidth/2,
+		        		y-defaultImgHeight/2,defaultImgWidth,defaultImgHeight);
+		        var filterTempDt = {
+		        	x:x,
+		        	y:y,
+		        	iid:iid,
+		        	dir:dir,
+		        	co:co,
+		        	vol:vol,
+		        	otime:otime,
+		        	isLine:false,
+		        	price:price
+		        };
+		        if(co == '0'){//开仓
+		        	filterOpenDt.push(filterTempDt);
+		        }else if(co == '1'){//平仓
+		        	filterCloseDt.push(filterTempDt);
+		        }
+		        var priceCompareWay = 'buy';
 		        if(co == 0){//开仓
 		        	//多开空平在下
 		        	var imgId = 'tradePointDuoKai';
 		        	var tempY = bottomY;
 		        	if(dir == 1) {
+		        		priceCompareWay = 'sell';
 		        		imgId = 'tradePointKongKai';
 		        		tempY = topY;
 		        	}
 		        	var img = document.getElementById(imgId);
-		        	canvasCtx.drawImage(img,x,tempY);
+		        	canvasCtx.drawImage(img,x-defaultImgWidth/2,
+		        			tempY-defaultImgHeight/2,defaultImgWidth,defaultImgHeight);
 		        }else if(co == 1){//平仓
 		        	//空开多平在上
 		        	var imgId = 'tradePointDuoPing';
@@ -1024,14 +1061,95 @@ function hisTradeDataSet(dt,isInit){
 		        		tempY = bottomY;
 		        	}
 		        	var img = document.getElementById(imgId);
-		        	canvasCtx.drawImage(img,x,tempY);
-		        }
-		        if(isInit == true){
-		        	GlobalKLData.ks[j].tradeDt.push(tempDt);
+		        	canvasCtx.drawImage(img,x-defaultImgWidth/2,
+		        			tempY-defaultImgHeight/2,defaultImgWidth,defaultImgHeight);
 		        }
 			}
 		}
 	}
+	//return;
+	var lastKLClose = lastKL.close;
+	if(!lastKLClose) return;
+	var lastKLX = CurrentKLObj.getCandleXByIndex(lastKLIndex);
+	var lastKLY = CurrentKLObj.getYCoordByPrice(lastKLClose);
+	//先循环开仓点, 再循环平仓点
+	for(var i=0;i<filterOpenDt.length;i++){
+		var openDt = filterOpenDt[i],
+			openIid = openDt.iid,
+			openDir = openDt.dir,
+			openVol = openDt.vol,
+			openX = openDt.x,
+			openY = openDt.y,
+			openOtime = openDt.otime,
+			openPrice = openDt.price;
+		for(var j=0;j<filterCloseDt.length;j++){
+			var closeDt = filterCloseDt[j],
+				closeIid = closeDt.iid,
+				closeDir = closeDt.dir,
+				closeVol = closeDt.vol,
+				closeX = closeDt.x,
+				closeY = closeDt.y,
+				closeOtime = closeDt.otime,
+				closePrice = closeDt.price;
+			/**
+			 * 画直线条件
+			 * 开仓iid == 平仓iid
+			 * 开仓dir != 平仓dir
+			 * 开仓otime < 平仓otime
+			 * 开仓X坐标 != 平仓X坐标
+			 * 开仓点是否连过线
+			 * */
+			if(openIid == closeIid && openDir !== closeDir && 
+					openOtime < closeOtime && filterOpenDt[i].isLine == false &&
+					openX !== closeX){
+				//画连线
+				var color = '#06E65A';
+				if(openDir == '0'){
+					if(closePrice > openPrice){
+						color = '#E60302';
+					}
+				}else if(openDir == '1'){
+					if(closePrice < openPrice){
+						color = '#E60302';
+					}
+				}
+				canvasCtx.strokeStyle=color;
+				canvasCtx.beginPath();
+				canvasCtx.lineWidth=3;
+				filterOpenDt[i].isLine = true;
+				canvasCtx.moveTo(openX+defaultImgWidth/2,openY);
+				canvasCtx.lineTo(closeX-defaultImgWidth/2,closeY);
+				canvasCtx.closePath();
+				canvasCtx.stroke();
+				//console.log('----有直线');
+			}
+		}
+		/**
+		 * 画虚线条件
+		 * isLine == false;
+		 * */
+		var color = '#06E65A';
+		if(filterOpenDt[i].isLine == false){
+			if(openDir == '0'){
+				if(lastKLClose > openPrice){
+					color = '#E60302';
+				}
+			}else if(openDir == '1'){
+				if(lastKLClose < openPrice){
+					color = '#E60302';
+				}
+			}
+			canvasCtx.lineWidth=3;
+			canvasCtx.strokeStyle=color;
+			canvasCtx.beginPath();
+			canvasCtx.moveTo(openX+defaultImgWidth/2,openY);
+			canvasCtx.dashedLineTo(lastKLX,lastKLY);
+			canvasCtx.closePath();
+			canvasCtx.stroke();
+		}
+	}
+	//console.log('过滤后的交易点:--'+filterOpenDt);
+	//console.log('过滤后的交易点:--'+filterCloseDt);
 }
 //增加交易点
 function addTradePointer(tempDt){
@@ -1120,7 +1238,7 @@ function getHisTradeInfo(){
 				var res=data.res,dt=res.data;
 				if(!dt || dt.length == 0) return;
 				//HisTradePointerData=dt;
-				//先进行数据过滤
+				/*//先进行数据过滤
 				var tempTradeArr = [];
 				for(var i=0;i<dt.length;i++){
 					var tempDt = dt[i];
@@ -1132,8 +1250,15 @@ function getHisTradeInfo(){
 							tempTradeArr.push(tempDt);
 						}
 					}
+				}*/
+				//hisTradeDataSet(tempTradeArr,true);
+				CurrentAllTradeDt = dt;
+				hisTradeDataSet(dt,true);
+				//系统数据加载完成后处理
+				if(SystemDataLoadFinish == false){
+					afterInitSysInfo();
+					SystemDataLoadFinish = true;
 				}
-				hisTradeDataSet(tempTradeArr,true);
 			}
 		},
 		error:function(xhr,state){
@@ -1273,8 +1398,22 @@ function repealPendingDepute(dt){
 			console.log('repeal pending depute');
 			console.log(data);
 			if(state === 0){
-				var res=data.res,dt=res.data;
-				if(!dt || dt.length == 0) return;
+				var res=data.res,
+				returncode = res.returncode;
+				if(returncode == 99){//非交易时间, 下单失败
+					RemodalInstance.open();
+					var remodalWrap = $('.remodal');
+					remodalWrap.css('width',RemodalDefaultWidth);
+					remodalWrap.css('height',RemodalDefaultHeight);
+					var titleWrap = remodalWrap.children('.remodal-title');
+					titleWrap.html('下单提示');
+					var contentWrap = remodalWrap.children('.remodal-content');
+					contentWrap.attr('remodalConType','invalid');
+					contentWrap.empty();
+					var htmlFrag = "<div class='remodal-order-fail'>非交易时间， 无法下单"+
+						"</div>";
+					contentWrap.append($(htmlFrag));
+				}
 			}
 		},
 		error:function(xhr,state){
@@ -1864,6 +2003,7 @@ function accountCapitalNotEnough(){
 }
 //切换合约
 function orderInstrumentSwitch(select){
+	CurrentAllTradeDt = null;//重置交易点数据
 	console.log(select.value);
 	//停止盘口数据的订阅
 	cancelInstruTapeSubscribe(CurrentInstrumentID);

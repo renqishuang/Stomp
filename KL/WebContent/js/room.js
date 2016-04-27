@@ -66,7 +66,7 @@ function roomInstrumentListInfo(iidArr){
 				var KLTimeShareDiv = $('div.KL_TimeShareChart_Interval');
 				var KLTimeShareList = KLTimeShareDiv.find("li");
 				//默认触发1分钟K线图
-				KLTimeShareList.eq(0).trigger('mousedown');
+				KLTimeShareList.eq(4).trigger('mousedown');
 			}
 		},
 		error:function(xhr,state){

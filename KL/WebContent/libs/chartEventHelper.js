@@ -29,8 +29,15 @@ function crossLinesAndTipMgr(canvas, options) {
 crossLinesAndTipMgr.prototype._removeTipAndCrossLines = function () {
     //var canvas = this.canvas;
     var me = this;
+    var options = me.options;
     if (me.tip) me.tip.hide();   //隐藏Tip提示
     if (me.clsMgr) me.clsMgr.removeCrossLines(); //移出交叉线
+    if(options.tipOptions.updateBOLLPrice){
+    	options.tipOptions.updateBOLLPrice();
+    }
+    if(options.tipOptions.updateMAPrice){
+    	options.tipOptions.updateMAPrice();
+    }
 };
 crossLinesAndTipMgr.prototype.updateOptions = function (options) {
     this.options = options;

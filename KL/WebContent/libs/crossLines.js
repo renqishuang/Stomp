@@ -106,7 +106,9 @@ crossLines.prototype = {
         vLine.style.position = 'absolute';
         vLine.style.height = Math.round(vertialRange.y2 - vertialRange.y1) + 'px';
         vLine.style.width = '1px';
-        vLine.style.left = Math.round(this.crossPoint.x + canvasPosition.x) + 'px';
+        //vLine.style.left = Math.round(this.crossPoint.x + canvasPosition.x) + 'px';
+        //不知道为什么会有0.5px的偏差，在这里手动减去0.5px
+        vLine.style.left = (this.crossPoint.x + canvasPosition.x - 0.5) + 'px';
         vLine.style.top = Math.round(vertialRange.y1 + canvasPosition.y) + 'px';
         vLine.style.backgroundColor = this.color;
         vLine.style.index = zIndex;
