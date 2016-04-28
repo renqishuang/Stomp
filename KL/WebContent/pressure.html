@@ -38,11 +38,11 @@ beatlesJohn['age'] = 33;
 beatlesJohn['isMan'] = true;
 beatlesJohn['mood'] = 'happy';
 beatlesJohn['band'] = beatles;
-console.log(beatlesJohn);
+//console.log(beatlesJohn);
 	window.GlobalDt=[];//全局数据, 可以自己封装缓存用
-	window.CurrentPage = 20;//每页的数据个数
-	window.CurrentStartIndex=0;//每页的开始数据索引
-	window.CurrentEndIndex = CurrentStartIndex + CurrentPage;//每页的结束数据索引
+	var CurrentPage = 20;//每页的数据个数
+	var CurrentStartIndex=0;//每页的开始数据索引
+	var CurrentEndIndex = CurrentStartIndex + CurrentPage;//每页的结束数据索引
 
 	for(var i=CurrentStartIndex;i<CurrentEndIndex;i++){
 		var dt = PressureTestDt[i];
@@ -70,6 +70,7 @@ console.log(beatlesJohn);
 				var tr = trList.eq(i);
 					tdLen = tr.find('td').length;
 				tr.find('td').html('');//先清空
+				tr.attr(this.uniqueMark,'');
 				var data = this.getData(),
 					dtIndex = i+this.startIndex-1,
 					dt = data[dtIndex];
@@ -94,20 +95,16 @@ console.log(beatlesJohn);
 				tr.find('td:nth-child(3)').html(dt.c);
 				tr.find('td:nth-child(4)').html(dt.d);	
 			}
-		},
-		insertTrData:function(){
-			
 		}
 	};
 	$('table').createPageStore(tableConfig);
 	var page = $('table').getPageStore();
 	page.sort();//排序
 	page.action(0);//第一页
-	
 	var  arr = [1,2,5,3,9,20,13,42,7];
-	console.log(NormalNumArrQuickSort(arr));
+	//console.log(NormalNumArrQuickSort(arr));
 	var jsonArr = [{'a':3},{'a':2},{'a':4}];
-	console.log(JSONArrQuickSort(jsonArr,'a',true));
+	//console.log(JSONArrQuickSort(jsonArr,'a',true));
 </script>
 </body>
 </html>

@@ -8,35 +8,36 @@
 <script src='js/jquery.1.11.3.min.js'></script>
 </head>
 <body>
+<script>
+	/* return;
+	console.log('测试jQuery的 $.each()方法');
+	var arr = [1,2,3,4,5,6];
+	$.each(arr,function(i,value){
+		console.log('数组循环');
+		console.log(i+'-->'+value);
+	});
+	var obj = {name:'wang',age:18};
+	$.each(obj,function(key,value){
+		console.log('遍历对象');
+		console.log(key+'-->'+value);
+	}); */
+</script>
 <script src='js_test/ws.js'></script>
 <script>
-	window.WebSocketConnectState = false;
 	var url='ws://mq1.zlw.com:61634';
-	function success(client){
-		WebSocketConnectState = true;
-		console.log('success');
-		if(CurrentWSClient == null){
-			CurrentWSClient = client;
-			clearInterval(AgainConnectWS);
-		}
+	function success(){
+		console.log('-open');
 	}
 	function fail(){
-		console.log('fail');
+		console.log('-fail');
 	}
 	function message(){
-		console.log('message');
+		console.log('-message');
 	}
-	function close(){
-		WebSocketConnectState =false;
-		console.log('close');
-		//进行重新连接
-		window.AgainConnectWS = setInterval(function(){
-			if(WebSocketConnectState == true) return;
-			CurrentWSClient = null;
-			var client = WSClient.connect(url,success,fail,message,close);
-		},1000);
+	function close(event){
+		console.log('-close');
 	}
-	window.CurrentWSClient = WSClient.connect(url,success,fail,message,close);
+	WSClient.connect(url,success,fail,message,close);
 </script>
 </body>
 </html>

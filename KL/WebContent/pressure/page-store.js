@@ -80,6 +80,7 @@
 					this.action(this.startIndex);
 				},
 				update:function(dt){
+					var me = this;
 					if(!this.uniqueMark || !this.table || !this.sortKey ||
 							!this.trDtAttr || !this.trDtIndex || 
 							this.startIndex === null) return;
@@ -106,12 +107,12 @@
 					}else{
 						console.log('update: no current tr need sort and update data');
 						var len = this.data.length;
-						for(var i=0;i<len;i++){
-							var tempDt = this.data[i];
-							if(tempDt[this.uniqueMark] == dt[this.uniqueMark]){
-								this.data.splice(i,1,dt);
+						$.each(me.data,function(i,value){
+							if(value[me.uniqueMark] == dt[me.uniqueMark]){
+								me.data.splice(i,1,dt);
+								return false;
 							}
-						}
+						});
 						this.repeatSort();
 						this.action(this.startIndex);
 					}
@@ -138,6 +139,9 @@
 			}{
 				return null;
 			}
+		},
+		destroyPageStore:function(){
+			this[0].pageStore = null;
 		}
 	});
 })(jQuery);

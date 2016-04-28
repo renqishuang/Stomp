@@ -1,5 +1,5 @@
-var page = $('table').getPageStore();
 $('button[name=page]').bind('click',function(){
+	var page = $('table').getPageStore();
 	var action = $(this).attr('action');
 	switch(action){
 		case 'next':
