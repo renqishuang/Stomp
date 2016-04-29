@@ -4,14 +4,14 @@
 		createPageStore:function(tableConfig){
 			var me = this,options={
 				uniqueMark:null,
-				trDtIndex:null,
-				trDtAttr:null,
 				maxKeyValue:null,
 				minKeyValue:null,
-				sortType:null,
 				sortkey:null,
 				revMark:false,
-				startIndex:null
+				startIndex:null,
+				trDtIndex:'trDtIndex',
+				trDtAttr:'trDt',
+				sortType:parseInt,
 			};
 			function PageStore(tableConfig){
 				$.extend(this,options,tableConfig);
@@ -20,6 +20,9 @@
 			PageStore.prototype={
 				setSortType:function(type){
 					this.sortType=type;
+				},
+				getSortKey:function(){
+					return this.sortKey;
 				},
 				setSortKey:function(key){
 					this.sortKey=key;
@@ -89,23 +92,113 @@
 					if(tr.length !== 0){
 						var trDt = tr.attr(this.trDtAttr);
 						if(trDt) trDt = JSON.parse(trDt);
-						var trDtIndex = tr.attr(this.trDtIndex);
+						var trDtIndex = Number(tr.attr(this.trDtIndex));
 						if(dt[this.sortKey] == trDt[this.sortKey]){//key-value wheath change
-							console.log('update: current tr no need sort');
+							console.log('更新ID在当前页，更新K值没变，不需要排序');
 							for(var key in dt){
-								this.data[trDtIndex][key]=dt[key];
+								this.data[this.startIndex+trDtIndex][key]=dt[key];
 							}
 							this.updateTr(dt);
 						}else{
-							console.log('update: current tr need sort');
-							for(var key in dt){
-								this.data[trDtIndex][key]=dt[key];
+							if(this.revMark == false){
+								//需要比对更新行所在位置的前一行和后一行的Key值
+								var beforeLineDt = null,afterLineDt = null;
+								var isNeedSort = false;
+								if(trDtIndex === this.startIndex && trDtIndex !== this.data.length - 1){//在第一行
+									afterLineDt = this.data[trDtIndex+1];
+								}else if(trDtIndex === this.data.length - 1 && trDtIndex !== this.startIndex){//在最后一行
+									beforeLineDt = this.data[trDtIndex-1];
+								}else if(trDtIndex === this.data.length - 1 && trDtIndex == this.startIndex){//在中间的行
+									isNeedSort = false;
+									beforeLineDt = null,afterLineDt = null;
+								}else{
+									beforeLineDt = this.data[trDtIndex-1];
+									afterLineDt = this.data[trDtIndex+1];
+								}
+								
+								if(beforeLineDt === null && afterLineDt !== null){//只比较后一行
+									if(dt[this.sortKey] > afterLineDt[this.sortKey]){
+										isNeedSort = true;
+									}
+								}else if(beforeLineDt !== null && afterLineDt === null){
+									if(dt[this.sortKey] < beforeLineDt[this.sortKey]){
+										isNeedSort = true;
+									}
+								}else if(beforeLineDt !== null && afterLineDt !== null){
+									if(dt[this.sortKey] > afterLineDt[this.sortKey] ||
+											dt[this.sortKey] < beforeLineDt[this.sortKey]){
+										isNeedSort = true;
+									}
+								}
+								if(isNeedSort === false){
+									for(var key in dt){
+										this.data[trDtIndex][key]=dt[key];
+									}
+									tr.attr(this.trDtAttr,JSON.stringify(dt));
+									console.log('升序->更新ID在当前页，更新Key值没越界，不需要排序');
+									this.updateTr(dt);
+								}else{
+									console.log('升序->更新ID在当前页，更新Key值越界，需要排序');
+									for(var key in dt){
+										this.data[trDtIndex][key]=dt[key];
+									}
+									tr.attr(this.trDtAttr,JSON.stringify(dt));
+									this.repeatSort();
+									//需要排序
+									this.action(this.startIndex);
+								}
+							}else{
+								var isNeedSort = false;
+								//需要比对更新行所在位置的前一行和后一行的Key值
+								var beforeLineDt = null,afterLineDt = null;
+								var isNeedSort = false;
+								if(trDtIndex === this.startIndex && trDtIndex !== this.data.length - 1){//在第一行
+									afterLineDt = this.data[trDtIndex+1];
+								}else if(trDtIndex === this.data.length - 1 && trDtIndex !== this.startIndex){//在最后一行
+									beforeLineDt = this.data[trDtIndex-1];
+								}else if(trDtIndex === this.data.length - 1 && trDtIndex == this.startIndex){//在中间的行
+									isNeedSort = false;
+									beforeLineDt = null,afterLineDt = null;
+								}else{
+									beforeLineDt = this.data[trDtIndex-1];
+									afterLineDt = this.data[trDtIndex+1];
+								}
+								
+								if(beforeLineDt === null && afterLineDt !== null){//只比较后一行
+									if(dt[this.sortKey] < afterLineDt[this.sortKey]){
+										isNeedSort = true;
+									}
+								}else if(beforeLineDt !== null && afterLineDt === null){
+									if(dt[this.sortKey] > beforeLineDt[this.sortKey]){
+										isNeedSort = true;
+									}
+								}else if(beforeLineDt !== null && afterLineDt !== null){
+									if(dt[this.sortKey] < afterLineDt[this.sortKey] ||
+											dt[this.sortKey] > beforeLineDt[this.sortKey]){
+										isNeedSort = true;
+									}
+								}
+								if(isNeedSort === false){
+									for(var key in dt){
+										this.data[trDtIndex][key]=dt[key];
+									}
+									tr.attr(this.trDtAttr,JSON.stringify(dt));
+									console.log('降序->更新ID在当前页，更新Key值没越界，不需要排序');
+									this.updateTr(dt);
+								}else{
+									console.log('降序->更新ID在当前页，更新Key值越界，需要排序');
+									for(var key in dt){
+										this.data[trDtIndex][key]=dt[key];
+									}
+									tr.attr(this.trDtAttr,JSON.stringify(dt));
+									this.repeatSort();
+									this.action(this.startIndex);
+								}
 							}
-							this.repeatSort();
-							this.action(this.startIndex);
+							
 						}
 					}else{
-						console.log('update: no current tr need sort and update data');
+						console.log('update: no current tr not need sort,only to update data');
 						var len = this.data.length;
 						$.each(me.data,function(i,value){
 							if(value[me.uniqueMark] == dt[me.uniqueMark]){
@@ -113,8 +206,8 @@
 								return false;
 							}
 						});
-						this.repeatSort();
-						this.action(this.startIndex);
+						/*this.repeatSort();
+						this.action(this.startIndex);*/
 					}
 				},
 				updateTr:function(dt){

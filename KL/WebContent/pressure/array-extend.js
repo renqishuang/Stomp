@@ -49,19 +49,20 @@ function JSONArrQuickSort(arr,key,rev){
 	var right = [];
 	for (var i = 0; i < arr.length; i++){
 		if(rev == false){
-			if (arr[i][key] < pivot) {
+			if (arr[i][key] <= pivot) {
 				left.push(arr[i]);
 			} else {
 				right.push(arr[i]);
 			}
 		}else{
-			if (arr[i][key] > pivot) {
+			if (arr[i][key] >= pivot) {
 				left.push(arr[i]);
 			} else {
 				right.push(arr[i]);
 			}
 		}
-		
 	}
+	//var tempArr = JSONArrQuickSort(left,key,rev).concat([pivotObj], JSONArrQuickSort(right,key,rev));
+	//console.log(tempArr);
 	return JSONArrQuickSort(left,key,rev).concat([pivotObj], JSONArrQuickSort(right,key,rev));
 }

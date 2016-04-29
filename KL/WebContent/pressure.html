@@ -24,6 +24,8 @@ td{
 <button action='reverse' name='page' type='button'>倒序</button>
 <button action='insert' name='page' type='button'>插入</button>
 <button action='update' name='page' type='button'>更新</button>
+<button action='close' name='page' type='button'>按收盘价排序</button>
+<button action='open' name='page' type='button'>按开盘价排序</button>
 <script src='js/jquery.1.11.3.min.js'></script>
 <script src='pressure/array-extend.js'></script>
 <script src='pressure/plugin.js'></script>
@@ -58,9 +60,6 @@ beatlesJohn['band'] = beatles;
 	var tableConfig={
 		data:PressureTestDt,
 		uniqueMark:'userId',
-		trDtIndex:'trDtIndex',
-		trDtAttr:'trDt',
-		sortType:parseInt,
 		sortKey:'a',
 		setTableData:function(startIndex){
 			if(!this.uniqueMark || this.startIndex === null || !this.trDtAttr

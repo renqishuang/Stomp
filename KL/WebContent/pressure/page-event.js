@@ -25,11 +25,21 @@ $('button[name=page]').bind('click',function(){
 			setInterval(function(){
 				if(i == 0) return;
 				var updateDt={a:i,b:i+1,c:i+2,d:i+3,userId:28};
-				var userId = updateDt.userId;
-				var tr = $('table').find('tr[userId='+userId+']');
 				page.update(updateDt);
 				i--;
 			},1000);
+			break;
+		case 'close':
+			if(page.getSortKey() == 'b') return;
+			page.setSortKey('b');
+			page.repeatSort();
+			page.action(page.startIndex);
+			break;
+		case 'open':
+			if(page.getSortKey() == 'a') return;
+			page.setSortKey('a');
+			page.repeatSort();
+			page.action(page.startIndex);
 			break;
 		default:
 			break;

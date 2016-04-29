@@ -5,9 +5,9 @@
 <title>WebSocket功能测试</title>
 <style>
 </style>
-<script src='js/jquery.1.11.3.min.js'></script>
 </head>
 <body>
+<input type='checkbox'>选择
 <script>
 	/* return;
 	console.log('测试jQuery的 $.each()方法');
@@ -21,6 +21,12 @@
 		console.log('遍历对象');
 		console.log(key+'-->'+value);
 	}); */
+</script>
+<script src='js/jquery.1.11.3.min.js'></script>
+<script>
+	$('input').bind('click',function(){
+		console.log($(this).is(':checked'));
+	});
 </script>
 <script src='js_test/ws.js'></script>
 <script>
