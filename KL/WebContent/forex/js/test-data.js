@@ -1,0 +1,33 @@
+window.UserStateAccountData=[{
+	a:1,b:1,c:1,d:1,e:1,f:1,g:1,userId:1
+},{
+	a:2,b:1,c:1,d:1,e:1,f:1,g:1,userId:2
+},{
+	a:3,b:1,c:1,d:1,e:1,f:1,g:1,userId:3
+},{
+	a:4,b:1,c:1,d:1,e:1,f:1,g:1,userId:4
+},{
+	a:5,b:1,c:1,d:1,e:1,f:1,g:1,userId:5
+},{
+	a:6,b:1,c:1,d:1,e:1,f:1,g:1,userId:6
+},{
+	a:7,b:1,c:1,d:1,e:1,f:1,g:1,userId:7
+},{
+	a:8,b:1,c:1,d:1,e:1,f:1,g:1,userId:8
+},{
+	a:9,b:1,c:1,d:1,e:1,f:1,g:1,userId:9
+},{
+	a:10,b:1,c:1,d:1,e:1,f:1,g:1,userId:10
+},{
+	a:11,b:1,c:1,d:1,e:1,f:1,g:1,userId:11
+},{
+	a:12,b:1,c:1,d:1,e:1,f:1,g:1,userId:12
+},{
+	a:13,b:1,c:1,d:1,e:1,f:1,g:1,userId:13
+},{
+	a:14,b:1,c:1,d:1,e:1,f:1,g:1,userId:14
+},{
+	a:15,b:1,c:1,d:1,e:1,f:1,g:1,userId:15
+},{
+	a:16,b:1,c:1,d:1,e:1,f:1,g:1,userId:16
+}];

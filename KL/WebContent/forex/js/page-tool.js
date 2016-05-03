@@ -1,31 +1,103 @@
 (function(){
-	"use strict";
 	$.fn.extend({
-		createPageStore:function(tableConfig){
-			var me = this,options={
-				isFilter:false,
-				filterStr:'',
-				filterKey:'',
-				filterData:[],
-				uniqueMark:null,
-				startKeyValue:null,
-				endKeyValue:null,
-				maxKeyValue:null,
-				minKeyValue:null,
-				sortkey:null,
-				revMark:false,
-				startIndex:null,
-				endIndex:null,
-				trDtIndex:'trDtIndex',
-				trDtAttr:'trDt',
-				sortType:parseInt,
-				pageSize:null
-			};
-			function PageStore(tableConfig){
+		createPageTool:function(tableConfig){
+			var me = $(this);
+			function PageTool(){
+				var options={
+						isFilter:false,
+						filterStr:'',
+						filterKey:'',
+						filterData:[],
+						uniqueMark:null,
+						startKeyValue:null,
+						endKeyValue:null,
+						maxKeyValue:null,
+						minKeyValue:null,
+						sortkey:null,
+						revMark:false,
+						startIndex:null,
+						endIndex:null,
+						trDtIndex:'trDtIndex',
+						trDtAttr:'trDt',
+						sortType:parseInt,
+						pageSize:null,
+						currentPage:null,
+						totalPage:null,
+						hasPage:false
+				};
 				$.extend(this,options,tableConfig);
-				this.table = me;
+				this.table=me;
 			}
-			PageStore.prototype={
+			PageTool.prototype={
+				firstPage:function(){
+					
+				},
+				lastPage:function(){
+					
+				},
+				prevPage:function(){
+					if(this.currentPage === 1) return;
+					this.action(this.startIndex-this.pageSize);
+					this.setCurrentPage();
+					this.calcPage();
+				},
+				nextPage:function(){
+					if(this.currentPage === this.totalPage) return;
+					this.action(this.startIndex+this.pageSize);
+					this.setCurrentPage();
+					this.calcPage();
+				},
+				setCurrentPage:function(){
+					if(this.pageSzie === null || this.startIndex === null) return;
+					this.currentPage = this.startIndex/this.pageSize+1;
+				},
+				setTotalPage:function(){
+					if(this.pageSize === null) return;
+					this.totalPage=Math.ceil(this.getTotalCount()/this.pageSize);
+				},
+				getTotalCount:function(){
+					return this.data.length;
+				},
+				calcPage:function(){
+					if(this.table.length == 0) return;
+					var pageToolWrap = this.table.next();
+					if(pageToolWrap.length == 0) return;
+					if(this.pageSzie === null || this.startIndex === null) return;
+					
+					var totalCountWrap = pageToolWrap.find('span[name=total-count]');
+					totalCountWrap.html(this.getTotalCount());
+					
+					var totalPageWrap = pageToolWrap.find('span[name=total-page]');
+					this.setTotalPage();
+					totalPageWrap.html(this.totalPage);
+					
+					var currentPageWrap = pageToolWrap.find('span[name=current-page]');
+					this.setCurrentPage();
+					currentPageWrap.html(this.currentPage);
+				},
+				append:function(){
+					var pagetool = this;
+					if(this.table.length == 0) return;
+					if(this.hasPage === false){
+						var tableCls = '_table-page-tool';
+						var frag = "<div class='"+tableCls+"'>"+
+										"共<span name='total-count'></span>条记录/共"+
+										"<span name='total-page'></span>页，当前第"+
+										"<span name='current-page'></span>页"+
+										"<span name='prev'>上一页</span>"+
+										"<span name='next'>下一页</span>"+
+									"</div>";
+						this.table.next().append($(frag));
+						this.hasPage = true;
+						this.startIndex=0;
+						this.table.next().find('span[name=prev]').bind('click',function(){
+							pagetool.prevPage();
+						});
+						this.table.next().find('span[name=next]').bind('click',function(){
+							pagetool.nextPage();
+						});
+					}
+				},
 				setSortType:function(type){
 					this.sortType=type;
 				},
@@ -333,19 +405,16 @@
 				setData:function(data){
 					this.data=data;
 				}
-			}
-			var pageStore = new PageStore(tableConfig);
-			me[0].pageStore = pageStore;
-		},
-		getPageStore:function(){
-			if(this[0].pageStore){
-				return this[0].pageStore;
-			}{
-				return null;
+			};
+			if(!me[0].pageTool){
+				me[0].pageTool = new PageTool();
+				me[0].pageTool.append();
+				me[0].pageTool.calcPage();
+				return me[0].pageTool;
 			}
 		},
-		destroyPageStore:function(){
-			this[0].pageStore = null;
+		getPageTool:function(){
+			if($(this)[0].pageTool) return $(this)[0].pageTool;
 		}
 	});
-})(jQuery);
+})();

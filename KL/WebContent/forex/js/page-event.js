@@ -1,5 +1,5 @@
 $('button[name=page]').bind('click',function(){
-	var page = $('table').getPageStore();
+	var page = $('._userstate-trade-table').getPageTool();
 	var action = $(this).attr('action');
 	switch(action){
 		case 'next':
@@ -27,14 +27,14 @@ $('button[name=page]').bind('click',function(){
 				var updateDt={a:100+i,b:i+1,c:i+2,d:i+3,userId:5,e:'f'};
 				page.update(updateDt);
 				i--;
-			},100);
-			var j=200;
+			},1000);
+			/*var j=200;
 			setInterval(function(){
 				if(i == 0) return;
 				var updateDt={a:100+j+1,b:100+j+2,c:100+j+3,d:100+j+4,userId:27,e:'g'};
 				page.update(updateDt);
 				j--;
-			},100);
+			},100);*/
 			break;
 		case 'close':
 			if(page.getSortKey() == 'b') return;
@@ -49,7 +49,7 @@ $('button[name=page]').bind('click',function(){
 			page.action(page.startIndex);
 			break;
 		case 'filter':
-			page.setFilter('e','f');
+			page.setFilter('a','1');
 			break;
 		case 'clearFilter':
 			page.clearFilter();

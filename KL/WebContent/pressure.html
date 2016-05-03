@@ -16,6 +16,7 @@ td{
 		<th>收盘价</th>
 		<th>最高价</th>
 		<th>最低价</th>
+		<th>码</th>
 	</tr>
 </table>
 <button action='prev' name='page' type='button'>上一页</button>
@@ -26,6 +27,8 @@ td{
 <button action='update' name='page' type='button'>更新</button>
 <button action='close' name='page' type='button'>按收盘价排序</button>
 <button action='open' name='page' type='button'>按开盘价排序</button>
+<button action='filter' name='page' type='button'>过滤</button>
+<button action='clearFilter' name='page' type='button'>取消过滤</button>
 <script src='js/jquery.1.11.3.min.js'></script>
 <script src='pressure/array-extend.js'></script>
 <script src='pressure/plugin.js'></script>
@@ -33,6 +36,12 @@ td{
 <script src='pressure/page-store.js'></script>
 <script src='pressure/page-event.js'></script>
 <script>
+console.log('获取字符窜的ASCII码值');
+var str = 'ABC';
+var aa = 123;
+console.log(typeof str);
+console.log(typeof aa);
+console.log(str.charCodeAt(0));
 var beatles = ['John','Paul','George','Ringo'];
 var beatlesJohn = Array();
 beatlesJohn['name'] = 'John';
@@ -53,14 +62,16 @@ beatlesJohn['band'] = beatles;
 						'<td>'+dt.b+'</td>'+
 						'<td>'+dt.c+'</td>'+
 						'<td>'+dt.d+'</td>'+
+						'<td>'+dt.e+'</td>'+
 					'</tr>';
 		$('table').append($(frag));
 	}
 	//少一个参数都不行
 	var tableConfig={
+		pageSize:20,
 		data:PressureTestDt,
 		uniqueMark:'userId',
-		sortKey:'a',
+		sortKey:'e',
 		setTableData:function(startIndex){
 			if(!this.uniqueMark || this.startIndex === null || !this.trDtAttr
 					|| !this.trDtIndex) return;
@@ -81,6 +92,7 @@ beatlesJohn['band'] = beatles;
 					tr.find('td:nth-child(2)').html(dt.b);
 					tr.find('td:nth-child(3)').html(dt.c);
 					tr.find('td:nth-child(4)').html(dt.d);
+					tr.find('td:nth-child(5)').html(dt.e);
 				}
 			}
 		},
@@ -92,7 +104,8 @@ beatlesJohn['band'] = beatles;
 				tr.find('td:nth-child(1)').html(dt.a);
 				tr.find('td:nth-child(2)').html(dt.b);
 				tr.find('td:nth-child(3)').html(dt.c);
-				tr.find('td:nth-child(4)').html(dt.d);	
+				tr.find('td:nth-child(4)').html(dt.d);
+				tr.find('td:nth-child(5)').html(dt.e);
 			}
 		}
 	};

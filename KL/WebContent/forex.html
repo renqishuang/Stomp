@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel='stylesheet' type='text/css' href='forex/css/base.css'>
+<link rel='stylesheet' type='text/css' href='forex/css/forex.css'>
+</head>
+<body>
+<div class='_risk-control-pandect-outer-wrap'>
+	<div class='_pandect-header-wrap'>
+			<span name='section'>风险控制>></span><span name='title'>风险总览</span>
+			<div class='_pandect_tab_panel'>
+				<span name='pandect'>总览
+					<span name='notify-pandect'>1</span>
+				</span>
+				<span name='userstate'>客户状态
+					<span name='notify-userstate'>1</span>
+				</span>
+			</div>
+	</div>
+	<div class='_tabpanel-pandect-wrap'>
+		<div class='_pandect-trade-wrap'>
+		<span class='_pandect-trade-title'>交易审批</span>
+		<div class='_pandect-trade-type'>
+			<span name='type-warning'>预警</span>
+			<span name='type-nohandle'>待处理
+				<span name='notify-nohandle'>1</span>
+			</span>
+			<span name='type-hashandle'>已处理</span>
+		</div>
+		<table class='_trade-warning-table' border='1' cellspacing='0'>
+			<tr>
+				<th>交易账号</th>
+				<th>订单号</th>
+				<th>品种代码</th>
+				<th>卖出价</th>
+				<th>买入价</th>
+				<th>点差</th>
+				<th>最后更新</th>
+				<th>类型</th>
+				<th>手数</th>
+				<th>委托价</th>
+				<th>委托时间</th>
+				<th>止盈</th>
+				<th>止损</th>
+			</tr>
+		</table>
+		<table hidden="true" class='_trade-nohandle-table' border='1' cellspacing='0'>
+			<tr>
+				<th>交易账号</th>
+				<th>订单号</th>
+				<th>品种代码</th>
+				<th>卖出价</th>
+				<th>买入价</th>
+				<th>点差</th>
+				<th>最后更新</th>
+				<th>类型</th>
+				<th>手数</th>
+				<th>委托价</th>
+				<th>委托时间</th>
+				<th>止盈</th>
+				<th>止损</th>
+				<th>操作</th>
+			</tr>
+		</table>
+		<table hidden="true" class='_trade-hashandle-table' border='1' cellspacing='0'>
+			<tr>
+				<th>交易账号</th>
+				<th>订单号</th>
+				<th>品种代码</th>
+				<th>类型</th>
+				<th>手数</th>
+				<th>委托价</th>
+				<th>委托时间</th>
+				<th>止盈</th>
+				<th>止损</th>
+				<th>成交价</th>
+				<th>处理时间</th>
+				<th>处理人</th>
+			</tr>
+		</table>
+	</div>
+	<div class='_pandect-cash-wrap'>
+		<span class='_pandect-cash-title'>头寸总览</span>
+		<table class='_pandect-cash-table' border="1" cellspacing='0'>
+			<tr>
+				<th rowspan="2">品种代码</th>
+				<th colspan="4">品种报价</th>
+				<th name='buy' colspan="3">多</th>
+				<th name='sell' colspan="3">空</th>
+				<th colspan="2">总</th>
+				<th rowspan='2'>操作</th>
+			</tr>
+			<tr>
+				<th>卖出价</th>
+				<th>买入价</th>
+				<th>点差</th>
+				<th>最后更新</th>
+				<th name='buy'>持仓手数</th>
+				<th name='buy'>持仓均价</th>
+				<th name='buy'>盈亏</th>
+				<th name='sell'>持仓手数</th>
+				<th name='sell'>持仓均价</th>
+				<th name='sell'>盈亏</th>
+				<th>净持仓手数</th>
+				<th>盈亏</th>
+			</tr>
+		</table>
+	</div>
+	</div>
+	<div hidden="true" class='_tanpanel-userstate-wrap'>
+		<div class='_userstate-filter-wrap'>
+			<span name='filter-type'>交易账号</span>
+			<input name='filter-content' type="text">
+			<span name='filter-search'>搜索</span>
+			<span name='filter-reset'>重置</span>
+		</div>
+		<div class='_userstate-account-wrap'>
+			<span name='all-acount'>显示全部账号</span>
+			<span name='risk-account'>只显示风险账号</span>
+		</div>
+		<table class='_userstate-trade-table' border='1' cellspacing='0'>
+			<tr>
+				<th>交易账号</th>
+				<th>保证金比率</th>
+				<th>交易许可</th>
+				<th>出金许可</th>
+				<th>入金许可</th>
+				<th>在线状态</th>
+				<th>操作</th>
+			</tr>
+		</table>
+		<div class='page-tool-wrap'></div>
+	</div>
+</div>
+<div class='_cash-detail-wrap'>
+	<div></div>
+	<table class='_cash_detail_table' border='1' cellspacing='0'>
+		
+	</table>
+</div>
+<button action='sort' name='page' type='button'>正序</button>
+<button action='reverse' name='page' type='button'>倒序</button>
+<button action='insert' name='page' type='button'>插入</button>
+<button action='update' name='page' type='button'>更新</button>
+<button action='close' name='page' type='button'>按收盘价排序</button>
+<button action='open' name='page' type='button'>按开盘价排序</button>
+<button action='filter' name='page' type='button'>过滤</button>
+<button action='clearFilter' name='page' type='button'>取消过滤</button>
+<script src='js/jquery.1.11.3.min.js'></script>
+<script src='forex/js/array-extend.js'></script>
+<script src='forex/js/page-tool.js'></script>
+<script src='forex/js/page-event.js'></script>
+<script src='forex/js/test-data.js'></script>
+<script src='forex/js/beforeload.js'></script>
+<script src='forex/js/forex.js'></script>
+<script src='forex/js/initHandler.js'></script>
+</body>
+</html>

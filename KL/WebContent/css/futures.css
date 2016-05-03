@@ -1,0 +1,16 @@
+._risk-control-outer-wrap{
+	height:495px;
+	width: 1200px;
+    margin: 0px auto;
+    border: 1px solid black;
+}
+._risk-control-header-wrap{
+	height:22px;
+}
+._risk-control-filter-wrap{
+	text-align:center;
+	height:22px;
+}
+._risk-control-filter-wrap input{
+	border:1px solid black;
+}
