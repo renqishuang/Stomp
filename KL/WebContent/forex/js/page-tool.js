@@ -23,7 +23,10 @@
 						pageSize:null,
 						currentPage:null,
 						totalPage:null,
-						hasPage:false
+						hasPage:false,
+						disablePageColor:'#BDB6B6',
+						enablePageColor:'white',
+						needPageTool:true
 				};
 				$.extend(this,options,tableConfig);
 				this.table=me;
@@ -74,6 +77,34 @@
 					var currentPageWrap = pageToolWrap.find('span[name=current-page]');
 					this.setCurrentPage();
 					currentPageWrap.html(this.currentPage);
+					
+					if(this.totalPage <= 1){
+						pageToolWrap.find('span[name=prev]').css('background-color',this.disablePageColor);
+						pageToolWrap.find('span[name=prev]').attr('isDisabled','true');
+						pageToolWrap.find('span[name=prev]').css('cursor','default');
+						pageToolWrap.find('span[name=next]').css('background-color',this.disablePageColor);
+						pageToolWrap.find('span[name=next]').css('cursor','default');
+						pageToolWrap.find('span[name=next]').attr('isDisabled','true');
+					}else{
+						if(this.currentPage <= 1){
+							pageToolWrap.find('span[name=prev]').css('background-color',this.disablePageColor);
+							pageToolWrap.find('span[name=prev]').css('cursor','default');
+							pageToolWrap.find('span[name=prev]').attr('isDisabled','true');
+						}else{
+							pageToolWrap.find('span[name=prev]').css('background-color',this.enablePageColor);
+							pageToolWrap.find('span[name=prev]').css('cursor','pointer');
+							pageToolWrap.find('span[name=prev]').attr('isDisabled','false');
+						}
+						if(this.currentPage >= this.totalPage){
+							pageToolWrap.find('span[name=next]').css('background-color',this.disablePageColor);
+							pageToolWrap.find('span[name=next]').css('cursor','default');
+							pageToolWrap.find('span[name=next]').attr('isDisabled','true');
+						}else{
+							pageToolWrap.find('span[name=next]').css('background-color',this.enablePageColor);
+							pageToolWrap.find('span[name=next]').css('cursor','pointer');
+							pageToolWrap.find('span[name=next]').attr('isDisabled','false');
+						}
+					}
 				},
 				append:function(){
 					var pagetool = this;
@@ -91,9 +122,11 @@
 						this.hasPage = true;
 						this.startIndex=0;
 						this.table.next().find('span[name=prev]').bind('click',function(){
+							if($(this).attr('isDisabled') == 'true') return;
 							pagetool.prevPage();
 						});
 						this.table.next().find('span[name=next]').bind('click',function(){
+							if($(this).attr('isDisabled') == 'true') return;
 							pagetool.nextPage();
 						});
 					}
@@ -408,9 +441,16 @@
 			};
 			if(!me[0].pageTool){
 				me[0].pageTool = new PageTool();
-				me[0].pageTool.append();
-				me[0].pageTool.calcPage();
-				return me[0].pageTool;
+				if(tableConfig.needPageTool && 
+						tableConfig.needPageTool === 'false'){
+					me[0].pageTool.action(me[0].pageTool.startIndex);
+					return me[0].pageTool;
+				}else{
+					me[0].pageTool.append();
+					me[0].pageTool.calcPage();
+					me[0].pageTool.action(me[0].pageTool.startIndex);
+					return me[0].pageTool;
+				}
 			}
 		},
 		getPageTool:function(){

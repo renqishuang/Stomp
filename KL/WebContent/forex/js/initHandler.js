@@ -41,7 +41,10 @@ function loadCashData(){
 		}
 	});
 }
+
 $(function(){
 	//加载头寸数据
 	
+	//监听头寸数据
+	monitorCashData();
 });

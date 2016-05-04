@@ -4,10 +4,24 @@
 <meta charset="UTF-8">
 <title>WebSocket功能测试</title>
 <style>
+.drag-wrap{
+	width:200px;
+	height:200px;
+	border:1px solid black;
+	position: absolute;
+	top:100px;
+	left:200px;
+}
+.drop-wrap{
+	height:300px;
+	background-color:green;
+}
 </style>
 </head>
 <body>
 <input type='checkbox'>选择
+<div id='drag' draggable="true" class='drag-wrap'>测试拖动</div>
+<div class='drop-wrap'></div>
 <span>1</span>
 <span>2</span>
 <script>
@@ -26,26 +40,62 @@
 </script>
 <script src='js/jquery.1.11.3.min.js'></script>
 <script>
+	$('.drag-wrap').bind('dragstart',function(){
+		//console.log('开始脱');
+		//console.log(event);
+		event.dataTransfer.setData('source',event.target.className);
+	});
+	$('.drag-wrap').bind('dragover',function(){
+		//console.log('脱中..');
+		//console.log(event);
+	});
+	$('.drag-wrap').bind('drop',function(){
+		//console.log('结束脱..');
+		//console.log(event);
+	});
+	$('body').bind('dragover',function(e){
+		//console.log('在body上拖动');
+		//event.preventDefault();
+	});
+	$('body').bind('drop',function(){
+		//event.preventDefault();
+		console.log('往Body上脱');
+		var sourceCls = event.dataTransfer.getData('source');
+		$('.'+sourceCls).css('top',event.clientY);
+		$('.'+sourceCls).css('left',event.clientX);
+		//console.log(event);
+	});
 	$('input').bind('click',function(){
 		console.log($(this).is(':checked'));
 	});
 </script>
 <script src='js_test/ws.js'></script>
 <script>
-	var url='ws://mq1.zlw.com:61634';
+	var time = '2016-05-04 15:13:01';
+	var data = new Date(time);
+	console.log(data.getTime());
+	//var url='ws://192.168.1.18:8080/fx.backend/ws';
+	var url='ws://192.168.1.18:8080/fx.backend/ws';
+	//var url='ws://mq1.zlw.com:61634';
 	function success(){
 		console.log('-open');
 	}
 	function fail(){
 		console.log('-fail');
 	}
-	function message(){
+	function message(msg){
+		var data = msg.data;
+		if(data){
+			data = JSON.parse(data);
+			console.log(data);
+		}
+		//console.log(msg);
 		console.log('-message');
 	}
 	function close(event){
 		console.log('-close');
 	}
-	WSClient.connect(url,success,fail,message,close);
+	//WSClient.connect(url,success,fail,message,close);
 </script>
 </body>
 </html>

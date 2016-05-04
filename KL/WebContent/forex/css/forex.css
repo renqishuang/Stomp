@@ -1,20 +1,14 @@
-._risk-control-pandect-outer-wrap{
-	width: 1200px;
-    margin: 0px auto;
-    padding-top:10px;
-}
-._risk-control-pandect-outer-wrap table{
+body table{
 	width:100%;
 	text-align:center;
 }
-._risk-control-pandect-outer-wrap th{
-	height:18px;
+body th{
 	background-color: #E4E4E4;
 }
-._risk-control-pandect-outer-wrap tr{
+body tr{
 	height:20px;
 }
-._risk-control-pandect-outer-wrap span[name^=notify]{
+body span[name^=notify]{
 	display: inline-block;
     width: 14px;
     height: 14px;
@@ -26,6 +20,11 @@
     right: 9px;
     color: white;
     text-align: center;
+}
+._risk-control-pandect-outer-wrap{
+	width: 1200px;
+    margin: 0px auto;
+    padding-top:10px;
 }
 ._pandect-trade-wrap{
 	border: 1px solid #D7D7D7;
@@ -93,13 +92,23 @@
 ._trade-hashandle-table td[name=vol]{
 	background-color:yellow;
 }
-._pandect-cash-table td[name=total]{
+._pandect-cash-table td[name=count]{
 	text-align: right;
 	padding-right: 10px;
 }
 ._pandect-cash-table td[name=detail]{
 	color:blue;
 	cursor:pointer;
+}
+._pandect-cash-table th[name=symbol-price]{
+	width:30%;
+}
+._pandect-cash-table th[name=total]{
+	width:14%;
+}
+._pandect-cash-table tr:first-child th[name=buy],
+._pandect-cash-table tr:first-child th[name=sell]{
+	width:23%;
 }
 ._pandect-cash-table th[name=buy]{
 	background-color:#FF3300;
@@ -136,7 +145,7 @@
 	cursor: pointer;
 }
 ._pandect_tab_panel span[name=pandect]{
-	
+	font-weight:bold;
 }
 ._pandect_tab_panel span[name=userstate]{
 	margin-left: -5px;
@@ -150,16 +159,17 @@
 ._userstate-filter-wrap span[name=filter-type]{
 	margin-right:5px;
 }
-._userstate-filter-wrap span[name=filter-search],
-._userstate-filter-wrap span[name=filter-reset]{
+._userstate-filter-wrap button[name=filter-search],
+._userstate-filter-wrap button[name=filter-reset]{
 	margin-left:5px;
-	display:inline-block;
-	border:1px solid black;
 	width:60px;
-	position: relative;
+    height: 25px;
+    /* cursor: pointer;
+    display:inline-block;
     line-height: 22px;
+    border:1px solid black;
     border-radius: 7px;
-    cursor: pointer;
+    position: relative; */
 }
 ._userstate-filter-wrap input{
 	border:1px solid black;
@@ -203,12 +213,129 @@
 .page-tool-wrap span[name=prev],
 .page-tool-wrap span[name=next]{
 	cursor:pointer;
+	margin-left: 20px;
 }
 .remodal-wrap{
+	background: rgba(120,120,120,0.7);
 	width: 100%;
     position: absolute;
     top: 0px;
     left: 0px;
-    background-color: transparent;
-    pointer-events: none;
+    text-align: center;
+}
+._cash-detail-wrap{
+	width:1000px;
+	height:450px;
+	border: 1px solid black;
+	position:relative;
+	padding:10px;
+	background-color:white;
+	margin: 0px auto;
+}
+._cash-detail-header{
+	height: 40px;
+    text-align: center;
+}
+._cash-detail-header span[name=kind-code]{
+	font-size: 15px;
+    font-weight: bold;
+}
+._cash-detail-header span[name=refresh]{
+	cursor:pointer;
+	color:blue;
+	margin-left: 17px;
+}
+._cash-detail-header span[name=refresh-time-wrap]{
+	top: 15px;
+	position: absolute;
+    display: inline-block;
+    right: 40px;
+}
+._cash-detail-header span[name=lastrefresh]{
+	
+}
+._cash-detail-header span[name=close]{
+	display: inline-block;
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-image:url(../images/alertCloseBtn0002.png);
+    cursor:pointer;
+}
+._cash-detail-header span[name=close]:hover{
+	background-image:url(../images/alertCloseBtn0001.png);
+}
+._cash_detail_table{
+	width:100%;
+}
+._cash_detail_table tr{
+	height:30px;
+}
+._cash_detail_table th[name=buy-vol],
+._cash_detail_table th[name=buy-profit],
+._cash_detail_table th[name=sell-vol],
+._cash_detail_table th[name=sell-profit],
+._cash_detail_table th[name=total-profit]{
+	background-color:#0066FF;
+}
+._trade-nohandle-table td[name=operate]{
+	color:blue;
+}
+._trade-nohandle-table span[name=accept],
+._trade-nohandle-table span[name=refuse]{
+	display:inline-block;
+	width:50%;
+	cursor:pointer;
+}
+._trade-nohand-accept-menu{
+	text-align: center;
+	width:145px;
+	height:175px;
+	border: 1px solid black;
+	position:absolute;
+	background-color: white;
+}
+._trade-nohand-accept-menu input{
+	border:1px solid black;
+	width: 112px;
+}
+._trade-nohand-accept-menu div[name=title]{
+	height: 35px;
+    font-size: 14px;
+    line-height: 35px;
+}
+._trade-nohand-accept-menu div[name=control]{
+	height:30px;
+	line-height:30px;
+}
+._trade-nohand-accept-menu span[name^=code-]{
+	display:inline-block;
+	width:25px;
+	height:25px;
+	text-align:center;
+	line-height:25px;
+	border:1px solid black;
+	margin: 6px;
+	cursor:pointer;
+}
+._trade-nohand-accept-menu button[name^=btn-]{
+	margin:5px;
+}
+._trade-nohand-refuse-menu{
+	width:140px;
+	height:80px;
+	border: 1px solid black;
+    text-align: center;
+    position:absolute;
+    background-color:white;
+}
+._trade-nohand-refuse-menu div:first-child{
+	font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+}
+._trade-nohand-refuse-menu button{
+	margin:5px;
 }

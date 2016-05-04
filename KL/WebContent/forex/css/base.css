@@ -20,6 +20,9 @@ textarea {
 	border:0px;
 	outline:none;
 }
+button{
+	cursor:pointer;
+}
 a.tdtd:link {text-decoration: underline;}
 a.tdtd:visited {text-decoration: underline;}
 a.tdtd:hover {text-decoration:underline;}
