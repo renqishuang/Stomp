@@ -241,3 +241,214 @@ function noHandleTradeRefuse(btn){
 	refuseMenu.css('top',event.clientY);
 	refuseMenu.css('left',event.clientX-140);
 }
+
+//头寸数据更新
+function updateCashData(data){
+	var rowData = data.data,rowLen = rowData.length
+		buytotal =data.buytotal,
+		selltotal = data.selltotal,
+		total = data.total;
+	//rowData = JSONArrQuickSort(rowData,'symbol',false);
+	var cashTable = $('._pandect-cash-table'),
+		cashTrs = cashTable.find('tr'),
+		cashTrLen = cashTrs.length;
+	if(cashTrLen == 2){
+		for(var i=0;i<rowLen;i++){
+			var dt = rowData[i];
+			var htmlFrag = '<tr trDt="'+JSON.stringify(dt)+'"><td name="symbol">'+dt.symbol+'</td>'+
+								'<td name="sell">'+dt.sell+'</td>'+
+								'<td name="buy">'+dt.buy+'</td>'+
+								'<td name="spread">'+dt.spread+'</td>'+
+								'<td name="dt">'+dt.dt+'</td>'+
+								'<td name="buyvol">'+dt.buyvol+'</td>'+
+								'<td name="buyavgprice">'+dt.buyavgprice+'</td>'+
+								'<td name="buyprofit">'+dt.buyprofit+'</td>'+
+								'<td name="sellvol">'+dt.sellvol+'</td>'+
+								'<td name="sellavgprice">'+dt.sellavgprice+'</td>'+
+								'<td name="sellprofit">'+dt.sellprofit+'</td>'+
+								'<td name="vol">'+dt.vol+'</td>'+
+								'<td name="profit">'+dt.profit+'</td>'+
+								'<td onclick="pandectCashDetail(this)" name="detail">详细</td>'+
+							'</tr>';
+			cashTable.append($(htmlFrag));
+		}
+		var cashFootFrag =  '<tr><td name="count" colspan="5">合计:</td>'+
+								'<td colspan="2">多盈亏</td>'+
+								'<td name="buytotal">3</td>'+
+								'<td colspan="2">空盈亏</td>'+
+								'<td name="selltotal">5</td>'+
+								'<td>总盈亏</td>'+
+								'<td name="total">7</td>'+
+								'<td></td>'+
+							'</tr>';
+		cashTable.append($(cashFootFrag));
+	}else{
+		for(var i=2;i<cashTrLen-1;i++){
+			var tr = cashTrs.eq(i);
+			//tr.find('td:not(:last-child)').html('');
+			var dt = rowData[i-2];
+			tr.attr('trDt',JSON.stringify(dt));
+			tr.find('td[name=symbol]').html(dt.symbol);
+			tr.find('td[name=sell]').html(dt.sell);
+			tr.find('td[name=buy]').html(dt.buy);
+			tr.find('td[name=spread]').html(dt.spread);
+			tr.find('td[name=dt]').html(dt.dt);
+			tr.find('td[name=buyvol]').html(dt.buyvol);
+			tr.find('td[name=buyavgprice]').html(dt.buyavgprice);
+			tr.find('td[name=buyprofit]').html(dt.buyprofit);
+			tr.find('td[name=sellvol]').html(dt.sellvol);
+			tr.find('td[name=sellavgprice]').html(dt.sellavgprice);
+			tr.find('td[name=sellprofit]').html(dt.sellprofit);
+			tr.find('td[name=vol]').html(dt.vol);
+			tr.find('td[name=profit]').html(dt.profit);
+		}
+		cashTrs.find('td[name=buytotal]').html(buytotal);
+		cashTrs.find('td[name=selltotal]').html(selltotal);
+		cashTrs.find('td[name=total]').html(total);
+	}
+}
+//总览-预警
+function updatePandectWarnData(data){
+	var rowData = data.data,rowLen = rowData.length;
+	var warnTable = $('._trade-warning-table'),
+		warnTrs = warnTable.find('tr:not(":first-child")'),
+		warnTrLen = warnTrs.length;
+	//-----------------
+	warnTrs.remove();
+	for(var i=0;i<rowLen;i++){
+		var dt = rowData[i];
+		var htmlFrag="<tr>" +
+						"<td name='aid'>"+dt.aid+"</td>" +
+						"<td name='ord'>"+dt.ord+"</td>" +
+						"<td name='symbol'>"+dt.symbol+"</td>" +
+						"<td name='sell'>"+dt.sell+"</td>" +
+						"<td name='buy'>"+dt.buy+"</td>" +
+						"<td name='spread'>"+dt.spread+"</td>" +
+						"<td name='dt'>"+dt.dt+"</td>" +
+						"<td name='tp'>"+dt.tp+"</td>" +
+						"<td name='vol'>"+dt.vol+"</td>" +
+						"<td name='opr'>"+dt.opr+"</td>" +
+						"<td name='odt'>"+dt.odt+"</td>" +
+						"<td name='limit'>"+dt.limit+"</td>" +
+						"<td name='stop'>"+dt.stop+"</td>" +
+					"</tr>";
+		warnTable.append($(htmlFrag));
+	}
+	return;
+	if(warnTrLen === 1){
+		for(var i=0;i<rowLen;i++){
+			var dt = rowData[i];
+			var htmlFrag="<tr>" +
+							"<td name='aid'>"+dt.aid+"</td>" +
+							"<td name='ord'>"+dt.ord+"</td>" +
+							"<td name='symbol'>"+dt.symbol+"</td>" +
+							"<td name='sell'>"+dt.sell+"</td>" +
+							"<td name='buy'>"+dt.buy+"</td>" +
+							"<td name='spread'>"+dt.spread+"</td>" +
+							"<td name='dt'>"+dt.dt+"</td>" +
+							"<td name='tp'>"+dt.tp+"</td>" +
+							"<td name='vol'>"+dt.vol+"</td>" +
+							"<td name='opr'>"+dt.opr+"</td>" +
+							"<td name='odt'>"+dt.odt+"</td>" +
+							"<td name='limit'>"+dt.limit+"</td>" +
+							"<td name='stop'>"+dt.stop+"</td>" +
+						"</tr>";
+			warnTable.append($(htmlFrag));
+		}
+	}else{
+		for(var i=1;i<warnTrLen;i++){
+			var tr = warnTrs.eq(i);
+			var dt = rowData[i-1];
+			if(dt){
+				tr.find('td[name=aid]').html(dt.aid);
+				tr.find('td[name=ord]').html(dt.ord);
+				tr.find('td[name=symbol]').html(dt.symbol);
+				tr.find('td[name=sell]').html(dt.sell);
+				tr.find('td[name=buy]').html(dt.buy);
+				tr.find('td[name=spread]').html(dt.spread);
+				tr.find('td[name=dt]').html(dt.dt);
+				tr.find('td[name=tp]').html(dt.tp);
+				tr.find('td[name=vol]').html(dt.vol);
+				tr.find('td[name=opr]').html(dt.opr);
+				tr.find('td[name=odt]').html(dt.odt);
+				tr.find('td[name=limit]').html(dt.limit);
+				tr.find('td[name=stop]').html(dt.stop);
+			}
+		}
+	}
+}
+//总览-待处理-数据更新
+function updatePandectPendData(data){
+	var rowData = data.data,rowLen = rowData.length;
+	var pendingTable = $('._trade-nohandle-table'),
+		pendingTrs = pendingTable.find('tr:not(":first-child")'),
+		pendingTrLen = pendingTrs.length;
+	//-----------------
+	pendingTrs.remove();
+	for(var i=0;i<rowLen;i++){
+		var dt = rowData[i];
+		//$('body').createTradeDialog(dt);
+		var htmlFrag="<tr>" +
+						"<td name='aid'>"+dt.aid+"</td>" +
+						"<td name='ord'>"+dt.ord+"</td>" +
+						"<td name='symbol'>"+dt.symbol+"</td>" +
+						"<td name='sell'>"+dt.sell+"</td>" +
+						"<td name='buy'>"+dt.buy+"</td>" +
+						"<td name='spread'>"+dt.spread+"</td>" +
+						"<td name='dt'>"+dt.dt+"</td>" +
+						"<td name='tp'>"+dt.tp+"</td>" +
+						"<td name='vol'>"+dt.vol+"</td>" +
+						"<td name='opr'>"+dt.opr+"</td>" +
+						"<td name='odt'>"+dt.odt+"</td>" +
+						"<td name='limit'>"+dt.limit+"</td>" +
+						"<td name='stop'>"+dt.stop+"</td>" +
+						'<td name="operate"><span onclick="noHandleTradeAccept(this)" name="accept">接受</span><span onclick="noHandleTradeRefuse(this)" name="refuse">拒绝</span></td>'+
+					"</tr>";
+		pendingTable.append($(htmlFrag));
+	}
+	return;
+	if(pendingTrLen === 1){
+		for(var i=0;i<rowLen;i++){
+			var dt = rowData[i];
+			//$('body').createTradeDialog(dt);
+			var htmlFrag="<tr>" +
+							"<td name='aid'>"+dt.aid+"</td>" +
+							"<td name='ord'>"+dt.ord+"</td>" +
+							"<td name='symbol'>"+dt.symbol+"</td>" +
+							"<td name='sell'>"+dt.sell+"</td>" +
+							"<td name='buy'>"+dt.buy+"</td>" +
+							"<td name='spread'>"+dt.spread+"</td>" +
+							"<td name='dt'>"+dt.dt+"</td>" +
+							"<td name='tp'>"+dt.tp+"</td>" +
+							"<td name='vol'>"+dt.vol+"</td>" +
+							"<td name='opr'>"+dt.opr+"</td>" +
+							"<td name='odt'>"+dt.odt+"</td>" +
+							"<td name='limit'>"+dt.limit+"</td>" +
+							"<td name='stop'>"+dt.stop+"</td>" +
+							'<td name="operate"><span onclick="noHandleTradeAccept(this)" name="accept">接受</span><span onclick="noHandleTradeRefuse(this)" name="refuse">拒绝</span></td>'+
+						"</tr>";
+			pendingTable.append($(htmlFrag));
+		}
+	}else{
+		for(var i=1;i<pendingTrLen;i++){
+			var tr = pendingTrs.eq(i);
+			var dt = rowData[i-1];
+			//$('body').createTradeDialog(dt);
+			if(dt){
+				tr.find('td[name=aid]').html(dt.aid);
+				tr.find('td[name=ord]').html(dt.ord);
+				tr.find('td[name=symbol]').html(dt.symbol);
+				tr.find('td[name=sell]').html(dt.sell);
+				tr.find('td[name=buy]').html(dt.buy);
+				tr.find('td[name=spread]').html(dt.spread);
+				tr.find('td[name=dt]').html(dt.dt);
+				tr.find('td[name=tp]').html(dt.tp);
+				tr.find('td[name=vol]').html(dt.vol);
+				tr.find('td[name=opr]').html(dt.opr);
+				tr.find('td[name=odt]').html(dt.odt);
+				tr.find('td[name=limit]').html(dt.limit);
+				tr.find('td[name=stop]').html(dt.stop);
+			}
+		}
+	}
+}

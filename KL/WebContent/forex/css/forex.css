@@ -179,16 +179,23 @@ body span[name^=notify]{
 	height:30px;
 	line-height:30px;
 }
-._userstate-account-wrap span[name=all-account]{
+._userstate-account-wrap span[name=account-all]{
 	font-size: 14px;
     font-weight: bold;
 }
-._userstate-account-wrap span[name=risk-account]{
+._userstate-account-wrap span[name=account-risk]{
 	font-size: 14px;
     color:blue;
 }
+._userstate-account-wrap span[name^=account-]{
+	cursor:pointer;
+}
 ._userstate-trade-table th{
 	height:28px;
+}
+._userstate-trade-table th[name=trade-num],
+._userstate-trade-table th[name=deposit]{
+	cursor:pointer;
 }
 ._userstate-trade-table tr{
 	height:30px;
@@ -214,6 +221,10 @@ body span[name^=notify]{
 .page-tool-wrap span[name=next]{
 	cursor:pointer;
 	margin-left: 20px;
+}
+.page-tool-wrap select{
+	margin-left:10px;
+	letter-spacing:3px;
 }
 .remodal-wrap{
 	background: rgba(120,120,120,0.7);
@@ -338,4 +349,51 @@ body span[name^=notify]{
 }
 ._trade-nohand-refuse-menu button{
 	margin:5px;
+}
+div[class^=_trade-nohandle-dialog]{
+	/* width:630px;
+	height:170px; */
+	background-color:white;
+	border:1px solid black;
+	position:absolute;
+	padding:6px;
+}
+div[class^=_trade-nohandle-dialog] table{
+	margin-bottom:6px;
+}
+div[class^=_trade-nohandle-dialog] div[name=control]{
+	text-align:center;
+}
+div[class^=_trade-nohandle-dialog] button{
+	margin:6px;
+}
+div[class^=_trade-nohandle-dialog] div[name=header]{
+	height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    position:relative;
+    cursor:pointer;
+}
+div[class^=_trade-nohandle-dialog] span[name=countdown]{
+	position: absolute;
+    top: 0px;
+    left: 9px;
+    font-weight: normal;
+    font-size: 13px;
+}
+div[class^=_trade-nohandle-dialog] span[name=close]{
+	position:absolute;
+	top:10px;
+	right:10px;
+	width:12px;
+	height:12px;
+	background-image:url(../images/alertCloseBtn0002.png);
+}
+div[class^=_trade-nohandle-dialog] span[name=close]:hover{
+	background-image:url(../images/alertCloseBtn0001.png);
+}
+div[class^=_trade-nohandle-dialog] td[name=vol]{
+	background-color:yellow;
 }

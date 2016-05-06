@@ -57,9 +57,44 @@
 				setTotalPage:function(){
 					if(this.pageSize === null) return;
 					this.totalPage=Math.ceil(this.getTotalCount()/this.pageSize);
+					this.totalPage = this.totalPage === 0 ? this.totalPage = 1 : this.totalPage;
 				},
 				getTotalCount:function(){
-					return this.data.length;
+					if(this.isFilter === true){
+						return this.filterData.length;
+					}else{
+						return this.data.length;
+					}
+				},
+				append:function(){
+					var pagetool = this;
+					if(this.table.length == 0) return;
+					if(this.hasPage === false){
+						var tableCls = '_table-page-tool';
+						var frag = "<div class='"+tableCls+"'>"+
+										"共<span name='total-count'></span>条记录/共"+
+										"<span name='total-page'></span>页，当前第"+
+										"<span name='current-page'></span>页"+
+										"<span name='prev'>上一页</span>"+
+										"<span name='next'>下一页</span>"+
+										"<select></select>"+
+									"</div>";
+						this.table.next().append($(frag));
+						this.hasPage = true;
+						this.startIndex=0;
+						this.table.next().find('span[name=prev]').bind('click',function(){
+							if($(this).attr('isDisabled') == 'true') return;
+							pagetool.prevPage();
+						});
+						this.table.next().find('span[name=next]').bind('click',function(){
+							if($(this).attr('isDisabled') == 'true') return;
+							pagetool.nextPage();
+						});
+						this.table.next().find('select').bind('change',function(){
+							if(Number($(this).val()) === pagetool.startIndex) return;
+							pagetool.action(Number($(this).val())*pagetool.pageSize);
+						});
+					}
 				},
 				calcPage:function(){
 					if(this.table.length == 0) return;
@@ -78,6 +113,19 @@
 					this.setCurrentPage();
 					currentPageWrap.html(this.currentPage);
 					
+					var pageSelect = this.table.next().find('select'),
+						options=pageSelect.find('option');
+					if(this.totalPage !== options.length){
+						pageSelect.empty();
+						for(var i=0;i<this.totalPage;i++){
+							var pageNum = i+1;
+							var optionFrag = "<option value="+i+">第"+pageNum+"页</option>";
+							this.table.next().find('select').append($(optionFrag));
+						}
+					}else{
+						pageSelect.val(this.currentPage-1);
+					}
+					
 					if(this.totalPage <= 1){
 						pageToolWrap.find('span[name=prev]').css('background-color',this.disablePageColor);
 						pageToolWrap.find('span[name=prev]').attr('isDisabled','true');
@@ -85,7 +133,10 @@
 						pageToolWrap.find('span[name=next]').css('background-color',this.disablePageColor);
 						pageToolWrap.find('span[name=next]').css('cursor','default');
 						pageToolWrap.find('span[name=next]').attr('isDisabled','true');
+						console.log('总页数小于1');
+						pageToolWrap.find('select').attr('disabled','true');
 					}else{
+						pageToolWrap.find('select').removeAttr('disabled');
 						if(this.currentPage <= 1){
 							pageToolWrap.find('span[name=prev]').css('background-color',this.disablePageColor);
 							pageToolWrap.find('span[name=prev]').css('cursor','default');
@@ -106,31 +157,6 @@
 						}
 					}
 				},
-				append:function(){
-					var pagetool = this;
-					if(this.table.length == 0) return;
-					if(this.hasPage === false){
-						var tableCls = '_table-page-tool';
-						var frag = "<div class='"+tableCls+"'>"+
-										"共<span name='total-count'></span>条记录/共"+
-										"<span name='total-page'></span>页，当前第"+
-										"<span name='current-page'></span>页"+
-										"<span name='prev'>上一页</span>"+
-										"<span name='next'>下一页</span>"+
-									"</div>";
-						this.table.next().append($(frag));
-						this.hasPage = true;
-						this.startIndex=0;
-						this.table.next().find('span[name=prev]').bind('click',function(){
-							if($(this).attr('isDisabled') == 'true') return;
-							pagetool.prevPage();
-						});
-						this.table.next().find('span[name=next]').bind('click',function(){
-							if($(this).attr('isDisabled') == 'true') return;
-							pagetool.nextPage();
-						});
-					}
-				},
 				setSortType:function(type){
 					this.sortType=type;
 				},
@@ -144,6 +170,7 @@
 					this.isFilter = false;
 					this.filterData=[];
 					this.action(this.startIndex);
+					this.calcPage();
 				},
 				setFilterData:function(){
 					var me = this;
@@ -172,6 +199,7 @@
 							me.filterData.push(val);
 						}
 					});
+					this.startIndex=0;
 					this.action(this.startIndex);
 				},
 				action:function(startIndex){
@@ -190,6 +218,7 @@
 						this.endIndex = endIndex;
 						this.setTableData();
 					}
+					this.calcPage();
 				},
 				setKeyValueRange:function(){
 					this.setFilterData();

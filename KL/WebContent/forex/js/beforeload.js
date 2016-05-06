@@ -13,7 +13,7 @@
 	}
 	
 	//交易审批-警告数据初始化
-	var warnTable = $('._trade-warning-table');
+	/*var warnTable = $('._trade-warning-table');
 	var warnTableLen = 5;
 	for(var i=0;i<warnTableLen;i++){
 		var htmlFrag = '<tr><td>1</td>'+
@@ -31,9 +31,9 @@
 							'<td>13</td>'+
 						'</tr>';
 		warnTable.append($(htmlFrag));
-	}
+	}*/
 	//交易审批-待处理
-	var noHandleTable = $('._trade-nohandle-table');
+	/*var noHandleTable = $('._trade-nohandle-table');
 	var noHandleTBLen = 5;
 	if(noHandleTable.length != 0){
 		for(var i=0;i<noHandleTBLen;i++){
@@ -55,7 +55,7 @@
 							'</tr>';
 			noHandleTable.append($(htmlFrag));
 		}
-	}
+	}*/
 	
 	//头寸总览表格数据初始化
 	/*var cashTable = $('._pandect-cash-table');
@@ -115,6 +115,12 @@
 						'</tr>';
 		accountTable.append($(htmlFrag));
 	}
+	var tradeNumTh = accountTable.find('th[name=trade-num]');
+	if(tradeNumTh.length != 0){
+		tradeNumTh.bind('click',function(){
+			console.log('aaaa');
+		});
+	}
 	//交易审批-待处理-接受-菜单-确定和取消
 	var acceptMenu = $('._trade-nohand-accept-menu');
 	if(acceptMenu.length !== 0){
@@ -126,6 +132,29 @@
 		cancelBtn.bind('click',function(){
 			acceptMenu.hide();
 		});
+		//条码加减
+		var priceInput = acceptMenu.find('input');
+		var codeSpans = acceptMenu.find('span[name^=code-]'),
+			codeLen = codeSpans.length;
+		for(var i=0;i<codeLen;i++){
+			var code = codeSpans.eq(i);
+			code.bind('click',function(){
+				var codeName = $(this).attr('name');
+				if(codeName === 'code-add-one'){
+					priceInput.val(Number(priceInput.val())+1);
+				}else if(codeName === 'code-add-five'){
+					priceInput.val(Number(priceInput.val())+5);
+				}else if(codeName === 'code-add-ten'){
+					priceInput.val(Number(priceInput.val())+10);
+				}else if(codeName === 'code-reduce-one'){
+					priceInput.val(Number(priceInput.val())-1);
+				}else if(codeName === 'code-reduce-five'){
+					priceInput.val(Number(priceInput.val())-5);
+				}else if(codeName === 'code-reduce-ten'){
+					priceInput.val(Number(priceInput.val())-10);
+				}
+			});
+		}
 	}
 	//交易审批-待处理-接受-菜单-确定和取消
 	var refuseMenu = $('._trade-nohand-refuse-menu');
@@ -151,11 +180,68 @@
 			console.log('key up');
 		});*/
 		accountInput.bind('keypress',function(e){
-			console.log(e);
 			if(e.keyCode < 48 || e.keyCode > 57){
 				e.preventDefault();
 			}
 		});
+		//搜索
+		var searchBtn = userstateWrap.find('button[name=filter-search]');
+		searchBtn.bind('click',function(){
+			var tradeTable = $('._userstate-trade-table');
+			pageTool = tradeTable.getPageTool();
+			pageTool.setFilter('a',accountInput.val());
+		});
 		
+		//重置
+		var resetBtn = userstateWrap.find('button[name=filter-reset]');
+		resetBtn.bind('click',function(){
+			var tradeTable = $('._userstate-trade-table');
+			pageTool = tradeTable.getPageTool();
+			accountInput.val('');
+			pageTool.clearFilter();
+		});
+	}
+	
+	/*var data={
+		tradeNum:123	
+	};
+	$('body').createTradeDialog(data);
+	var data1={
+		tradeNum:234	
+	};
+	$('body').createTradeDialog(data1);
+	var data2={
+		tradeNum:345
+	};
+	$('body').createTradeDialog(data2);*/
+	
+	//风控-用户状态-账号类型切换
+	var accountTypeWrap = $('._userstate-account-wrap');
+	if(accountTypeWrap.length !== 0){
+		var accountTypes = accountTypeWrap.find('span[name^=account-]'),
+			accountTypeLen = accountTypes.length;
+		for(var i=0;i<accountTypeLen;i++){
+			var accountType = accountTypes.eq(i);
+			accountType.bind('click',function(){
+				var isClick = $(this).attr('isClick');
+				if(isClick === 'true') return;
+				var name = $(this).attr('name');
+				if(name === 'account-all'){
+					var next=$(this).next();
+					$(this).css('color','black');
+					$(this).css('font-weight','bold');
+					
+					next.css('color','blue');
+					next.css('font-weight','normal');
+				}else if(name === 'account-risk'){
+					var prev = $(this).prev();
+					$(this).css('color','black');
+					$(this).css('font-weight','bold');
+					
+					prev.css('color','blue');
+					prev.css('font-weight','normal');
+				}
+			});
+		}
 	}
 })();
