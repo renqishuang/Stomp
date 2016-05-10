@@ -9,11 +9,11 @@ $('button[name=page]').bind('click',function(){
 			page.action(0);
 			break;
 		case 'sort':
-			page.sort();
+			//page.sort();
 			page.action(page.startIndex);
 			break;
 		case 'reverse':
-			page.reverse();
+			//page.reverse();
 			page.action(page.startIndex);
 			break;
 		case 'insert':

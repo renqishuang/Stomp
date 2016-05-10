@@ -24,10 +24,4 @@ window.UserStateAccountData=[{
 	a:12,b:1,c:1,d:1,e:1,f:1,g:1,userId:12
 },{
 	a:13,b:1,c:1,d:1,e:1,f:1,g:1,userId:13
-},{
-	a:14,b:1,c:1,d:1,e:1,f:1,g:1,userId:14
-},{
-	a:15,b:1,c:1,d:1,e:1,f:1,g:1,userId:15
-},{
-	a:16,b:1,c:1,d:1,e:1,f:1,g:1,userId:16
 }];

@@ -3,19 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <title>外盘期货</title>
-<link rel='stylesheet' type='text/css' href='css/css.css'>
-<link rel='stylesheet' type='text/css' href='css/futures.css'>
+<link rel='stylesheet' type='text/css' href='common/css/base.css'>
+<link rel='stylesheet' type='text/css' href='futures/css/futures.css'>
 </head>
 <body>
-<div class='_risk-control-outer-wrap'>
-	<div class='_risk-control-header-wrap'></div>
-	<div class='_risk-control-filter-wrap'>
-		<span name='trade-account'>交易账号</span>
+<div class='_risk-control-pandect-outer-wrap'>
+	<div class='_pandect-header-wrap'>
+		<span>风险控制>></span>
+		<span>账户总览</span>
+	</div>
+	<div class='_pandect-filter-wrap'>
+		<span name='filter-type'>交易账号</span>
 		<input name='' type='text'>
-		<button type='button'>搜索</button>
-		<button type='button'>重置</button>
+		<button type='button' name='filter-search'>搜索</button>
+		<button type='button' name='filter-reset'>重置</button>
 		<span>刷新</span>
 	</div>
+	<div accountType='all' class='_pandect-account-type-wrap'>
+		<span name='account-all'>显示全部账号</span>
+		<span name='account-risk'>只显示风险账号</span>
+	</div>
+	<table class='_pandect-trade-table-all' border='1' cellspacing='0'>
+			<tr>
+				<th name='trade-num'>交易账号</th>
+				<th>风险度</th>
+				<th>隔夜风险</th>
+				<th>资金风险</th>
+				<th>交易许可</th>
+				<th>开仓许可</th>
+				<th>出金许可</th>
+				<th>入金许可</th>
+				<th>在线状态</th>
+				<th>操作</th>
+			</tr>
+		</table>
 </div>
+<script src='common/js/jquery.1.11.3.min.js'></script>
+<script src='common/js/page-tool.js'></script>
+<script src='common/js/ws.js'></script>
+<script src='futures/js/futures.js'></script>
+
 </body>
 </html>

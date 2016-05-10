@@ -1,0 +1,54 @@
+body table{
+	width:100%;
+	text-align:center;
+}
+body th{
+	background-color: #E4E4E4;
+}
+body tr{
+	height:20px;
+}
+._risk-control-pandect-outer-wrap{
+	width: 1200px;
+    margin: 0px auto;
+    padding-top:10px;
+}
+._pandect-filter-wrap{
+	height:30px;
+	text-align:center;
+	font-size: 14px;
+}
+._pandect-filter-wrap input{
+	border:1px solid black;
+	height:22px;
+}
+._pandect-filter-wrap button[name=filter-search],
+._pandect-filter-wrap button[name=filter-reset]{
+	margin-left:5px;
+	width:60px;
+    height: 25px;
+}
+._pandect-filter-wrap span[name=filter-type]{
+	margin-right:5px;
+}
+._pandect-account-type-wrap{
+	height:30px;
+	line-height:30px;
+}
+._pandect-account-type-wrap span[name=account-all]{
+	font-size: 14px;
+    font-weight: bold;
+}
+._pandect-account-type-wrap span[name=account-risk]{
+	font-size: 14px;
+    color:blue;
+}
+._pandect-account-type-wrap span[name^=account-]{
+	cursor:pointer;
+}
+table[class^=_pandect-trade-table] tr{
+	height:30px;
+}
+table[class^=_pandect-trade-table] th{
+	height:28px;
+}

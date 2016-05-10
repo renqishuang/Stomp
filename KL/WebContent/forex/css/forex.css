@@ -10,16 +10,18 @@ body tr{
 }
 body span[name^=notify]{
 	display: inline-block;
-    width: 14px;
-    height: 14px;
-    line-height:14px;
+    width: 18px;
+    height: 18px;
+    line-height:18px;
     background-color: red;
     border-radius: 50%;
     position:absolute;
-    top: 3px;
-    right: 9px;
+    top: 0px;
+    right: 5px;
     color: white;
     text-align: center;
+    font-weight:normal;
+    font-size:12px;
 }
 ._risk-control-pandect-outer-wrap{
 	width: 1200px;
@@ -164,12 +166,6 @@ body span[name^=notify]{
 	margin-left:5px;
 	width:60px;
     height: 25px;
-    /* cursor: pointer;
-    display:inline-block;
-    line-height: 22px;
-    border:1px solid black;
-    border-radius: 7px;
-    position: relative; */
 }
 ._userstate-filter-wrap input{
 	border:1px solid black;
@@ -190,15 +186,30 @@ body span[name^=notify]{
 ._userstate-account-wrap span[name^=account-]{
 	cursor:pointer;
 }
-._userstate-trade-table th{
+table[class^=_userstate-trade-table] th{
 	height:28px;
 }
-._userstate-trade-table th[name=trade-num],
-._userstate-trade-table th[name=deposit]{
+table[class^=_userstate-trade-table-risk] th[name=trade-num],
+table[class^=_userstate-trade-table-risk] th[name=deposit]{
 	cursor:pointer;
 }
-._userstate-trade-table tr{
+table[class^=_userstate-trade-table] tr{
 	height:30px;
+}
+table[class^=_userstate-trade-table] span[name=update],
+table[class^=_userstate-trade-table] span[name=trade-room]{
+	display:inline-block;
+	color:blue;
+	cursor:pointer;
+}
+table[class^=_userstate-trade-table] span[name=update]{
+	width:50px;
+}
+table[class^=_userstate-trade-table] span[name=trade-room]{
+	width:100px;
+}
+table[class^=_userstate-trade-table] th[name=operate]{
+	width:150px;	
 }
 ._table-page-tool{
 	width:100%;
@@ -396,4 +407,37 @@ div[class^=_trade-nohandle-dialog] span[name=close]:hover{
 }
 div[class^=_trade-nohandle-dialog] td[name=vol]{
 	background-color:yellow;
+}
+._trade-userstate-update-wrap{
+	width:200px;
+	height:170px;
+	border:1px solid black;
+	position:absolute;
+	background-color:white;
+}
+._trade-userstate-update-wrap input[type=radio]{
+	vertical-align:bottom;
+}
+._trade-userstate-update-wrap label[name^=radio-wrap]{
+	cursor:pointer;
+}
+._trade-userstate-update-wrap div[name=title]{
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	font-weight:bold;
+}
+._trade-userstate-update-wrap div{
+	height:25px;
+}
+._trade-userstate-update-wrap div[name=btn-wrap]{
+	text-align:center;
+}
+._trade-userstate-update-wrap button{
+	margin:5px;
+}
+._trade-userstate-update-wrap label{
+	width:60px;
+	text-align:center;
+	display:inline-block;
 }

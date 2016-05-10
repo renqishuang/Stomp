@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link rel='stylesheet' type='text/css' href='forex/css/base.css'>
+<link rel='stylesheet' type='text/css' href='common/css/base.css'>
 <link rel='stylesheet' type='text/css' href='forex/css/forex.css'>
 </head>
 <body>
@@ -116,11 +116,11 @@
 			<button name='filter-search'>搜索</button>
 			<button name='filter-reset'>重置</button>
 		</div>
-		<div class='_userstate-account-wrap'>
+		<div accountType='all' class='_userstate-account-wrap'>
 			<span name='account-all'>显示全部账号</span>
 			<span name='account-risk'>只显示风险账号</span>
 		</div>
-		<table class='_userstate-trade-table' border='1' cellspacing='0'>
+		<table class='_userstate-trade-table-all' border='1' cellspacing='0'>
 			<tr>
 				<th name='trade-num'>交易账号</th>
 				<th name='deposit'>保证金比率</th>
@@ -128,10 +128,21 @@
 				<th>出金许可</th>
 				<th>入金许可</th>
 				<th>在线状态</th>
-				<th>操作</th>
+				<th name='operate'>操作</th>
 			</tr>
 		</table>
 		<div class='page-tool-wrap'></div>
+		<table hidden='true' class='_userstate-trade-table-risk' border='1' cellspacing='0'>
+			<tr>
+				<th name='trade-num'>交易账号</th>
+				<th name='deposit'>保证金比率</th>
+				<th>交易许可</th>
+				<th>出金许可</th>
+				<th>入金许可</th>
+				<th>在线状态</th>
+				<th name='operate'>操作</th>
+			</tr>
+		</table>
 	</div>
 </div>
 <div hidden='true' class='_cash-detail-wrap'>
@@ -168,52 +179,27 @@
 	</table>
 	<div class='page-tool-wrap'></div>
 </div>
-<div hidden='true' class='_trade-nohand-accept-menu'>
-	<div name='title'>请制定成交价</div>
-	<div name='price'><input type='text'></div>
-	<div>
-		<span name='code-add-one'>+1</span>
-		<span name='code-add-five'>+5</span>
-		<span name='code-add-ten'>+10</span>
-	</div>
-	<div>
-		<span name='code-reduce-one'>-1</span>
-		<span name='code-reduce-five'>-5</span>
-		<span name='code-reduce-ten'>-10</span>
-	</div>
-	<div name='control'>
-		<button name='btn-confirm'>确定</button>
-		<button name='btn-cancel'>取消</button>
-	</div>
-</div>
-<div hidden='true' class="_trade-nohand-refuse-menu">
-	<div>是否确定拒绝?</div>
-	<div>
-		<button name='btn-confirm'>确定</button>
-		<button name='btn-cancel'>取消</button>
-	</div>
-</div>
-<button action='sort' name='page' type='button'>正序</button>
+
+<!-- <button action='sort' name='page' type='button'>正序</button>
 <button action='reverse' name='page' type='button'>倒序</button>
 <button action='insert' name='page' type='button'>插入</button>
 <button action='update' name='page' type='button'>更新</button>
 <button action='close' name='page' type='button'>按收盘价排序</button>
 <button action='open' name='page' type='button'>按开盘价排序</button>
 <button action='filter' name='page' type='button'>过滤</button>
-<button action='clearFilter' name='page' type='button'>取消过滤</button>
-<script src='js/jquery.1.11.3.min.js'></script>
+<button action='clearFilter' name='page' type='button'>取消过滤</button> -->
+<script src='common/js/jquery.1.11.3.min.js'></script>
 <script src='forex/js/common.js'></script>
-<script src='forex/js/utils.js'></script>
-<script src='forex/js/array-extend.js'></script>
-<script src='forex/js/drag.js'></script>
-<script src='forex/js/page-tool.js'></script>
+<script src='common/js/array-extend.js'></script>
+<script src='common/js/drag.js'></script>
+<script src='common/js/page-tool.js'></script>
 <script src='forex/js/page-event.js'></script>
 <script src='forex/js/test-data.js'></script>
 <script src='forex/js/tradeDialog.js'></script>
 <script src='forex/js/beforeload.js'></script>
-<script src='forex/js/forex.js'></script>
-<script src='forex/js/ws.js'></script>
+<script src='common/js/ws.js'></script>
 <script src='forex/js/ws-monitor.js'></script>
+<script src='forex/js/forex.js'></script>
 <script src='forex/js/initHandler.js'></script>
 </body>
 </html>

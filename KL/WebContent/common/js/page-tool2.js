@@ -1,4 +1,8 @@
 (function(){
+	/**
+	 * 分页工具
+	 * 用于一次性请求所有数据
+	 */
 	$.fn.extend({
 		createPageTool:function(tableConfig){
 			var me = $(this);

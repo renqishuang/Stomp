@@ -8,7 +8,7 @@
 					width:630,
 					height:170,
 					spaceHeight:20,
-					startTop:30
+					startTop:30,
 				};
 				$.extend(this,options);
 			}
@@ -105,7 +105,7 @@
 				}
 			}
 			if(!me[0].tradeDialog){
-				me[0].tradeDialog = new TradeDialog();
+				me[0].tradeDialog = new TradeDialog(data);
 				me[0].tradeDialog.generate(data);
 			}else{
 				me[0].tradeDialog.generate(data);
