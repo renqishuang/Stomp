@@ -1,0 +1,26 @@
+.page-tool-wrap{
+	width:100%;
+}
+.page-tool-wrap span[name=prev],
+.page-tool-wrap span[name=next]{
+	cursor:pointer;
+	margin-left: 20px;
+}
+.page-tool-wrap select{
+	margin-left:10px;
+	letter-spacing:3px;
+}
+._table-page-tool{
+	width:100%;
+	text-align:center;
+	height: 30px;
+    line-height: 30px;
+    letter-spacing: 3px;
+    font-size: 13px;
+}
+._table-page-tool span[name=total-count],
+._table-page-tool span[name=total-page],
+._table-page-tool span[name=current-page]{
+	letter-spacing: 0px;
+	margin-right: 5px;
+}

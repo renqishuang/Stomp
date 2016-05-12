@@ -17,10 +17,15 @@
 					data:null,
 					dataCount:0,
 					totalPage:null,
-					hasPage:false,
+					hasPage:false,//是否已经有了分页
 					disablePageColor:'#BDB6B6',
 					enablePageColor:'white',
-					uniqueMark:null
+					uniqueMark:null,//每行数据的唯一标识
+					useWSData:null,//true:使用WebSocket获取数据,false:使用WebService获取数据
+					isFilter:false,
+					filterStr:'',
+					filterKey:'',
+					filterData:[]
 				};
 				$.extend(this,options,tableConfig);
 				this.table=me;
@@ -49,16 +54,24 @@
 					this.startIndex = this.startIndex-this.pageSize;
 					this.setCurrentPage();
 					this.calcPage();
-					this.sendMsg();
-					//this.action(this.startIndex);
+					if(this.useWSData === true){
+						this.sendMsg();
+					}else{
+						this.action();
+						
+					}
 				},
 				nextPage:function(){
 					if(this.currentPage === this.totalPage) return;
 					this.startIndex = this.startIndex+this.pageSize;
 					this.setCurrentPage();
 					this.calcPage();
-					this.sendMsg();
-					//this.action(this.startIndex);
+					if(this.useWSData === true){
+						this.sendMsg();
+					}else{
+						this.action();
+						
+					}
 				},
 				setCurrentPage:function(){
 					if(this.pageSize === null || this.startIndex === null) return;
@@ -73,7 +86,11 @@
 					this.dataCount = dataCount;
 				},
 				getTotalCount:function(){
-					return this.dataCount;
+					if(this.useWSData === true){
+						return this.dataCount;
+					}else{
+						return this.data.length;
+					}
 				},
 				append:function(){
 					var pagetool = this;
@@ -103,8 +120,11 @@
 							if(Number($(this).val()) === pagetool.startIndex) return;
 							pagetool.startIndex=Number($(this).val())*pagetool.pageSize;
 							pagetool.calcPage();
-							//pagetool.action(pagetool.startIndex);
-							pagetool.sendMsg();
+							if(this.useWSData === true){
+								pagetool.sendMsg();
+							}else{
+								pagetool.action();
+							}
 						});
 					}
 				},

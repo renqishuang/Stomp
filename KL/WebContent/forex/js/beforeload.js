@@ -1,4 +1,8 @@
 (function(){
+	//禁止页面被选中
+	$('body').bind('selectstart',function(){
+		return false;
+	});
 	//风控总览Tab页切换
 	var pandectTable = $('._pandect_tab_panel');
 	if(pandectTable.length != 0){

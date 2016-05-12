@@ -211,32 +211,6 @@ table[class^=_userstate-trade-table] span[name=trade-room]{
 table[class^=_userstate-trade-table] th[name=operate]{
 	width:150px;	
 }
-._table-page-tool{
-	width:100%;
-	text-align:center;
-	height: 30px;
-    line-height: 30px;
-    letter-spacing: 3px;
-    font-size: 13px;
-}
-._table-page-tool span[name=total-count],
-._table-page-tool span[name=total-page],
-._table-page-tool span[name=current-page]{
-	letter-spacing: 0px;
-	margin-right: 5px;
-}
-.page-tool-wrap{
-	width:100%;
-}
-.page-tool-wrap span[name=prev],
-.page-tool-wrap span[name=next]{
-	cursor:pointer;
-	margin-left: 20px;
-}
-.page-tool-wrap select{
-	margin-left:10px;
-	letter-spacing:3px;
-}
 .remodal-wrap{
 	background: rgba(120,120,120,0.7);
 	width: 100%;
@@ -258,7 +232,7 @@ table[class^=_userstate-trade-table] th[name=operate]{
 	height: 40px;
     text-align: center;
 }
-._cash-detail-header span[name=kind-code]{
+._cash-detail-header span[name=symbol]{
 	font-size: 15px;
     font-weight: bold;
 }
@@ -408,6 +382,13 @@ div[class^=_trade-nohandle-dialog] span[name=close]:hover{
 div[class^=_trade-nohandle-dialog] td[name=vol]{
 	background-color:yellow;
 }
+div[class^=_trade-nohandle-dialog] span[name=time]{
+	position: absolute;
+    top: 0px;
+    left: 60px;
+    font-weight: normal;
+    font-size: 13px;
+}
 ._trade-userstate-update-wrap{
 	width:200px;
 	height:170px;
@@ -440,4 +421,8 @@ div[class^=_trade-nohandle-dialog] td[name=vol]{
 	width:60px;
 	text-align:center;
 	display:inline-block;
+}
+.test-websocket-time{
+	font-size:18px;
+	text-align:center;
 }

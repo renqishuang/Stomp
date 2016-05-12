@@ -4,9 +4,13 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel='stylesheet' type='text/css' href='common/css/base.css'>
+<link rel='stylesheet' type='text/css' href='common/css/page-tool.css'>
 <link rel='stylesheet' type='text/css' href='forex/css/forex.css'>
 </head>
 <body>
+<div class='test-websocket-time'>
+连接时间:<span style='color:red;' name='time'></span><span>秒</span>
+</div>
 <div class='_risk-control-pandect-outer-wrap'>
 	<div class='_pandect-header-wrap'>
 			<span name='section'>风险控制>></span><span name='title'>风险总览</span>
@@ -147,11 +151,11 @@
 </div>
 <div hidden='true' class='_cash-detail-wrap'>
 	<div class='_cash-detail-header'>
-		<span name='kind-code'>USP</span>
+		<span name='symbol'></span>
 		<span name='refresh'>刷新</span>
 		<span name='refresh-time-wrap'>
 			<span name='lastrefresh'>最后更新:</span>
-			<span name='lastrefresh-time'>2016-04-11 11:22:33</span>	
+			<span name='lastrefresh-time'></span>	
 		</span>
 		<span name='close'></span>
 	</div>
@@ -194,7 +198,7 @@
 <script src='common/js/drag.js'></script>
 <script src='common/js/page-tool.js'></script>
 <script src='forex/js/page-event.js'></script>
-<script src='forex/js/test-data.js'></script>
+<script src='common/js/test-data.js'></script>
 <script src='forex/js/tradeDialog.js'></script>
 <script src='forex/js/beforeload.js'></script>
 <script src='common/js/ws.js'></script>

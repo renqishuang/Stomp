@@ -8,7 +8,7 @@
 					width:630,
 					height:170,
 					spaceHeight:20,
-					startTop:30,
+					startTop:30
 				};
 				$.extend(this,options);
 			}
@@ -20,6 +20,7 @@
 					var dialogHtmlFrag = "<div style='width:"+this.width+"px;height:"+this.height+"px' dialogDt='"+JSON.stringify(data)+"' class='"+dialogCls+"'>"+
 						"<div name='header'>"+
 							"<span name='countdown'>倒计时:</span>"+
+							"<span name='time'></span>"+
 							"<span name='aid'>交易账号: "+data.aid+"</span>"+
 							"<span name='close'></span>"+
 						"</div>"+
@@ -68,14 +69,47 @@
 							"<button name='refuse'>拒绝</button>"+
 						"</div>"+
 					"</div>";
-					
+					var count = this.getDialogCount();
+					//if(count === 1) return;
 					var coord = this.calcPosition();
 					$('body').append($(dialogHtmlFrag));
+					this.addEvent(dialogCls,data);
+					if(data.auto ===  0){
+						var time = data.time;
+						$('.'+dialogCls).find('span[name=time]').html(time);
+						var countDownInter = setInterval(function(){
+							if(time >= 0){
+								$('.'+dialogCls).find('span[name=time]').html(time);
+								time -=1;
+							}else{
+								console.log('结束倒计时');
+								//$('.'+dialogCls).hide();
+								dialog.destroyTradeDialog(data.ord);
+								pendingRefuseSendMsg(data);
+								clearInterval(countDownInter);
+							}
+						},1000);
+					}else{
+						$('.'+dialogCls).find('span[name=countdown]').hide();
+					}
 					$('.'+dialogCls).css('left',coord.left);
 					$('.'+dialogCls).css('top',coord.top);
 					$('.'+dialogCls).enableDrag({
 						dragBaseCls:dialog.baseCls,
 						dragCls:dialogCls
+					});
+				},
+				addEvent:function(cls,data){
+					var me = this;
+					if($('.'+cls).length === 0) return;
+					$('.'+cls).find('button[name=confirm]').bind('click',function(){
+						console.log('confirm');
+						me.destroyTradeDialog(data.ord);
+					});
+					$('.'+cls).find('button[name=refuse]').bind('click',function(){
+						console.log('refuse');
+						me.destroyTradeDialog(data.ord);
+						pendingRefuseSendMsg(data);
 					});
 				},
 				getDialogCount:function(){

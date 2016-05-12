@@ -52,3 +52,94 @@ table[class^=_pandect-trade-table] tr{
 table[class^=_pandect-trade-table] th{
 	height:28px;
 }
+._risk-control-instru-outer-wrap{
+	width: 1200px;
+    margin: 0px auto;
+    padding-top:10px;
+}
+._instru-filter-wrap{
+	height:30px;
+	text-align:center;
+	font-size: 14px;
+}
+._instru-filter-wrap input{
+	border:1px solid black;
+	height:22px;
+}
+._instru-filter-wrap button[name=filter-search],
+._instru-filter-wrap button[name=filter-reset]{
+	margin-left:5px;
+	width:60px;
+    height: 25px;
+}
+._instru-filter-wrap span[name=filter-type]{
+	margin-right:5px;
+}
+table[class^=_instru-trade-table-all] tr{
+	height:30px;
+}
+table[class^=_instru-trade-table-all] th{
+	height:28px;
+}
+._instru-account-type-wrap
+._instru-account-type-wrap{
+	height:30px;
+	line-height:30px;
+}
+._instru-account-type-wrap span[name=account-all]{
+	font-size: 14px;
+    font-weight: bold;
+}
+._instru-account-type-wrap span[name=account-risk]{
+	font-size: 14px;
+    color:blue;
+}
+._instru-account-type-wrap span[name^=account-]{
+	cursor:pointer;
+}
+
+._risk-control-origin-outer-wrap{
+	width: 1200px;
+    margin: 0px auto;
+    padding-top:10px;
+}
+._origin-filter-wrap{
+	height:30px;
+	text-align:center;
+	font-size: 14px;
+}
+._origin-filter-wrap input{
+	border:1px solid black;
+	height:22px;
+}
+._origin-filter-wrap button[name=filter-search],
+._origin-filter-wrap button[name=filter-reset]{
+	margin-left:5px;
+	width:60px;
+    height: 25px;
+}
+._origin-filter-wrap span[name=filter-type]{
+	margin-right:5px;
+}
+table[class^=_origin-trade-table-all] tr{
+	height:30px;
+}
+table[class^=_origin-trade-table-all] th{
+	height:28px;
+}
+._origin-account-type-wrap
+._origin-account-type-wrap{
+	height:30px;
+	line-height:30px;
+}
+._origin-account-type-wrap span[name=account-all]{
+	font-size: 14px;
+    font-weight: bold;
+}
+._origin-account-type-wrap span[name=account-risk]{
+	font-size: 14px;
+    color:blue;
+}
+._origin-account-type-wrap span[name^=account-]{
+	cursor:pointer;
+}

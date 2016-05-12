@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>外盘期货</title>
 <link rel='stylesheet' type='text/css' href='common/css/base.css'>
+<link rel='stylesheet' type='text/css' href='common/css/page-tool.css'>
 <link rel='stylesheet' type='text/css' href='futures/css/futures.css'>
 </head>
 <body>
@@ -24,24 +25,78 @@
 		<span name='account-risk'>只显示风险账号</span>
 	</div>
 	<table class='_pandect-trade-table-all' border='1' cellspacing='0'>
-			<tr>
-				<th name='trade-num'>交易账号</th>
-				<th>风险度</th>
-				<th>隔夜风险</th>
-				<th>资金风险</th>
-				<th>交易许可</th>
-				<th>开仓许可</th>
-				<th>出金许可</th>
-				<th>入金许可</th>
-				<th>在线状态</th>
-				<th>操作</th>
-			</tr>
-		</table>
+		<tr>
+			<th name='trade-num'>交易账号</th>
+			<th>风险度</th>
+			<th>隔夜风险</th>
+			<th>资金风险</th>
+			<th>交易许可</th>
+			<th>开仓许可</th>
+			<th>出金许可</th>
+			<th>入金许可</th>
+			<th>在线状态</th>
+			<th>操作</th>
+		</tr>
+	</table>
+	<div class='page-tool-wrap'></div>
 </div>
+<div class='_risk-control-instru-outer-wrap'>
+	<div class='_instru-header-wrap'>
+		<span>风险控制>></span>
+		<span>合约风险</span>
+	</div>
+	<div class='_instru-filter-wrap'>
+		<span name='filter-type'>交易账号</span>
+		<input name='' type='text'>
+		<button type='button' name='filter-search'>搜索</button>
+		<button type='button' name='filter-reset'>重置</button>
+	</div>
+	<div accountType='all' class='_instru-account-type-wrap'>
+		<span name='account-all'>显示全部合约</span>
+		<span name='account-risk'>只显示风险合约</span>
+	</div>
+	<table class='_instru-trade-table-all' border='1' cellspacing='0'>
+		<tr>
+			<th name='trade-num'>交易账号</th>
+			<th>合约代码</th>
+			<th>当前持仓手数</th>
+			<th>当前单交易日双边累计成交手数</th>
+			<th>交割强平时间</th>
+		</tr>
+	</table>
+	<div class='page-tool-wrap'></div>
+</div>
+
+<div class='_risk-control-origin-outer-wrap'>
+	<div class='_origin-header-wrap'>
+		<span>风险控制>></span>
+		<span>母账号名称</span>
+	</div>
+	<div class='_origin-filter-wrap'>
+		<span name='filter-type'>交易账号</span>
+		<input name='' type='text'>
+		<button type='button' name='filter-search'>搜索</button>
+		<button type='button' name='filter-reset'>重置</button>
+	</div>
+	<div accountType='all' class='_origin-account-type-wrap'>
+		<span name='account-all'>显示全部合约</span>
+		<span name='account-risk'>只显示风险合约</span>
+	</div>
+	<table class='_origin-trade-table-all' border='1' cellspacing='0'>
+		<tr>
+			<th>母账户名称</th>
+			<th>合约代码</th>
+			<th>当前单交易日双边累计成交手数</th>
+		</tr>
+	</table>
+	<div class='page-tool-wrap'></div>
+</div>
+
 <script src='common/js/jquery.1.11.3.min.js'></script>
 <script src='common/js/page-tool.js'></script>
 <script src='common/js/ws.js'></script>
+<script src='common/js/test-data.js'></script>
+<script src='futures/js/beforeload.js'></script>
 <script src='futures/js/futures.js'></script>
-
 </body>
 </html>

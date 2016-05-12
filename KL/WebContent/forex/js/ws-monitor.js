@@ -4,6 +4,13 @@ function monitorCashData(){
 	function WS_Success(client){
 		console.log('-open');
 		ForexWSClient=client;
+		if(typeof testWebSocketTime === 'undefined' ||
+				typeof testWebSocketTime === 'undefined'){
+			window.testWebSocketTime=setInterval(function(){
+				$('.test-websocket-time').find('span[name=time]').html(ConnectTime);
+				ConnectTime +=1;
+			},1000);
+		}
 	}
 	function WS_Fail(){
 		console.log('-fail');
@@ -30,16 +37,18 @@ function monitorCashData(){
 				//console.log(data);
 				updateRiskAccountData(data);
 			}else if(dataType === 'alertwarn'){
-				console.log(data);
-				alertWarnFn(data);
+				//console.log(data);
+				var auto = data.auto;
+				//alertWarnFn(data);
 			}
 		}
 		//console.log(msg);
 		//console.log('-message');
 	}
 	function WS_Close(event){
-		console.log('-close');
+		//console.log('-close');
 		ForexWSClient=null;
+		testWebSocketTime = null;
 	}
 	ForexWSClient=CreateWSClient.create();
 	//ForexWSClient = new WSClient();

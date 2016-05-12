@@ -14,6 +14,25 @@ function riskPandectTabClick(tab){
 		
 		$('._tabpanel-pandect-wrap').show();
 		$('._tanpanel-userstate-wrap').hide();
+		//停止客户状态数据推送
+		var accountTypeWrap = $('._userstate-account-wrap'),
+			countType = '';
+		if(accountTypeWrap.length !== 0){
+			countType = accountTypeWrap.attr('accountType');
+			if(countType === 'all'){
+				if(typeof TimingRefreshAllData !== 'undefined' &&
+						TimingRefreshAllData !== null){
+					clearInterval(TimingRefreshAllData);
+					TimingRefreshAllData = null;
+				}
+			}else if(countType === 'risk'){
+				if(typeof TimingRefreshRiskData !== 'undefined' &&
+						TimingRefreshRiskData !== null){
+					clearInterval(TimingRefreshRiskData);
+					TimingRefreshRiskData = null;
+				}
+			}
+		}
 	}else if(name == 'userstate'){
 		var prev = tab.prev();
 		tab.attr('isClick',true);
@@ -41,7 +60,37 @@ function riskPandectTabClick(tab){
 					ForexWSClient.sendMsg(JSON.stringify(sendMsg));
 				}
 			}else{
-				//var currentPage = accountTable[0].pageTool.currentPage;
+				//启用客户状态数据推送
+				var accountTypeWrap = $('._userstate-account-wrap'),
+				countType = '';
+				if(accountTypeWrap.length !== 0){
+					countType = accountTypeWrap.attr('accountType');
+					if(countType === 'all'){
+						if(typeof TimingRefreshAllData === 'undefined' ||
+								TimingRefreshAllData === null){
+							var table = $('._userstate-trade-table-all');
+							if(table.length === 0) return;
+							var pageTool = table.getPageTool();
+							//定时刷新
+							window.TimingRefreshAllData=setInterval(function(){
+								pageTool.sendWSMsg();
+							},UserStateUpdateInter);
+						}
+					}else if(countType === 'risk'){
+						var riskTable = $('._userstate-trade-table-risk');
+						if(riskTable.length === 0) return;
+						if(typeof TimingRefreshRiskData === 'undefined' ||
+								TimingRefreshRiskData === null){
+							window.TimingRefreshRiskData = setInterval(function(){
+								if(riskTable[0].sendMsg){
+									if(ForexWSClient){
+										ForexWSClient.sendMsg(JSON.stringify(riskTable[0].sendMsg));
+									}
+								}
+							},UserStateUpdateInter);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -227,7 +276,9 @@ function pandectTradeTypeHand(btn){
 //风险控制-总览-头寸-详情
 function pandectCashDetail(td){
 	var tr = $(td).parent();
-	console.log(JSON.parse(tr.attr('trDt')));
+	var trDt = JSON.parse(tr.attr('trDt'));
+	var symbol = trDt.symbol,
+		lastDt = trDt.dt;
 	var remodalCls = 'remodal-wrap';
 	var remodalFrag = "<div class='"+remodalCls+"'></div>";
 	if($('.'+remodalCls).length === 0){
@@ -242,6 +293,10 @@ function pandectCashDetail(td){
 	var detailWrap = $('._cash-detail-wrap').clone();
 	$('.'+remodalCls).append(detailWrap);
 	$('.'+remodalCls).find('._cash-detail-wrap').show();
+	//设置品种代码
+	$('.'+remodalCls).find('span[name=symbol]').html(symbol);
+	//设置最后时间
+	$('.'+remodalCls).find('span[name=lastrefresh-time]').html(lastDt);
 	var defaultTrLen = 10;
 	var table = $('.'+remodalCls).find('._cash_detail_table');
 	var height = $('.'+remodalCls).find('._cash-detail-wrap').height();
@@ -249,14 +304,16 @@ function pandectCashDetail(td){
 	$('.'+remodalCls).find('._cash-detail-wrap').css('margin-top',top);
 	$('.'+remodalCls).find('span[name=close]').bind('click',function(){
 		$('.'+remodalCls).hide();
-		console.log('close');
+		//console.log('close');
 	});
+	
 	var tableConfig={
 			startIndex:0,
-			data:[],
+			data:UserStateAccountData,
 			pageSize:10,
 			uniqueMark:'userId',
 			sortKey:'a',
+			useWSData:false,
 			generateTr:function(){
 				var table = this.table;
 				var trLen = this.pageSize;
@@ -323,6 +380,10 @@ function pandectCashDetail(td){
 }
 //交易审批-待处理-接受
 function noHandleTradeAccept(btn){
+	//console.log($(btn).parents('tr'));
+	var tr = $(btn).parents('tr'),
+		trDt = JSON.parse(tr.attr('trDt'));
+	var price = trDt.buy;
 	var cls = '_trade-nohand-accept-menu';
 	var acceptFrag = "<div class='"+cls+"'>"+
 						"<div name='title'>请制定成交价</div>"+
@@ -353,6 +414,8 @@ function noHandleTradeAccept(btn){
 		cancelBtn.bind('click',function(){
 			acceptMenu.hide();
 		});
+		//设置默认价格
+		acceptMenu.find('input').val(price);
 		//条码加减
 		var priceInput = acceptMenu.find('input');
 		var codeSpans = acceptMenu.find('span[name^=code-]'),
@@ -361,18 +424,21 @@ function noHandleTradeAccept(btn){
 			var code = codeSpans.eq(i);
 			code.bind('click',function(){
 				var codeName = $(this).attr('name');
+				var priceVal = priceInput.val();
+				//console.log(typeof priceVal);
+				var digits = priceVal.split('.')[1].length;
 				if(codeName === 'code-add-one'){
-					priceInput.val(Number(priceInput.val())+1);
+					priceInput.val((Number(priceInput.val())+1).toFixed(digits));
 				}else if(codeName === 'code-add-five'){
-					priceInput.val(Number(priceInput.val())+5);
+					priceInput.val((Number(priceInput.val())+5).toFixed(digits));
 				}else if(codeName === 'code-add-ten'){
-					priceInput.val(Number(priceInput.val())+10);
+					priceInput.val((Number(priceInput.val())+10).toFixed(digits));
 				}else if(codeName === 'code-reduce-one'){
-					priceInput.val(Number(priceInput.val())-1);
+					priceInput.val((Number(priceInput.val())-1).toFixed(digits));
 				}else if(codeName === 'code-reduce-five'){
-					priceInput.val(Number(priceInput.val())-5);
+					priceInput.val((Number(priceInput.val())-5).toFixed(digits));
 				}else if(codeName === 'code-reduce-ten'){
-					priceInput.val(Number(priceInput.val())-10);
+					priceInput.val((Number(priceInput.val())-10).toFixed(digits));
 				}
 			});
 		}
@@ -384,6 +450,7 @@ function noHandleTradeAccept(btn){
 		}
 		$('.'+cls).css('top',event.clientY);
 		$('.'+cls).css('left',event.clientX-145);
+		$('.'+cls).find('input').val(price);
 	}
 }
 //交易审批-待处理-拒绝
@@ -401,6 +468,11 @@ function noHandleTradeRefuse(btn){
 		$('.'+cls).find('button').bind('click',function(){
 			var name = $(this).attr('name');
 			if(name === 'btn-confirm'){
+				var tr = $(btn).parents('tr');
+				if(tr.length === 0) return;
+				var dt = tr.attr('trDt'),
+					data = JSON.parse(dt);
+				pendingRefuseSendMsg(data);
 				$('.'+cls).hide();
 			}else if(name === 'btn-cancel'){
 				$('.'+cls).hide();
@@ -563,7 +635,8 @@ function updatePandectPendData(data){
 	for(var i=0;i<rowLen;i++){
 		var dt = rowData[i];
 		//$('body').createTradeDialog(dt);
-		var htmlFrag="<tr>" +
+		var trDt = JSON.stringify(dt);
+		var htmlFrag="<tr trDt='"+trDt+"'>" +
 						"<td name='aid'>"+dt.aid+"</td>" +
 						"<td name='ord'>"+dt.ord+"</td>" +
 						"<td name='symbol'>"+dt.symbol+"</td>" +
@@ -642,6 +715,7 @@ function updateAllAccountData(data){
 			data:data,
 			pageSize:2,
 			uniqueMark:'aid',
+			useWSData:true,
 			//sendMsg:sendMsg,
 			sendWSMsg:function(){
 				if(!ForexWSClient || !this.table[0].sendMsg ||
@@ -717,7 +791,7 @@ function updateAllAccountData(data){
 			}
 		};
 		var pageTool = accountTable.getPageTool(tableConfig);
-		pageTool.action(0);
+		pageTool.action();
 		if(typeof TimingRefreshAllData === 'undefined' ||
 				TimingRefreshAllData === null){
 			//定时刷新
@@ -786,7 +860,19 @@ function updateCornerMarkCount(data){
 	}
 }
 //弹出警告
-function alertWarnFn(){
+function alertWarnFn(dt){
 	$('body').createTradeDialog(dt);
 }
-//
+//总览-待处理-拒绝-发送命令
+function pendingRefuseSendMsg(data){
+	var msg={
+		op:'approve',
+		uid:GlobalUserId,
+		aid:data.aid,
+		ord:data.ord,
+		price:-1
+	};
+	if(ForexWSClient){
+		ForexWSClient.sendMsg(JSON.stringify(msg));
+	}
+}
